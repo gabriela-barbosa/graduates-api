@@ -1,7 +1,9 @@
 package br.uff.graduatesapi.service
 
+import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.repository.UserRepository
+import io.jsonwebtoken.Jwts
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -22,5 +24,14 @@ class UserService(
 
     fun getById(id: Int): PlatformUser {
         return this.userRepository.getById(id)
+    }
+
+    fun getUserByJwt(jwt: String): PlatformUser? {
+        return try{
+            val body = Utils.parseJwtToBody(jwt)
+            getById(body.issuer.toInt())
+        } catch (e: Exception){
+            null
+        }
     }
 }

@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.controller
 
+import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.LoginDTO
 import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.dto.RegisterDTO
@@ -41,7 +42,7 @@ class AuthController(private val userService: UserService) {
         val jwt = Jwts.builder()
             .setIssuer(issuer)
             .setExpiration(Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
-            .signWith(SignatureAlgorithm.ES512, "secret").compact()
+            .signWith(SignatureAlgorithm.HS512, "secret").compact()
 
         val cookie = Cookie("jwt", jwt)
         cookie.isHttpOnly = true
@@ -51,17 +52,28 @@ class AuthController(private val userService: UserService) {
 
     @GetMapping("user")
     fun user(@CookieValue("jwt") jwt: String?): ResponseEntity<Any> {
-        try {
             if (jwt == null) {
                 return ResponseEntity.status(401).body(Message("Unauthenticated"))
             }
-            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
+            val user = this.userService.getUserByJwt(jwt)
 
-            return ResponseEntity.ok(this.userService.getById(body.issuer.toInt()))
-        } catch (e: Exception) {
-            return ResponseEntity.status(401).body(Message("Unauthenticated"))
-        }
+            return if(user == null) ResponseEntity.status(401).body(Message("Unauthenticated"))
+            else ResponseEntity.ok(user)
     }
+
+//    @GetMapping("user")
+//    fun user(@CookieValue("jwt") jwt: String?): ResponseEntity<Any> {
+//        try {
+//            if (jwt == null) {
+//                return ResponseEntity.status(401).body(Message("Unauthenticated"))
+//            }
+//            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
+//
+//            return ResponseEntity.ok(this.userService.getById(body.issuer.toInt()))
+//        } catch (e: Exception) {
+//            return ResponseEntity.status(401).body(Message("Unauthenticated"))
+//        }
+//    }
 
     @PostMapping("logout")
     fun logout(response: HttpServletResponse): ResponseEntity<Any> {

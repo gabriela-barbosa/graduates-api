@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.persistence.*
 
 @Entity
-class PlatformUser {
+open class PlatformUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Int = 0
@@ -19,7 +19,13 @@ class PlatformUser {
     @Column(nullable = false)
     var password = ""
         @JsonIgnore
-        get() = field
+        get
+
+    @OneToOne(mappedBy = "user")
+    var advisor: Advisor? = null
+
+    @OneToOne(mappedBy = "user")
+    var graduate: Graduate? = null
 
     fun comparePassword(password: String): Boolean {
         return BCryptPasswordEncoder().matches(password, this.password)
