@@ -1,7 +1,11 @@
 package br.uff.graduatesapi.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.annotations.ColumnDefault
+import org.hibernate.annotations.CreationTimestamp
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -30,4 +34,9 @@ open class PlatformUser {
     fun comparePassword(password: String): Boolean {
         return BCryptPasswordEncoder().matches(password, this.password)
     }
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    var createdAt: Date? = null
 }

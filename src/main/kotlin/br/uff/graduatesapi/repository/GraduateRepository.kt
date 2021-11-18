@@ -5,5 +5,7 @@ import br.uff.graduatesapi.model.Graduate
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface GraduateRepository : JpaRepository<Graduate, Int> {
-    fun findAllByAdvisor(advisor: Advisor): List<Graduate>?
+    fun findAllByCoursesAdvisorIsOrderByCourses(
+        advisor: Advisor
+    ): MutableList<Graduate>?
 }
