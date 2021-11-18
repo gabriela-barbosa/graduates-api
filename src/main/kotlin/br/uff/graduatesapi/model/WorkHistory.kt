@@ -1,5 +1,8 @@
 package br.uff.graduatesapi.model
 
+import org.hibernate.annotations.ColumnDefault
+import org.hibernate.annotations.CreationTimestamp
+import java.util.*
 import javax.persistence.*
 
 @Entity(name = "work_history")
@@ -15,6 +18,11 @@ class WorkHistory {
     @ManyToOne(optional = true)
     var institution: Institution? = null
 
-    @ManyToMany(mappedBy = "workHistory")
-    var graduates: List<Graduate>? = null
+    @ManyToOne(optional = false)
+    var graduate: Graduate? = null
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    var createdAt: Date? = null
 }

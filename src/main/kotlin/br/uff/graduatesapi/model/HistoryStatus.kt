@@ -7,23 +7,17 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-class Graduate {
+class HistoryStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     var id: Int? = null
 
-    @OneToOne(optional = true)
-    var historyStatus: HistoryStatus? = null
+    @Column(name = "known_workplace", nullable = false)
+    var knownWorkplace: Boolean? = null
 
-    @OneToOne(optional = false)
-    var user: PlatformUser? = null
-
-    @OneToMany(mappedBy = "graduate")
-    var courses: List<Course>?  = null
-
-    @OneToMany(mappedBy = "graduate")
-    var workHistory: List<WorkHistory>? = null
+    @OneToOne(mappedBy = "historyStatus", optional = false)
+    var graduate: Graduate? = null
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

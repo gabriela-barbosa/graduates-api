@@ -1,29 +1,33 @@
 package br.uff.graduatesapi.model
 
+import br.uff.graduatesapi.enums.CIPrograms
+import br.uff.graduatesapi.enums.InstitutionType
 import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.CreationTimestamp
 import org.springframework.data.annotation.CreatedDate
 import java.util.*
 import javax.persistence.*
 
+
 @Entity
-class Graduate {
+class Course{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     var id: Int? = null
 
-    @OneToOne(optional = true)
-    var historyStatus: HistoryStatus? = null
+    @Column(name = "program", nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    var program: CIPrograms? = null
 
-    @OneToOne(optional = false)
-    var user: PlatformUser? = null
+    @Column(name = "minute_defense", nullable = false)
+    var minuteDefense: Int? = null
 
-    @OneToMany(mappedBy = "graduate")
-    var courses: List<Course>?  = null
+    @ManyToOne(optional = false)
+    var advisor: Advisor? = null
 
-    @OneToMany(mappedBy = "graduate")
-    var workHistory: List<WorkHistory>? = null
+    @ManyToOne(optional = false)
+    var graduate: Graduate? = null
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
