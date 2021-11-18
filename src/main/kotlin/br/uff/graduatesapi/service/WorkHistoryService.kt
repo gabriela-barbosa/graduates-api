@@ -10,6 +10,6 @@ class WorkHistoryService(
     private val workHistoryRepository: WorkHistoryRepository,
     ) {
     fun findAllByGraduates(graduates: List<Graduate>): List<WorkHistory>? {
-        return workHistoryRepository.findAllByGraduateIn(graduates)
+        return workHistoryRepository.findTopByGraduateOrderByCreatedAtDesc(graduates)
     }
 }

@@ -5,6 +5,6 @@ import br.uff.graduatesapi.enums.WorkHistoryStatus
 data class ListGraduatesDTO(
     val name: String,
     val status: WorkHistoryStatus,
-    val workPlace: WorkPlaceDTO?,
-    val position: String?,
+    var workPlace: WorkPlaceDTO?,
+    var position: String?,
 )

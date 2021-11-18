@@ -1,6 +1,5 @@
 package br.uff.graduatesapi.model
 
-import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.CreationTimestamp
 import java.util.*
 import javax.persistence.*
