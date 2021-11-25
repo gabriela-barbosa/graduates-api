@@ -24,4 +24,9 @@ class WorkHistory {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: Date? = null
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at", nullable = true, updatable = false)
+    var updatedAt: Date? = null
 }

@@ -23,7 +23,7 @@ class GraduateService(
             var status = WorkHistoryStatus.PENDING
             if (graduate.historyStatus != null && graduate.historyStatus!!.knownWorkplace == true) {
                 knownHistoryGraduates.add(graduate)
-                status = WorkHistoryStatus.UPGRADED
+                status = WorkHistoryStatus.UPDATED
             }
             val item = ListGraduatesDTO(name = graduate.user!!.name, status, null, null)
             resp.add(item)

@@ -2,5 +2,5 @@ package br.uff.graduatesapi.enums
 
 enum class WorkHistoryStatus {
     PENDING,
-    UPGRADED,
+    UPDATED,
 }
