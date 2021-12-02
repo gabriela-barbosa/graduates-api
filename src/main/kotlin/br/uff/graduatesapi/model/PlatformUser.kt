@@ -1,15 +1,13 @@
 package br.uff.graduatesapi.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.CreationTimestamp
-import org.springframework.data.annotation.CreatedDate
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.*
 import javax.persistence.*
 
 @Entity
-open class PlatformUser {
+class PlatformUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Int = 0

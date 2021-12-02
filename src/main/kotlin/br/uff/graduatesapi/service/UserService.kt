@@ -22,15 +22,19 @@ class UserService(
         return this.userRepository.findByEmail(email)
     }
 
+    fun updateEmail(oldEmail: String, newEmail: String) {
+        return this.userRepository.updateEmail(newEmail, oldEmail)
+    }
+
     fun getById(id: Int): PlatformUser {
         return this.userRepository.getById(id)
     }
 
     fun getUserByJwt(jwt: String): PlatformUser? {
-        return try{
+        return try {
             val body = Utils.parseJwtToBody(jwt)
             getById(body.issuer.toInt())
-        } catch (e: Exception){
+        } catch (e: Exception) {
             null
         }
     }

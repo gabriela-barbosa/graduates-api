@@ -2,13 +2,12 @@ package br.uff.graduatesapi.controller
 
 import br.uff.graduatesapi.dto.ListGraduatesDTO
 import br.uff.graduatesapi.dto.Message
+import br.uff.graduatesapi.dto.RegisterDTO
+import br.uff.graduatesapi.dto.WorkHistoryDTO
 import br.uff.graduatesapi.service.GraduateService
 import br.uff.graduatesapi.service.UserService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CookieValue
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
@@ -22,5 +21,11 @@ class GraduateController(private val graduateService: GraduateService) {
         val graduates = graduateService.getGraduatesByAdvisor(jwt)
 
         return ResponseEntity.ok(graduates)
+    }
+
+    @PostMapping("graduate")
+    fun createGraduateWorkHistory(@RequestBody workDTO: WorkHistoryDTO): ResponseEntity.BodyBuilder {
+        graduateService.createGraduateWorkHistory(workDTO)
+        return ResponseEntity.status(201)
     }
 }
