@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.controller
 
+import br.uff.graduatesapi.annotation.Auth
 import br.uff.graduatesapi.dto.ListGraduatesDTO
 import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.service.GraduateService
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("api/v1")
 class GraduateController(private val graduateService: GraduateService) {
+    @Auth
     @GetMapping("graduate")
     fun getGraduatesByAdvisor(@CookieValue("jwt") jwt: String?): ResponseEntity<Any>? {
         if (jwt == null) {
@@ -24,3 +26,5 @@ class GraduateController(private val graduateService: GraduateService) {
         return ResponseEntity.ok(graduates)
     }
 }
+
+

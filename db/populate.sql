@@ -1,11 +1,3 @@
-insert into advisor (id, created_at, user_id)
-values (1, now(), 6),
-       (2, now(), 8),
-       (3, now(), 9),
-       (4, now(), 10),
-       (5, now(), 11),
-       (6, now(), 12)
-;
 insert into platform_user (id, email, name, password, created_at)
 values (1, 'gabriela@gmail.com', 'Gabriela', '', now()),
        (2, 'davi@gmail.com', 'Davi', '', now()),
@@ -19,6 +11,20 @@ values (1, 'gabriela@gmail.com', 'Gabriela', '', now()),
        (10, 'plastino@gmail.com', 'Plastino', '', now()),
        (11, 'troy@gmail.com', 'Troy', '', now()),
        (12, 'aline@gmail.com', 'Aline', '', now())
+;
+insert into advisor (id, created_at, user_id)
+values (1, now(), 6),
+       (2, now(), 8),
+       (3, now(), 9),
+       (4, now(), 10),
+       (5, now(), 11),
+       (6, now(), 12)
+;
+insert into history_status (id, created_at, known_workplace)
+values (1, now(), true),
+       (2, now(), true),
+       (3, now(), false),
+       (4, now(), true)
 ;
 insert into graduate (id, created_at, history_status_id, user_id)
 values (1, now(), 1, 1),
@@ -43,12 +49,6 @@ values (1, now(), 'Dev Jr', 1, 1, null),
        (4, now(), 'Senior Associate', 2, 3, null),
        (5, now(), 'Dev Jr', 1, 4, null),
        (6, now(), 'Dev Jr', 2, 5, null)
-;
-insert into history_status (id, created_at, known_workplace)
-values (1, now(), true),
-       (2, now(), true),
-       (3, now(), false),
-       (4, now(), true)
 ;
 insert into course (id, created_at, minute_defense, program, advisor_id, graduate_id)
 values (1, now(), 1, 1, 1, 1),
