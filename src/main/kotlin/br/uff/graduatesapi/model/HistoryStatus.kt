@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.model
 
+import br.uff.graduatesapi.enums.WorkHistoryStatus
 import org.hibernate.annotations.CreationTimestamp
 import java.util.*
 import javax.persistence.*
@@ -16,6 +17,9 @@ class HistoryStatus {
 
     @OneToOne(mappedBy = "historyStatus", optional = false)
     var graduate: Graduate? = null
+
+    @Column(name = "status", nullable = false)
+    var status: WorkHistoryStatus = WorkHistoryStatus.PENDING
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

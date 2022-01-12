@@ -1,9 +1,7 @@
 package br.uff.graduatesapi.model
 
 import br.uff.graduatesapi.enums.InstitutionType
-import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.CreationTimestamp
-import org.springframework.data.annotation.CreatedDate
 import java.util.*
 import javax.persistence.*
 

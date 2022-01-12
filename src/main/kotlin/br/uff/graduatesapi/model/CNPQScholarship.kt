@@ -4,18 +4,16 @@ import org.hibernate.annotations.CreationTimestamp
 import java.util.*
 import javax.persistence.*
 
-@Entity(name = "work_history")
-class WorkHistory {
+
+@Entity
+class CNPQScholarship {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     var id: Int? = null
 
-    @Column(name = "position", nullable = true)
-    var position: String? = null
-
-    @ManyToOne(optional = true)
-    var institution: Institution? = null
+    @ManyToOne(optional = false)
+    var level: CNPQLevel? = null
 
     @ManyToOne(optional = false)
     var graduate: Graduate? = null
@@ -23,10 +21,9 @@ class WorkHistory {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date? = null
+    var startYear: Date? = null
 
-    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at", nullable = true, updatable = false)
-    var updatedAt: Date? = null
+    @Column(name = "created_at", nullable = false, updatable = false)
+    var endYear: Date? = null
 }
