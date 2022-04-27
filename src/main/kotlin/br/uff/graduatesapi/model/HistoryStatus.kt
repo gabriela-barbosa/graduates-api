@@ -1,6 +1,7 @@
 package br.uff.graduatesapi.model
 
 import br.uff.graduatesapi.enums.WorkHistoryStatus
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import java.util.*
 import javax.persistence.*
@@ -15,6 +16,7 @@ class HistoryStatus {
     @Column(name = "known_workplace", nullable = false)
     var knownWorkplace: Boolean? = null
 
+    @JsonIgnore
     @OneToOne(mappedBy = "historyStatus", optional = false)
     var graduate: Graduate? = null
 

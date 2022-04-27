@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import java.util.*
 import javax.persistence.*
@@ -12,18 +13,20 @@ class CNPQScholarship {
     @Column(name = "id", nullable = false)
     var id: Int? = null
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     var level: CNPQLevel? = null
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     var graduate: Graduate? = null
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "start_year", nullable = false, updatable = false)
     var startYear: Date? = null
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "end_year", nullable = false, updatable = false)
     var endYear: Date? = null
 }

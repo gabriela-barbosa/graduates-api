@@ -20,6 +20,17 @@ values (1, 'gabriela@gmail.com', 'Gabriela', '', now()),
        (11, 'troy@gmail.com', 'Troy', '', now()),
        (12, 'aline@gmail.com', 'Aline', '', now())
 ;
+
+insert into platform_user (id, email, name, password, created_at)
+values (13, 'gab@gmail.com', 'Gabrielly', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+       (14, 'davidson@gmail.com', 'Davidson', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+       (15, 'viktor@gmail.com', 'Viktor', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+       (16, 'artu@gmail.com', 'Artu', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+       (17, 'louise@gmail.com', 'Louise', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+       (18, 'valeria@gmail.com', 'Valéria', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+      (19, 'alice@gmail.com', 'Alice', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now())
+;
+
 insert into graduate (id, created_at, history_status_id, user_id)
 values (1, now(), 1, 1),
        (2, now(), 2, 2),

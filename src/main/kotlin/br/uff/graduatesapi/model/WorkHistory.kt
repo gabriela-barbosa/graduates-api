@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import java.util.*
 import javax.persistence.*
@@ -14,9 +15,11 @@ class WorkHistory {
     @Column(name = "position", nullable = true)
     var position: String? = null
 
+    @JsonIgnore
     @ManyToOne(optional = true)
     var institution: Institution? = null
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     var graduate: Graduate? = null
 

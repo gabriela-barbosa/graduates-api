@@ -1,12 +1,16 @@
 package br.uff.graduatesapi.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
 import org.hibernate.annotations.CreationTimestamp
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.*
 import javax.persistence.*
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class PlatformUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

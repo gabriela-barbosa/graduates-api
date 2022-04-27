@@ -1,12 +1,13 @@
 package br.uff.graduatesapi.model
 
-import org.hibernate.annotations.ColumnDefault
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
-import org.springframework.data.annotation.CreatedDate
 import java.util.*
 import javax.persistence.*
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 class Graduate {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,6 +17,7 @@ class Graduate {
     @OneToOne(optional = true)
     var historyStatus: HistoryStatus? = null
 
+    @JsonIgnore
     @OneToOne(optional = false)
     var user: PlatformUser? = null
 

@@ -55,84 +55,85 @@ class GraduateService(
 
 
     fun createGraduateWorkHistory(workDTO: WorkHistoryDTO): Unit? {
-        // todo add error
-        val graduateUser = userService.findByEmail(workDTO.email) ?: return null
-        if (workDTO.newEmail != null) {
-            userService.updateEmail(workDTO.email, workDTO.newEmail)
-            //todo add error validation
-            graduateUser.email = workDTO.newEmail
-        }
-        val historyStatus = HistoryStatus()
-        historyStatus.knownWorkplace = workDTO.knownWorkPlace
-        historyStatus.graduate = graduateUser.graduate
-        if (!workDTO.knownWorkPlace) {
-            historyStatus.status = WorkHistoryStatus.UNKNOWN
-            historyStatusService.save(historyStatus)
-            // todo add error validation
-            return null
-        }
-
-        val history = WorkHistory()
-        history.position = workDTO.position
-        history.graduate = graduateUser.graduate
-        var institution: Institution? = null
-        if (workDTO.institution != null) {
-            if (workDTO.institution!!.id != null) {
-                institution = institutionService.findById(workDTO.institution!!.id!!)
-                if (institution == null) return null
-                //TODO add error
-            } else {
-                if (workDTO.institution!!.name == null || workDTO.institution!!.type == null) {
-                    return null
-                    //TODO add error
-                }
-                institution = Institution()
-                institution.name = workDTO.institution!!.name!!
-                institution.type = workDTO.institution!!.type!!
-                val resp = institutionService.save(institution)
-                if (resp == null) {
-                    return null
-                    //TODO add error
-                }
-            }
-        }
-        if (workDTO.postDoctorate != null) {
-            if (workDTO.postDoctorate!!.id != null) {
-                institution = institutionService.findById(workDTO.postDoctorate!!.id!!)
-                if (institution == null) return null
-                //TODO add error
-            } else {
-                if (workDTO.postDoctorate!!.name == null || workDTO.postDoctorate!!.type == null) {
-                    return null
-                    //TODO add error
-                }
-                institution = Institution()
-                institution.name = workDTO.postDoctorate!!.name!!
-                institution.type = workDTO.postDoctorate!!.type!!
-                val resp = institutionService.save(institution)
-                if (resp == null) {
-                    return null
-                    //TODO add error
-                }
-            }
-        }
-
-        if (workDTO.cnpqLevelId != null) {
-            val level = cnpqLevelService.findById(workDTO.cnpqLevelId)
-            if (level == null) {
-                return null
-                //TODO add error
-            }
-            val scholarship = cnpqScholarshipService.findByGraduate(graduateUser.graduate!!)
-            if (scholarship == null) {
-                return null
-                //TODO add error
-            }
-        }
-
-        if (history.position == null || history.graduate == null || institution == null ||)
-
-            history.institution = institution
-
+//        // todo add error
+//        val graduateUser = userService.findByEmail(workDTO.email) ?: return null
+//        if (workDTO.newEmail != null) {
+//            userService.updateEmail(workDTO.email, workDTO.newEmail)
+//            //todo add error validation
+//            graduateUser.email = workDTO.newEmail
+//        }
+//        val historyStatus = HistoryStatus()
+//        historyStatus.knownWorkplace = workDTO.knownWorkPlace
+//        historyStatus.graduate = graduateUser.graduate
+//        if (!workDTO.knownWorkPlace) {
+//            historyStatus.status = WorkHistoryStatus.UNKNOWN
+//            historyStatusService.save(historyStatus)
+//            // todo add error validation
+//            return null
+//        }
+//
+//        val history = WorkHistory()
+//        history.position = workDTO.position
+//        history.graduate = graduateUser.graduate
+//        var institution: Institution? = null
+//        if (workDTO.institution != null) {
+//            if (workDTO.institution!!.id != null) {
+//                institution = institutionService.findById(workDTO.institution!!.id!!)
+//                if (institution == null) return null
+//                //TODO add error
+//            } else {
+//                if (workDTO.institution!!.name == null || workDTO.institution!!.type == null) {
+//                    return null
+//                    //TODO add error
+//                }
+//                institution = Institution()
+//                institution.name = workDTO.institution!!.name!!
+//                institution.type = workDTO.institution!!.type!!
+//                val resp = institutionService.save(institution)
+//                if (resp == null) {
+//                    return null
+//                    //TODO add error
+//                }
+//            }
+//        }
+//        if (workDTO.postDoctorate != null) {
+//            if (workDTO.postDoctorate!!.id != null) {
+//                institution = institutionService.findById(workDTO.postDoctorate!!.id!!)
+//                if (institution == null) return null
+//                //TODO add error
+//            } else {
+//                if (workDTO.postDoctorate!!.name == null || workDTO.postDoctorate!!.type == null) {
+//                    return null
+//                    //TODO add error
+//                }
+//                institution = Institution()
+//                institution.name = workDTO.postDoctorate!!.name!!
+//                institution.type = workDTO.postDoctorate!!.type!!
+//                val resp = institutionService.save(institution)
+//                if (resp == null) {
+//                    return null
+//                    //TODO add error
+//                }
+//            }
+//        }
+//
+//        if (workDTO.cnpqLevelId != null) {
+//            val level = cnpqLevelService.findById(workDTO.cnpqLevelId)
+//            if (level == null) {
+//                return null
+//                //TODO add error
+//            }
+//            val scholarship = cnpqScholarshipService.findByGraduate(graduateUser.graduate!!)
+//            if (scholarship == null) {
+//                return null
+//                //TODO add error
+//            }
+//        }
+//
+//        if (history.position == null || history.graduate == null || institution == null ||)
+//
+//            history.institution = institution
+//
+        return null
     }
 }

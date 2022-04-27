@@ -2,6 +2,7 @@ package br.uff.graduatesapi.model
 
 import br.uff.graduatesapi.enums.CIPrograms
 import br.uff.graduatesapi.enums.InstitutionType
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.CreationTimestamp
 import org.springframework.data.annotation.CreatedDate
@@ -23,9 +24,11 @@ class Course{
     @Column(name = "minute_defense", nullable = false)
     var minuteDefense: Int? = null
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     var advisor: Advisor? = null
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     var graduate: Graduate? = null
 
