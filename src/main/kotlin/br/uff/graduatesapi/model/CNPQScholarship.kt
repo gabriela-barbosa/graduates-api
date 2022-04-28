@@ -26,7 +26,8 @@ class CNPQScholarship {
     @Column(name = "start_year", nullable = false, updatable = false)
     var startYear: Date? = null
 
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end_year", nullable = false, updatable = false)
+    @Column(name = "end_year", nullable = true, updatable = false)
     var endYear: Date? = null
 }

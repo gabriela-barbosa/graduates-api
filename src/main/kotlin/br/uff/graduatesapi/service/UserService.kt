@@ -3,7 +3,6 @@ package br.uff.graduatesapi.service
 import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.repository.UserRepository
-import io.jsonwebtoken.Jwts
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -13,8 +12,12 @@ class UserService(
     private val passwordEncoder: BCryptPasswordEncoder,
 ) {
 
-    fun save(user: PlatformUser): PlatformUser {
+    fun saveNewUser(user: PlatformUser): PlatformUser {
         user.password = passwordEncoder.encode(user.password)
+        return this.userRepository.save(user)
+    }
+
+    fun update(user: PlatformUser): PlatformUser {
         return this.userRepository.save(user)
     }
 

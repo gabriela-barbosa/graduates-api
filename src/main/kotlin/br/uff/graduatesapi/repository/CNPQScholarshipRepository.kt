@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query
 
 interface CNPQScholarshipRepository : JpaRepository<CNPQScholarship, Int> {
 
-    @Modifying
     @Query("select scholarship from CNPQScholarship scholarship where scholarship.graduate = ?1 and scholarship.endYear IS NULL")
-    fun findActualCNPQScholarshipByGraduate(graduate: Graduate)
+    fun findActualCNPQScholarshipByGraduate(graduate: Graduate) : CNPQScholarship?
 }

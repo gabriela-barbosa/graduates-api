@@ -12,4 +12,7 @@ class WorkHistoryService(
     fun findAllByGraduates(graduates: List<Graduate>): List<WorkHistory>? {
         return workHistoryRepository.findTopByGraduateOrderByCreatedAtDesc(graduates)
     }
+    fun save(workHistory: WorkHistory): WorkHistory? {
+        return workHistoryRepository.save(workHistory)
+}
 }

@@ -25,7 +25,7 @@ class GraduateController(private val graduateService: GraduateService) {
 
     @PostMapping("graduate")
     fun createGraduateWorkHistory(@RequestBody workDTO: WorkHistoryDTO): ResponseEntity.BodyBuilder {
-        graduateService.createGraduateWorkHistory(workDTO)
+        graduateService.createGraduateWorkHistory(workDTO) ?: return ResponseEntity.status(400)
         return ResponseEntity.status(201)
     }
 }

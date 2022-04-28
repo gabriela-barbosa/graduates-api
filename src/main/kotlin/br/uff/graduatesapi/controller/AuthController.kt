@@ -1,6 +1,5 @@
 package br.uff.graduatesapi.controller
 
-import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.LoginDTO
 import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.dto.RegisterDTO
@@ -25,7 +24,7 @@ class AuthController(private val userService: UserService) {
         user.email = body.email
         user.password = body.password
 
-        return ResponseEntity.ok(this.userService.save(user))
+        return ResponseEntity.ok(this.userService.saveNewUser(user))
     }
 
     @PostMapping("login")

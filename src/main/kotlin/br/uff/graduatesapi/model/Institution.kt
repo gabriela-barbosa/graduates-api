@@ -1,6 +1,7 @@
 package br.uff.graduatesapi.model
 
 import br.uff.graduatesapi.enums.InstitutionType
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import java.util.*
 import javax.persistence.*
@@ -14,6 +15,10 @@ class Institution {
 
     @Column(name = "name", nullable = false)
     var name: String = ""
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "postDoctorate")
+    var graduate: List<Graduate>? = null
 
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.ORDINAL)

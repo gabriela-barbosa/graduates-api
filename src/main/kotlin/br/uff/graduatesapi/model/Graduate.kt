@@ -27,8 +27,14 @@ class Graduate {
     @OneToMany(mappedBy = "graduate")
     var courses: List<Course>?  = null
 
+    @ManyToOne(optional=true)
+    var postDoctorate: Institution? = null
+
     @OneToMany(mappedBy = "graduate")
     var workHistory: List<WorkHistory>? = null
+
+    @Column(name = "finished_doctorate_on_uff")
+    var finishedDoctorateOnUFF: Boolean? = false
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

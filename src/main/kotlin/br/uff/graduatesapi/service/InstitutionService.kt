@@ -14,7 +14,7 @@ class InstitutionService(
         return institutionRepository.findByIdOrNull(id)
     }
 
-    fun save(institution: Institution): Int? {
-        return institutionRepository.save(institution).id
+    fun save(institution: Institution): Institution? {
+        return institutionRepository.save(institution)
     }
 }
