@@ -7,21 +7,21 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-class HistoryStatus {
+class HistoryStatus(
+    @Column(name = "known_workplace", nullable = false)
+    var knownWorkplace: Boolean? = null,
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "historyStatus", optional = false)
+    var graduate: Graduate? = null,
+
+    @Column(name = "status", nullable = false)
+    var status: WorkHistoryStatus = WorkHistoryStatus.PENDING
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     var id: Int? = null
-
-    @Column(name = "known_workplace", nullable = false)
-    var knownWorkplace: Boolean? = null
-
-    @JsonIgnore
-    @OneToOne(mappedBy = "historyStatus", optional = false)
-    var graduate: Graduate? = null
-
-    @Column(name = "status", nullable = false)
-    var status: WorkHistoryStatus = WorkHistoryStatus.PENDING
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

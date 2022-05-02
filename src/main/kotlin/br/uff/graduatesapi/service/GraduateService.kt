@@ -7,7 +7,6 @@ import br.uff.graduatesapi.enums.WorkHistoryStatus
 import br.uff.graduatesapi.model.*
 import br.uff.graduatesapi.repository.GraduateRepository
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class GraduateService(
@@ -54,7 +53,7 @@ class GraduateService(
         return resp
     }
 
-    fun save(graduate: Graduate) : Graduate? {
+    fun save(graduate: Graduate): Graduate? {
         return graduateRepository.save(graduate)
     }
 
@@ -64,37 +63,30 @@ class GraduateService(
         val graduateUser = userService.findByEmail(workDTO.email) ?: return null
         val graduate = graduateUser.graduate
         if (workDTO.newEmail != null) {
-            graduateUser.email = workDTO.newEmail
-            userService.update(graduateUser)
+            userService.updateEmail(workDTO.email, workDTO.newEmail)
             //todo add error validation
-
         }
-        val historyStatus = HistoryStatus()
-        historyStatus.knownWorkplace = workDTO.knownWorkPlace
-        historyStatus.graduate = graduate
-        if (!workDTO.knownWorkPlace) {
-            historyStatus.status = WorkHistoryStatus.UNKNOWN
-            historyStatusService.save(historyStatus)
-            // todo add error validation
-        } else {
-            val history = WorkHistory()
-            history.position = workDTO.position
-            history.graduate = graduate
-            var institution: Institution?
-            if (workDTO.institution != null) {
-                if (workDTO.institution!!.id != null) {
-                    institution = institutionService.findById(workDTO.institution!!.id!!)
-                    if (institution == null) return null
-                    //TODO add error
-                } else {
-                    if (workDTO.institution!!.name == null || workDTO.institution!!.type == null) {
-                        return null
-                        //TODO add error
-                    }
-                    institution = Institution()
-                    institution.name = workDTO.institution!!.name!!
-                    institution.type = workDTO.institution!!.type!!
-                    val institutionSaved = institutionService.save(institution)
+        val historyStatus = HistoryStatus(
+            knownWorkplace = workDTO.knownWorkPlace,
+            graduate = graduate,
+            status = if (workDTO.knownWorkPlace) WorkHistoryStatus.PENDING else WorkHistoryStatus.UNKNOWN
+        )
+        val history = WorkHistory(
+            position = workDTO.position,
+            graduate = graduate
+        )
+        if (workDTO.institution != null) {
+            val institution: Institution?
+            if (workDTO.institution!!.id != null) {
+                val institution = institutionService.findById(workDTO.institution!!.id!!) ?: return null
+                //TODO add error
+            } else {
+                if(workDTO.institution!!.name != null && workDTO.institution!!.type != null){
+                    institution = Institution(
+                        name = workDTO.institution!!.name!!,
+                        type = workDTO.institution!!.type!!
+                    )
+                    val institutionSaved = institutionService.createInstitution(institution)
                     if (institutionSaved == null) {
                         return null
                         //TODO add error
@@ -102,8 +94,9 @@ class GraduateService(
                     history.institution = institutionSaved
                 }
             }
-            workHistoryService.save(history)
         }
+        workHistoryService.save(history)
+
 
         if (workDTO.postDoctorate != null) {
             if (workDTO.postDoctorate.id != null) {
@@ -119,7 +112,7 @@ class GraduateService(
                 val institution = Institution()
                 institution.name = workDTO.postDoctorate.name
                 institution.type = workDTO.postDoctorate.type
-                val institutionSaved = institutionService.save(institution)
+                val institutionSaved = institutionService.createInstitution(institution)
                 if (institutionSaved == null) {
                     return null
                     //TODO add error
@@ -154,6 +147,10 @@ class GraduateService(
             }
         }
 
+        historyStatusService.save(historyStatus)
+
         return graduate!!.id
     }
+
+
 }

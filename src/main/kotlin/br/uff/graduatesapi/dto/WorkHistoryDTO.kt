@@ -9,4 +9,6 @@ data class WorkHistoryDTO(
     val cnpqLevelId: Int?,
     val postDoctorate: InstitutionDTO?,
     var finishedDoctorateOnUFF: Boolean?,
-)
+) {
+
+}

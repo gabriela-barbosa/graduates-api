@@ -1,10 +1,10 @@
 package br.uff.graduatesapi.service
 
+import br.uff.graduatesapi.enums.InstitutionType
 import br.uff.graduatesapi.model.Institution
 import br.uff.graduatesapi.repository.InstitutionRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class InstitutionService(
@@ -14,7 +14,11 @@ class InstitutionService(
         return institutionRepository.findByIdOrNull(id)
     }
 
-    fun save(institution: Institution): Institution? {
-        return institutionRepository.save(institution)
+    fun findByNameAndType(name: String, type: InstitutionType): Institution? {
+        return institutionRepository.findByNameAndType(name, type)
+    }
+
+    fun createInstitution(institution: Institution): Institution? {
+        return findByNameAndType(institution.name, institution.type) ?: institutionRepository.save(institution)
     }
 }
