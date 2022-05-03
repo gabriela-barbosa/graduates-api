@@ -12,4 +12,8 @@ class CNPQLevelService(
     fun findById(id: Int): CNPQLevel? {
         return cnpqLevelRepository.findByIdOrNull(id)
     }
+
+    fun findCNPQLevels(): List<CNPQLevel> {
+        return cnpqLevelRepository.findAll()
+    }
 }

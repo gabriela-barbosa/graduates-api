@@ -21,6 +21,14 @@ values (1, 'gabriela@gmail.com', 'Gabriela', '', now()),
        (12, 'aline@gmail.com', 'Aline', '', now())
 ;
 
+insert into cnpqlevel (id, level, created_at)
+values (1, 'PQ2', now()),
+       (2, 'PQ1D', now()),
+       (3, 'PQ1C', now()),
+       (4, 'PQ1B', now()),
+       (5, 'PQ1A', now());
+
+
 insert into platform_user (id, email, name, password, created_at)
 values (13, 'gab@gmail.com', 'Gabrielly', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
        (14, 'davidson@gmail.com', 'Davidson', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),

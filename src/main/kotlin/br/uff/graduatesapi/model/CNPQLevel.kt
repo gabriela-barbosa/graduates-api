@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import java.util.*
 import javax.persistence.*
@@ -15,6 +16,7 @@ class CNPQLevel {
     @Column(name = "level", nullable = false, updatable = false)
     var level: String = ""
 
+    @JsonIgnore
     @OneToMany(mappedBy = "level")
     var cnpqScholarship: List<CNPQScholarship>? = null
 
