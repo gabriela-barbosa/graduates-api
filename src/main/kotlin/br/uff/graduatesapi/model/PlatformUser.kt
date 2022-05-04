@@ -11,34 +11,34 @@ import javax.persistence.*
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class PlatformUser {
+class PlatformUser(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Int = 0
+    var id: Int,
 
     @Column(nullable = false)
-    var name = ""
+    var name: String,
 
     @Column(unique = true, nullable = false)
-    var email = ""
+    var email: String,
 
+    @OneToOne(mappedBy = "user")
+    var advisor: Advisor? = null,
+
+    @OneToOne(mappedBy = "user")
+    var graduate: Graduate? = null,
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    var createdAt: Date
+) {
     @Column(nullable = false)
     var password = ""
         @JsonIgnore
         get
 
-    @OneToOne(mappedBy = "user")
-    var advisor: Advisor? = null
-
-    @OneToOne(mappedBy = "user")
-    var graduate: Graduate? = null
-
     fun comparePassword(password: String): Boolean {
         return BCryptPasswordEncoder().matches(password, this.password)
     }
-
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date? = null
 }

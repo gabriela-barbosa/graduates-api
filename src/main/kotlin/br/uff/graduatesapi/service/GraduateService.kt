@@ -61,7 +61,7 @@ class GraduateService(
     fun createGraduateWorkHistory(workDTO: WorkHistoryDTO): Int? {
         // todo add error
         val graduateUser = userService.findByEmail(workDTO.email) ?: return null
-        val graduate = graduateUser.graduate
+        val graduate = graduateUser.graduate!!
         if (workDTO.newEmail != null) {
             userService.updateEmail(workDTO.email, workDTO.newEmail)
             //todo add error validation
@@ -99,31 +99,30 @@ class GraduateService(
 
 
         if (workDTO.postDoctorate != null) {
-            if (workDTO.postDoctorate.id != null) {
-                val institution = institutionService.findById(workDTO.postDoctorate.id)
-                if (institution == null) return null
+            if (workDTO.postDoctorate!!.id != null) {
+                val institution = institutionService.findById(workDTO.postDoctorate!!.id!!) ?: return null
                 //TODO add error
-                graduate!!.postDoctorate = institution
+                graduate.postDoctorate = institution
             } else {
-                if (workDTO.postDoctorate.name == null || workDTO.postDoctorate.type == null) {
+                if (workDTO.postDoctorate!!.name == null || workDTO.postDoctorate!!.type == null) {
                     return null
                     //TODO add error
                 }
                 val institution = Institution()
-                institution.name = workDTO.postDoctorate.name
-                institution.type = workDTO.postDoctorate.type
+                institution.name = workDTO.postDoctorate!!.name!!
+                institution.type = workDTO.postDoctorate!!.type!!
                 val institutionSaved = institutionService.createInstitution(institution)
                 if (institutionSaved == null) {
                     return null
                     //TODO add error
                 }
-                graduate!!.postDoctorate = institutionSaved
+                graduate.postDoctorate = institutionSaved
             }
             this.save(graduate)
         }
 
         if (workDTO.finishedDoctorateOnUFF != null) {
-            graduate!!.finishedDoctorateOnUFF = workDTO.finishedDoctorateOnUFF
+            graduate.finishedDoctorateOnUFF = workDTO.finishedDoctorateOnUFF
             this.save(graduate)
         }
 
@@ -133,7 +132,7 @@ class GraduateService(
                 return null
                 //TODO add error
             }
-            val scholarship = cnpqScholarshipService.findByGraduate(graduate!!)
+            val scholarship = cnpqScholarshipService.findByGraduate(graduate)
 
             if (scholarship == null || scholarship.level!!.id != workDTO.cnpqLevelId) {
                 if (scholarship != null) {
@@ -149,7 +148,7 @@ class GraduateService(
 
         historyStatusService.save(historyStatus)
 
-        return graduate!!.id
+        return graduate.id
     }
 
 

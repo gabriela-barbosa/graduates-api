@@ -8,19 +8,18 @@ import javax.persistence.*
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
-class Graduate {
+class Graduate(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    var id: Int? = null
+    val id: Int,
 
     @OneToOne(optional = true)
-    var historyStatus: HistoryStatus? = null
+    var historyStatus: HistoryStatus? = null,
 
     @JsonIgnore
     @OneToOne(optional = false)
-    var user: PlatformUser? = null
-
+    var user: PlatformUser,
+) {
     @OneToMany(mappedBy = "graduate")
     var cnpqScholarship: List<CNPQScholarship>? = null
 

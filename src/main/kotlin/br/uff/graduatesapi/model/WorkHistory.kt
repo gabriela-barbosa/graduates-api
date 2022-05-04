@@ -16,7 +16,7 @@ class WorkHistory(
 
     @JsonIgnore
     @ManyToOne(optional = false)
-    var graduate: Graduate? = null,
+    var graduate: Graduate,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
