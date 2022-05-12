@@ -1,6 +1,8 @@
 package br.uff.graduatesapi.service
 
 import br.uff.graduatesapi.Utils
+import br.uff.graduatesapi.error.Errors
+import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.repository.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -21,12 +23,17 @@ class UserService(
         return this.userRepository.save(user)
     }
 
-    fun findByEmail(email: String): PlatformUser? {
-        return this.userRepository.findByEmail(email)
+    fun findByEmail(email: String): ResponseResult<PlatformUser> {
+        val result = this.userRepository.findByEmail(email) ?: return ResponseResult.Error(Errors.USER_NOT_FOUND)
+        return ResponseResult.Success(result)
     }
 
-    fun updateEmail(oldEmail: String, newEmail: String) {
-        return this.userRepository.updateEmail(newEmail, oldEmail)
+    fun updateEmail(oldEmail: String, newEmail: String): ResponseResult<PlatformUser> {
+        if (findByEmail(newEmail) != null)
+            return ResponseResult.Error(Errors.EMAIL_IN_USE)
+        val userUpdated = this.userRepository.updateEmail(newEmail, oldEmail)
+            ?: return ResponseResult.Error(Errors.CANT_UPDATE_EMAIL)
+        return ResponseResult.Success(userUpdated)
     }
 
     fun getById(id: Int): PlatformUser {

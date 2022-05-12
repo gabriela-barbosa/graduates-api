@@ -11,7 +11,7 @@ class HistoryStatus(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    var id: Int,
+    var id: Int? = null,
 
     @Column(name = "known_workplace", nullable = false)
     var knownWorkplace: Boolean,
@@ -26,5 +26,5 @@ class HistoryStatus(
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date
+    var createdAt: Date? = null
 ) {}

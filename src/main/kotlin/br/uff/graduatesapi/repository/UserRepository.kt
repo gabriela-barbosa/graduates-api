@@ -10,5 +10,6 @@ interface UserRepository : JpaRepository<PlatformUser, Int> {
 
     @Modifying
     @Query("update PlatformUser user set user.email=?1 where user.email = ?2")
-    fun updateEmail(newEmail: String, oldEmail: String)
+    fun updateEmail(newEmail: String, oldEmail: String): PlatformUser?
+
 }

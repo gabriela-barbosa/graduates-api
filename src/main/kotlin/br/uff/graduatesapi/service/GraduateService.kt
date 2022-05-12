@@ -1,17 +1,20 @@
 package br.uff.graduatesapi.service
 
+import br.uff.graduatesapi.Utils
+import br.uff.graduatesapi.dto.InstitutionDTO
 import br.uff.graduatesapi.dto.ListGraduatesDTO
 import br.uff.graduatesapi.dto.WorkHistoryDTO
 import br.uff.graduatesapi.dto.WorkPlaceDTO
 import br.uff.graduatesapi.enums.WorkHistoryStatus
+import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.*
 import br.uff.graduatesapi.repository.GraduateRepository
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class GraduateService(
     private val userService: UserService,
-    private val advisorService: AdvisorService,
     private val institutionService: InstitutionService,
     private val historyStatusService: HistoryStatusService,
     private val workHistoryService: WorkHistoryService,
@@ -28,7 +31,7 @@ class GraduateService(
         for (graduate in graduates) {
             var status = WorkHistoryStatus.PENDING
             if (graduate.historyStatus != null) {
-                if (graduate.historyStatus!!.knownWorkplace == true) {
+                if (graduate.historyStatus!!.knownWorkplace) {
                     knownHistoryGraduates.add(graduate)
                 }
                 status = graduate.historyStatus!!.status
@@ -57,99 +60,56 @@ class GraduateService(
         return graduateRepository.save(graduate)
     }
 
+    fun createGraduateWorkHistory(workDTO: WorkHistoryDTO): ResponseResult<Int> {
+        val respUser = userService.findByEmail(workDTO.email)
+        if (respUser is ResponseResult.Error)
+            return ResponseResult.Error(respUser.errorReason)
 
-    fun createGraduateWorkHistory(workDTO: WorkHistoryDTO): Int? {
-        // todo add error
-        val graduateUser = userService.findByEmail(workDTO.email) ?: return null
-        val graduate = graduateUser.graduate!!
+        val graduate = respUser.data!!.graduate!!
+
         if (workDTO.newEmail != null) {
-            userService.updateEmail(workDTO.email, workDTO.newEmail)
-            //todo add error validation
-        }
-        val historyStatus = HistoryStatus(
-            knownWorkplace = workDTO.knownWorkPlace,
-            graduate = graduate,
-            status = if (workDTO.knownWorkPlace) WorkHistoryStatus.PENDING else WorkHistoryStatus.UNKNOWN
-        )
-        val history = WorkHistory(
-            position = workDTO.position,
-            graduate = graduate
-        )
-        if (workDTO.institution != null) {
-            val institution: Institution?
-            if (workDTO.institution!!.id != null) {
-                val institution = institutionService.findById(workDTO.institution!!.id!!) ?: return null
-                //TODO add error
-            } else {
-                if(workDTO.institution!!.name != null && workDTO.institution!!.type != null){
-                    institution = Institution(
-                        name = workDTO.institution!!.name!!,
-                        type = workDTO.institution!!.type!!
-                    )
-                    val institutionSaved = institutionService.createInstitution(institution)
-                    if (institutionSaved == null) {
-                        return null
-                        //TODO add error
-                    }
-                    history.institution = institutionSaved
-                }
+            val userResult = userService.updateEmail(workDTO.email, workDTO.newEmail)
+            if (userResult is ResponseResult.Error) {
+                return ResponseResult.Error(userResult.errorReason)
             }
         }
-        workHistoryService.save(history)
 
+        val resultHistory = workHistoryService.createOrUpdateWorkHistory(workDTO.id, graduate, workDTO.position, workDTO.institution)
+        if (resultHistory is ResponseResult.Error) return ResponseResult.Error(resultHistory.errorReason)
 
-        if (workDTO.postDoctorate != null) {
-            if (workDTO.postDoctorate!!.id != null) {
-                val institution = institutionService.findById(workDTO.postDoctorate!!.id!!) ?: return null
-                //TODO add error
-                graduate.postDoctorate = institution
-            } else {
-                if (workDTO.postDoctorate!!.name == null || workDTO.postDoctorate!!.type == null) {
-                    return null
-                    //TODO add error
-                }
-                val institution = Institution()
-                institution.name = workDTO.postDoctorate!!.name!!
-                institution.type = workDTO.postDoctorate!!.type!!
-                val institutionSaved = institutionService.createInstitution(institution)
-                if (institutionSaved == null) {
-                    return null
-                    //TODO add error
-                }
-                graduate.postDoctorate = institutionSaved
-            }
+        val postDoctorate = if (workDTO.postDoctorate != null) {
+            val resultInstitution = institutionService.createInstitutionByInstitutionDTO(workDTO.postDoctorate!!)
+            if (resultInstitution is ResponseResult.Error) return ResponseResult.Error(resultInstitution.errorReason)
+            graduate.postDoctorate = resultInstitution.data
             this.save(graduate)
+            resultInstitution.data
+        } else {
+            null
         }
 
+        var finishedDoctorateOnUFF: Boolean? = null
         if (workDTO.finishedDoctorateOnUFF != null) {
-            graduate.finishedDoctorateOnUFF = workDTO.finishedDoctorateOnUFF
+            finishedDoctorateOnUFF = workDTO.finishedDoctorateOnUFF
+            graduate.finishedDoctorateOnUFF = finishedDoctorateOnUFF
             this.save(graduate)
         }
 
         if (workDTO.cnpqLevelId != null) {
-            val level = cnpqLevelService.findById(workDTO.cnpqLevelId)
-            if (level == null) {
-                return null
-                //TODO add error
-            }
-            val scholarship = cnpqScholarshipService.findByGraduate(graduate)
-
-            if (scholarship == null || scholarship.level!!.id != workDTO.cnpqLevelId) {
-                if (scholarship != null) {
-//                    scholarship.endYear = Date(System.currentTimeMillis())
-                    cnpqScholarshipService.save(scholarship)
-                }
-                val newScholarship = CNPQScholarship()
-                newScholarship.level = level
-                newScholarship.graduate = graduate
-                cnpqScholarshipService.save(newScholarship)
-            }
+            val resultCNPQScholarship = cnpqScholarshipService.createOrUpdateCNPQScholarship(workDTO.cnpqLevelId, graduate)
+            if (resultCNPQScholarship is ResponseResult.Error) return  ResponseResult.Error(resultCNPQScholarship.errorReason)
         }
 
-        historyStatusService.save(historyStatus)
-
-        return graduate.id
+        val historyStatus = if (graduate.historyStatus != null) graduate.historyStatus
+        else HistoryStatus(
+            knownWorkplace = workDTO.knownWorkPlace,
+            graduate = graduate,
+            status = if (!workDTO.knownWorkPlace) WorkHistoryStatus.UNKNOWN else Utils.getHistoryStatus(
+                resultHistory.data,
+                postDoctorate,
+                finishedDoctorateOnUFF
+            )
+        )
+        historyStatusService.save(historyStatus!!)
+        return ResponseResult.Success(graduate.id)
     }
-
-
 }

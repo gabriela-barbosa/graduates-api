@@ -1,4 +1,4 @@
-package br.uff.graduatesapi.model
+package br.uff.graduatesapi.enums
 
 enum class Role(val id:Int) {
     ADMIN(1),

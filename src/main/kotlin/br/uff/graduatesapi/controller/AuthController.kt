@@ -3,6 +3,7 @@ package br.uff.graduatesapi.controller
 import br.uff.graduatesapi.dto.LoginDTO
 import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.dto.RegisterDTO
+import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.service.UserService
 import org.springframework.http.ResponseEntity
@@ -19,9 +20,10 @@ class AuthController(private val userService: UserService) {
 
     @PostMapping("register")
     fun register(@RequestBody body: RegisterDTO): ResponseEntity<PlatformUser> {
-        val user = PlatformUser()
-        user.name = body.name
-        user.email = body.email
+        val user = PlatformUser(
+            name = body.name,
+            email = body.email
+        )
         user.password = body.password
 
         return ResponseEntity.ok(this.userService.saveNewUser(user))
@@ -29,8 +31,10 @@ class AuthController(private val userService: UserService) {
 
     @PostMapping("login")
     fun login(@RequestBody body: LoginDTO, response: HttpServletResponse): ResponseEntity<Any> {
-        val user = this.userService.findByEmail(body.email) ?: return ResponseEntity.badRequest()
-            .body(Message("User not found!"))
+        val resultUser = this.userService.findByEmail(body.email)
+        if (resultUser is ResponseResult.Error) return ResponseEntity.badRequest().body(Message("User not found!"))
+        val user = resultUser.data!!
+
 
         if (!user.comparePassword(body.password)) {
             return ResponseEntity.badRequest().body(Message("Invalid Password!"))
@@ -51,13 +55,13 @@ class AuthController(private val userService: UserService) {
 
     @GetMapping("user")
     fun user(@CookieValue("jwt") jwt: String?): ResponseEntity<Any> {
-            if (jwt == null) {
-                return ResponseEntity.status(401).body(Message("Unauthenticated"))
-            }
-            val user = this.userService.getUserByJwt(jwt)
+        if (jwt == null) {
+            return ResponseEntity.status(401).body(Message("Unauthenticated"))
+        }
+        val user = this.userService.getUserByJwt(jwt)
 
-            return if(user == null) ResponseEntity.status(401).body(Message("Unauthenticated"))
-            else ResponseEntity.ok(user)
+        return if (user == null) ResponseEntity.status(401).body(Message("Unauthenticated"))
+        else ResponseEntity.ok(user)
     }
 
 //    @GetMapping("user")

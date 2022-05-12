@@ -3,6 +3,7 @@ package br.uff.graduatesapi.dto
 import br.uff.graduatesapi.model.Institution
 
 data class WorkHistoryDTO(
+    var id: Int? = null,
     val email: String,
     val newEmail: String? = null,
     val knownWorkPlace: Boolean,
@@ -10,7 +11,7 @@ data class WorkHistoryDTO(
     var institution: InstitutionDTO? = null,
     val cnpqLevelId: Int? = null,
     var postDoctorate: InstitutionDTO? = null,
-    var finishedDoctorateOnUFF: Boolean? = false,
+    var finishedDoctorateOnUFF: Boolean? = null,
 ) {
     fun addInstitutionInfo(institution: Institution) {
         this.institution = InstitutionDTO(institution.id, institution.type, institution.name)

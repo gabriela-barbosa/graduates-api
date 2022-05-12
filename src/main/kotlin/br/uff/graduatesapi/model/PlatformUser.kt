@@ -1,5 +1,7 @@
 package br.uff.graduatesapi.model
 
+import br.uff.graduatesapi.enums.Role
+import br.uff.graduatesapi.enums.WorkHistoryStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -14,13 +16,16 @@ import javax.persistence.*
 class PlatformUser(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Int,
+    var id: Int? = null,
 
     @Column(nullable = false)
     var name: String,
 
     @Column(unique = true, nullable = false)
     var email: String,
+
+    @Column(name = "role", nullable = true)
+    var role: Role? = Role.GRADUATE,
 
     @OneToOne(mappedBy = "user")
     var advisor: Advisor? = null,
@@ -31,7 +36,7 @@ class PlatformUser(
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date
+    var createdAt: Date? = null
 ) {
     @Column(nullable = false)
     var password = ""
