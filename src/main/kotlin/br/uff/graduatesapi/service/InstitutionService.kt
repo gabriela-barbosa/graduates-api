@@ -17,7 +17,7 @@ class InstitutionService(
         return institutionRepository.findByIdOrNull(id)
     }
 
-    fun findByNameAndType(name: String, type: InstitutionType): ResponseResult<Institution> {
+    fun findByNameAndType(name: String, type: Int): ResponseResult<Institution> {
         val resultInstitution = institutionRepository.findByNameAndType(name, type)
             ?: return ResponseResult.Error(Errors.INSTITUTION_NOT_FOUND)
         return ResponseResult.Success(resultInstitution)

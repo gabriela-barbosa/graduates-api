@@ -1,4 +1,3 @@
 package br.uff.graduatesapi.dto
 
-class Message(public val message: String) {
-}
+class Message(val message: String)

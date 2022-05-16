@@ -4,5 +4,5 @@ import br.uff.graduatesapi.enums.InstitutionType
 
 data class WorkPlaceDTO(
     val name: String,
-    val type: InstitutionType,
+    val type: Int,
 )

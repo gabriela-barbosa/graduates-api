@@ -11,7 +11,7 @@ class Utils {
             if (history != null && postDoctorate != null && finishedDoctorateOnUFF != null)
                 return WorkHistoryStatus.UPDATED
             else if (history != null || postDoctorate != null || finishedDoctorateOnUFF != null)
-                return  WorkHistoryStatus.UPDATED_PARCIALlY
+                return  WorkHistoryStatus.UPDATED_PARTIALLY
             return WorkHistoryStatus.PENDING
         }
         fun parseJwtToBody(jwt: String) = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body

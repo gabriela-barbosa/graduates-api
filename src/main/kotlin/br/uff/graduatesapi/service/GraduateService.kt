@@ -36,13 +36,13 @@ class GraduateService(
                 }
                 status = graduate.historyStatus!!.status
             }
-            val item = ListGraduatesDTO(name = graduate.user!!.name, status, null, null)
+            val item = ListGraduatesDTO(name = graduate.user.name, status, null, null)
             resp.add(item)
         }
         val workHistory = workHistoryService.findAllByGraduates(knownHistoryGraduates) ?: return null
         for (graduate in knownHistoryGraduates) {
-            val singleWorkHistory = workHistory.find { history -> history.graduate!!.id == graduate.id }
-            val graduateResp = resp.find { r -> r.name == graduate.user!!.name }
+            val singleWorkHistory = workHistory.find { history -> history.graduate.id == graduate.id }
+            val graduateResp = resp.find { r -> r.name == graduate.user.name }
             if (graduateResp != null && singleWorkHistory != null) {
                 graduateResp.position = singleWorkHistory.position
                 val workPlaceDTO = WorkPlaceDTO(

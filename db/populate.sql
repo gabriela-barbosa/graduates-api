@@ -28,6 +28,21 @@ values (1, 'PQ2', now()),
        (4, 'PQ1B', now()),
        (5, 'PQ1A', now());
 
+insert into ci_programs (id, initials, createdAt)
+values (1, 'PGC', now()),
+       (2, 'CAA', now())
+;
+
+insert into institution_type (id, name, createdAt)
+values (1, 'Universidade pública federal', now()),
+       (2, 'Instituição pública federal', now()),
+       (3, 'Instituição pública estadual', now()),
+       (4, 'Instituição privada', now()),
+       (5, 'Organização pública', now()),
+       (6, 'Empresa ou instituição brasileira', now()),
+       (7, 'Empresa ou instituição estrangeira', now()),
+       (8, 'Outros', now())
+;
 
 insert into platform_user (id, email, name, password, created_at)
 values (13, 'gab@gmail.com', 'Gabrielly', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
@@ -36,7 +51,7 @@ values (13, 'gab@gmail.com', 'Gabrielly', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj
        (16, 'artu@gmail.com', 'Artu', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
        (17, 'louise@gmail.com', 'Louise', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
        (18, 'valeria@gmail.com', 'Valéria', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
-      (19, 'alice@gmail.com', 'Alice', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now())
+       (19, 'alice@gmail.com', 'Alice', '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now())
 ;
 
 insert into graduate (id, created_at, history_status_id, user_id)

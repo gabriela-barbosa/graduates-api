@@ -5,5 +5,5 @@ import br.uff.graduatesapi.model.Institution
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface InstitutionRepository : JpaRepository<Institution, Int> {
-    fun findByNameAndType(name: String, type: InstitutionType) : Institution?
+    fun findByNameAn(name: String, type: Int) : Institution?
 }

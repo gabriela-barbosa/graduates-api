@@ -1,6 +1,5 @@
 package br.uff.graduatesapi.model
 
-import br.uff.graduatesapi.enums.InstitutionType
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import java.util.*
@@ -12,9 +11,8 @@ class Institution(
     @Column(name = "name", nullable = false)
     var name: String = "",
 
-    @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.ORDINAL)
-    var type: InstitutionType = InstitutionType.OTHER,
+    @ManyToOne(optional = false)
+    var type: InstitutionType? = null,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

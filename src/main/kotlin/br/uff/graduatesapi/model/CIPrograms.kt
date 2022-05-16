@@ -7,28 +7,22 @@ import javax.persistence.*
 
 
 @Entity
-class Course{
+@Table(name = "ci_program")
+class CIPrograms(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    var id: Int? = null
+    var id: Int? = null,
 
-    @ManyToOne(optional = false)
-    var program: CIPrograms? = null
-
-    @Column(name = "minute_defense", nullable = false)
-    var minuteDefense: Int? = null
+    @Column(name = "level", nullable = false, updatable = false)
+    var initials: String = "",
 
     @JsonIgnore
-    @ManyToOne(optional = false)
-    var advisor: Advisor? = null
-
-    @JsonIgnore
-    @ManyToOne(optional = false)
-    var graduate: Graduate? = null
+    @OneToMany(mappedBy = "program")
+    var courses: List<Course>? = null,
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date? = null
-}
+    var createdAt: Date? = null,
+)
