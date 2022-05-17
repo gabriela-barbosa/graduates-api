@@ -6,7 +6,6 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["name", "type"])])
 class Institution(
     @Column(name = "name", nullable = false)
     var name: String = "",

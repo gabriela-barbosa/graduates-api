@@ -19,7 +19,6 @@ class GraduateService(
     private val historyStatusService: HistoryStatusService,
     private val workHistoryService: WorkHistoryService,
     private val cnpqScholarshipService: CNPQScholarshipService,
-    private val cnpqLevelService: CNPQLevelService,
     private val graduateRepository: GraduateRepository,
 ) {
     fun getGraduatesByAdvisor(jwt: String): List<ListGraduatesDTO>? {
@@ -47,7 +46,7 @@ class GraduateService(
                 graduateResp.position = singleWorkHistory.position
                 val workPlaceDTO = WorkPlaceDTO(
                     name = singleWorkHistory.institution!!.name,
-                    type = singleWorkHistory.institution!!.type
+                    type = singleWorkHistory.institution!!.type!!.id!!
                 )
                 graduateResp.workPlace = workPlaceDTO
             }
@@ -99,16 +98,19 @@ class GraduateService(
             if (resultCNPQScholarship is ResponseResult.Error) return  ResponseResult.Error(resultCNPQScholarship.errorReason)
         }
 
-        val historyStatus = if (graduate.historyStatus != null) graduate.historyStatus
-        else HistoryStatus(
+        val status: WorkHistoryStatus = if (!workDTO.knownWorkPlace) WorkHistoryStatus.UNKNOWN else Utils.getHistoryStatus(
+            resultHistory.data,
+            postDoctorate,
+            finishedDoctorateOnUFF
+        )
+        val historyStatus = if (graduate.historyStatus != null) {
+            graduate.historyStatus!!.status = status
+            graduate.historyStatus
+        } else HistoryStatus(
             knownWorkplace = workDTO.knownWorkPlace,
             graduate = graduate,
-            status = if (!workDTO.knownWorkPlace) WorkHistoryStatus.UNKNOWN else Utils.getHistoryStatus(
-                resultHistory.data,
-                postDoctorate,
-                finishedDoctorateOnUFF
+            status = status,
             )
-        )
         historyStatusService.save(historyStatus!!)
         return ResponseResult.Success(graduate.id)
     }

@@ -20,6 +20,9 @@ class CNPQLevel {
     @OneToMany(mappedBy = "level")
     var cnpqScholarship: List<CNPQScholarship>? = null
 
+    @Column(name = "active", nullable = false, updatable = true)
+    val active: Boolean = true
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)

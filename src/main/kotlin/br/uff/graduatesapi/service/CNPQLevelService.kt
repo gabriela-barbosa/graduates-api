@@ -16,7 +16,12 @@ class CNPQLevelService(
         return ResponseResult.Success(result)
     }
 
-    fun findCNPQLevels(): List<CNPQLevel> {
-        return cnpqLevelRepository.findAll()
+    fun findCNPQLevels(): ResponseResult<List<CNPQLevel>> {
+        return try {
+            val result = cnpqLevelRepository.findAll()
+            ResponseResult.Success(result)
+        } catch (err: Error) {
+            ResponseResult.Error(Errors.CANT_RETRIEVE_CNPQ_LEVELS)
+        }
     }
 }

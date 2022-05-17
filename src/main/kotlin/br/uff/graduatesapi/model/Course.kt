@@ -14,7 +14,7 @@ class Course{
     var id: Int? = null
 
     @ManyToOne(optional = false)
-    var program: CIPrograms? = null
+    var program: CIProgram? = null
 
     @Column(name = "minute_defense", nullable = false)
     var minuteDefense: Int? = null

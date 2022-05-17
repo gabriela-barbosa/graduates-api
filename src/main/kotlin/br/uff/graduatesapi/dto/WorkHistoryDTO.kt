@@ -14,9 +14,9 @@ data class WorkHistoryDTO(
     var finishedDoctorateOnUFF: Boolean? = null,
 ) {
     fun addInstitutionInfo(institution: Institution) {
-        this.institution = InstitutionDTO(institution.id, institution.type, institution.name)
+        this.institution = InstitutionDTO(institution.id, institution.type!!.id!!, institution.name)
     }
     fun addPostDoctorate(institution: Institution) {
-        this.postDoctorate = InstitutionDTO(institution.id, institution.type, institution.name)
+        this.postDoctorate = InstitutionDTO(institution.id, institution.type!!.id!!, institution.name)
     }
 }
