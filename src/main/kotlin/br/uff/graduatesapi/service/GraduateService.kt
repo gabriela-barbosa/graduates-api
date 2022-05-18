@@ -1,16 +1,15 @@
 package br.uff.graduatesapi.service
 
 import br.uff.graduatesapi.Utils
-import br.uff.graduatesapi.dto.InstitutionDTO
 import br.uff.graduatesapi.dto.ListGraduatesDTO
 import br.uff.graduatesapi.dto.WorkHistoryDTO
 import br.uff.graduatesapi.dto.WorkPlaceDTO
 import br.uff.graduatesapi.enums.WorkHistoryStatus
+import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.*
 import br.uff.graduatesapi.repository.GraduateRepository
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class GraduateService(
@@ -59,10 +58,13 @@ class GraduateService(
         return graduateRepository.save(graduate)
     }
 
-    fun createGraduateWorkHistory(workDTO: WorkHistoryDTO): ResponseResult<Int> {
+    fun createGraduateWorkHistory(workDTO: WorkHistoryDTO, id: Int? = null): ResponseResult<Int> {
         val respUser = userService.findByEmail(workDTO.email)
-        if (respUser is ResponseResult.Error)
+        if (respUser is ResponseResult.Error) {
+            if (respUser.errorReason == Errors.USER_NOT_FOUND)
+                return ResponseResult.Error(Errors.INVALID_DATA)
             return ResponseResult.Error(respUser.errorReason)
+        }
 
         val graduate = respUser.data!!.graduate!!
 
@@ -73,7 +75,7 @@ class GraduateService(
             }
         }
 
-        val resultHistory = workHistoryService.createOrUpdateWorkHistory(workDTO.id, graduate, workDTO.position, workDTO.institution)
+        val resultHistory = workHistoryService.createOrUpdateWorkHistory(id, graduate, workDTO.position, workDTO.institution)
         if (resultHistory is ResponseResult.Error) return ResponseResult.Error(resultHistory.errorReason)
 
         val postDoctorate = if (workDTO.postDoctorate != null) {

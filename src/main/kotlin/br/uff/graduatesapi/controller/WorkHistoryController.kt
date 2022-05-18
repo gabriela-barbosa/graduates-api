@@ -26,8 +26,7 @@ class WorkHistoryController(
         @PathVariable id: Int,
         @RequestBody workDTO: WorkHistoryDTO
     ): ResponseEntity<String> {
-        workDTO.id = id
-        return when (val result = graduateService.createGraduateWorkHistory(workDTO)) {
+        return when (val result = graduateService.createGraduateWorkHistory(workDTO, id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
             is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
                 .body(result.errorReason.responseMessage)

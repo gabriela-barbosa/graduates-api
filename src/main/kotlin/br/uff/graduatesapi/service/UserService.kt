@@ -19,17 +19,13 @@ class UserService(
         return this.userRepository.save(user)
     }
 
-    fun update(user: PlatformUser): PlatformUser {
-        return this.userRepository.save(user)
-    }
-
     fun findByEmail(email: String): ResponseResult<PlatformUser> {
         val result = this.userRepository.findByEmail(email) ?: return ResponseResult.Error(Errors.USER_NOT_FOUND)
         return ResponseResult.Success(result)
     }
 
     fun updateEmail(oldEmail: String, newEmail: String): ResponseResult<PlatformUser> {
-        if (findByEmail(newEmail) != null)
+        if (findByEmail(newEmail) is ResponseResult.Error)
             return ResponseResult.Error(Errors.EMAIL_IN_USE)
         val userUpdated = this.userRepository.updateEmail(newEmail, oldEmail)
             ?: return ResponseResult.Error(Errors.CANT_UPDATE_EMAIL)

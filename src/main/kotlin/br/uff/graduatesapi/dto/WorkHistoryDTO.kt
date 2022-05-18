@@ -3,7 +3,6 @@ package br.uff.graduatesapi.dto
 import br.uff.graduatesapi.model.Institution
 
 data class WorkHistoryDTO(
-    var id: Int? = null,
     val email: String,
     val newEmail: String? = null,
     val knownWorkPlace: Boolean,
