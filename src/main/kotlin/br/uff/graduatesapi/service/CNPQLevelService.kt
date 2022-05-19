@@ -1,10 +1,8 @@
 package br.uff.graduatesapi.service
 
-import br.uff.graduatesapi.dto.CIProgramDTO
 import br.uff.graduatesapi.dto.CNPQLevelDTO
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
-import br.uff.graduatesapi.model.CIProgram
 import br.uff.graduatesapi.model.CNPQLevel
 import br.uff.graduatesapi.repository.CNPQLevelRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -15,13 +13,13 @@ class CNPQLevelService(
     private val cnpqLevelRepository: CNPQLevelRepository
 ) {
     fun findById(id: Int): ResponseResult<CNPQLevel> {
-        val result = cnpqLevelRepository.findByIdOrNull(id) ?: return ResponseResult.Error(Errors.CNPQSCHOLARSHIP_NOT_FOUND)
+        val result = cnpqLevelRepository.findByIdOrNull(id) ?: return ResponseResult.Error(Errors.CNPQ_LEVEL_NOT_FOUND)
         return ResponseResult.Success(result)
     }
 
     fun findCNPQLevels(): ResponseResult<List<CNPQLevel>> {
         return try {
-            val result = cnpqLevelRepository.findAll()
+            val result = cnpqLevelRepository.findAllActives()
             ResponseResult.Success(result)
         } catch (err: Error) {
             ResponseResult.Error(Errors.CANT_RETRIEVE_CNPQ_LEVELS)

@@ -8,5 +8,9 @@ import org.springframework.data.jpa.repository.Query
 interface CIProgramRepository : JpaRepository<CIProgram, Int> {
     @Modifying
     @Query("update CIProgram program set program.active=false where program.id = ?2")
-    override fun deleteById (id: Int)
+    override fun deleteById(id: Int)
+
+    @Modifying
+    @Query("select program from CIProgram program where program.active=true")
+    fun findAllActives(): List<CIProgram>
 }

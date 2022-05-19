@@ -12,14 +12,9 @@ import org.springframework.stereotype.Service
 class CIProgramService(
     private val programRepository: CIProgramRepository,
 ) {
-    fun findById(id: Int): ResponseResult<CIProgram> {
-        val result = programRepository.findByIdOrNull(id) ?: return ResponseResult.Error(Errors.CNPQSCHOLARSHIP_NOT_FOUND)
-        return ResponseResult.Success(result)
-    }
-
     fun findPrograms(): ResponseResult<List<CIProgram>> {
         return try {
-            val result = programRepository.findAll()
+            val result = programRepository.findAllActives()
             ResponseResult.Success(result)
         } catch (err: Error) {
             ResponseResult.Error(Errors.CANT_RETRIEVE_CI_PROGRAMS)

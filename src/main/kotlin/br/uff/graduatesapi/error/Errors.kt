@@ -22,10 +22,12 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     CANT_RETRIEVE_CNPQ_LEVELS("Cant retrieve CNPQ levels", "Erro ao retornar níveis CNPQ.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_DELETE_CNPQ_LEVEL("Error deleting CNPQ level", "Erro ao excluir nível CNPQ.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_CREATE_CNPQ_LEVEL("Error creating CNPQ level", "Erro ao criar nível CNPQ.", HttpStatus.INTERNAL_SERVER_ERROR),
+    CNPQ_LEVEL_NOT_FOUND("CNPQ level not found", "Nível CNPQ não encontrado.", HttpStatus.NOT_FOUND),
 
     CANT_RETRIEVE_CI_PROGRAMS("Cant retrieve CI programs", "Erro ao retornar programas do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_DELETE_CI_PROGRAM("Error deleting CI program", "Erro ao excluir programa do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_CREATE_CI_PROGRAM("Error creating CI program", "Erro ao criar programa do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
+
 
     INVALID_DATA("Invalid data", "Dados inválidos.", HttpStatus.UNPROCESSABLE_ENTITY),
 }

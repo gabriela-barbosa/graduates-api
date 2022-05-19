@@ -4,4 +4,4 @@ import br.uff.graduatesapi.model.Institution
 
 data class CNPQLevelDTO(
     val level: String,
-) {}
+)

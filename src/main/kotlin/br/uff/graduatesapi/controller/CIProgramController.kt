@@ -2,11 +2,8 @@ package br.uff.graduatesapi.controller
 
 import br.uff.graduatesapi.dto.CIProgramDTO
 import br.uff.graduatesapi.dto.Message
-import br.uff.graduatesapi.dto.WorkHistoryDTO
 import br.uff.graduatesapi.error.ResponseResult
-import br.uff.graduatesapi.model.CIProgram
 import br.uff.graduatesapi.service.CIProgramService
-import br.uff.graduatesapi.service.CNPQLevelService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
