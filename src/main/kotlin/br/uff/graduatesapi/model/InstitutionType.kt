@@ -21,6 +21,9 @@ class InstitutionType(
     @OneToMany(mappedBy = "type")
     var institutions: List<Institution>? = null,
 
+    @Column(name = "active", nullable = false, updatable = true, columnDefinition="BOOLEAN DEFAULT true")
+    val active: Boolean = true,
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
