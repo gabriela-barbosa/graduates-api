@@ -4,6 +4,7 @@ import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.ListGraduatesDTO
 import br.uff.graduatesapi.dto.WorkHistoryDTO
 import br.uff.graduatesapi.dto.WorkPlaceDTO
+import br.uff.graduatesapi.enums.Role
 import br.uff.graduatesapi.enums.WorkHistoryStatus
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
@@ -22,6 +23,7 @@ class GraduateService(
 ) {
     fun getGraduatesByAdvisor(jwt: String): List<ListGraduatesDTO>? {
         val user = userService.getUserByJwt(jwt) ?: return null
+        if (user.role != Role.PROFESSOR) return null
         val graduates = user.advisor?.let { graduateRepository.findAllByCoursesAdvisorIsOrderByHistoryStatusDesc(it) }
             ?: return null
         val knownHistoryGraduates = mutableListOf<Graduate>()
@@ -29,7 +31,7 @@ class GraduateService(
         for (graduate in graduates) {
             var status = WorkHistoryStatus.PENDING
             if (graduate.historyStatus != null) {
-                if (graduate.historyStatus!!.knownWorkplace) {
+                if (graduate.historyStatus!!.knownWorkplace!!) {
                     knownHistoryGraduates.add(graduate)
                 }
                 status = graduate.historyStatus!!.status
@@ -66,7 +68,8 @@ class GraduateService(
             return ResponseResult.Error(respUser.errorReason)
         }
 
-        val graduate = respUser.data!!.graduate!!
+        val user = respUser.data!!
+        val graduate = respUser.data.graduate!!
 
         if (workDTO.newEmail != null) {
             val userResult = userService.updateEmail(workDTO.email, workDTO.newEmail)
@@ -100,7 +103,7 @@ class GraduateService(
             if (resultCNPQScholarship is ResponseResult.Error) return  ResponseResult.Error(resultCNPQScholarship.errorReason)
         }
 
-        val status: WorkHistoryStatus = if (!workDTO.knownWorkPlace) WorkHistoryStatus.UNKNOWN else Utils.getHistoryStatus(
+        val status: WorkHistoryStatus = if (workDTO.knownWorkPlace != null && !workDTO.knownWorkPlace) WorkHistoryStatus.UNKNOWN else Utils.getHistoryStatus(
             resultHistory.data,
             postDoctorate,
             finishedDoctorateOnUFF

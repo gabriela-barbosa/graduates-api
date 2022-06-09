@@ -13,8 +13,8 @@ class HistoryStatus(
     @Column(name = "id", nullable = false)
     var id: Int? = null,
 
-    @Column(name = "known_workplace", nullable = false)
-    var knownWorkplace: Boolean,
+    @Column(name = "known_workplace", nullable = true)
+    var knownWorkplace: Boolean?,
 
     @JsonIgnore
     @OneToOne(mappedBy = "historyStatus", optional = false)

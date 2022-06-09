@@ -5,7 +5,7 @@ import br.uff.graduatesapi.model.Institution
 data class WorkHistoryDTO(
     val email: String,
     val newEmail: String? = null,
-    val knownWorkPlace: Boolean,
+    val knownWorkPlace: Boolean?,
     var position: String? = null,
     var institution: InstitutionDTO? = null,
     val cnpqLevelId: Int? = null,
