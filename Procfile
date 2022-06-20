@@ -1,0 +1,1 @@
+java -jar build/libs/graduates-api.jar --server.port=$PORT
