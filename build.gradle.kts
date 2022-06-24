@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot") version "2.5.6"
@@ -6,11 +7,14 @@ plugins {
     kotlin("jvm") version "1.5.31"
     kotlin("plugin.spring") version "1.5.31"
     kotlin("plugin.jpa") version "1.5.31"
+    application
 }
 
 group = "br.uff"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_16
+
+
 
 repositories {
     mavenCentral()
@@ -29,17 +33,19 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
 }
 
-tasks.withType<Jar> {
-    manifest {
-        attributes["Main-Class"] = "br.uff.graduatesapi.GraduatesApiApplication"
-    }
+application {
+    mainClass.set("br.uff.graduatesapi.GraduatesApiApplicationKt")
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "16"
     }
+}
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
 }
 
 tasks.withType<Test> {

@@ -6,7 +6,6 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication(exclude = [SecurityAutoConfiguration::class])
 class GraduatesApiApplication
-
 fun main(args: Array<String>) {
     runApplication<GraduatesApiApplication>(*args)
 }
