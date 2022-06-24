@@ -29,6 +29,12 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
 }
 
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "br.uff.graduatesapi.GraduatesApiApplication"
+    }
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
