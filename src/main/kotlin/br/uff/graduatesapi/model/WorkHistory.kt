@@ -2,6 +2,8 @@ package br.uff.graduatesapi.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.util.*
 import javax.persistence.*
 
@@ -28,8 +30,8 @@ class WorkHistory(
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: Date? = null
 
-    @CreationTimestamp
+    @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at", nullable = true, updatable = false)
+    @Column(name = "updated_at", nullable = true, updatable = true)
     var updatedAt: Date? = null
 }

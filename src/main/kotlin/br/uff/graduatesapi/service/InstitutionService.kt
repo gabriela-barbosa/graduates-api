@@ -45,7 +45,7 @@ class InstitutionService(
             name = newInstitution.name,
             type = institutionType
         )
-        val institutionSaved = this.createInstitution(institution)
+        val institutionSaved = createInstitution(institution)
         if (institutionSaved is ResponseResult.Error) return ResponseResult.Error(institutionSaved.errorReason)
         return institutionSaved
     }

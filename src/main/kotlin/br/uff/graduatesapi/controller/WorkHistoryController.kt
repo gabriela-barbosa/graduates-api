@@ -17,7 +17,7 @@ class WorkHistoryController(
 ) {
     @GetMapping("workhistory/{id}")
     fun getWorkHistory(@PathVariable id: Int): ResponseEntity<Any> {
-        val workHistory = this.workHistoryService.getWorkHistoryDTO(id)
+        val workHistory = workHistoryService.getWorkHistoryDTO(id)
         return ResponseEntity.ok(workHistory)
     }
 

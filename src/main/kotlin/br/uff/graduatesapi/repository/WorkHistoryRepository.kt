@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query
 interface WorkHistoryRepository : JpaRepository<WorkHistory, Int> {
     @Query(
         "WITH ranked_messages AS (\n" +
-                "    SELECT m.*, ROW_NUMBER() OVER (PARTITION BY graduate_id ORDER BY created_at DESC) AS rn\n" +
+                "    SELECT m.*, ROW_NUMBER() OVER (PARTITION BY graduate_id ORDER BY updated_at, created_at DESC) AS rn\n" +
                 "    FROM work_history AS m\n" +
                 ")\n" +
                 "SELECT * FROM ranked_messages WHERE rn = 1;", nativeQuery = true

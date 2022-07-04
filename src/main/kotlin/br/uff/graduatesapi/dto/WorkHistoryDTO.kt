@@ -10,7 +10,8 @@ data class WorkHistoryDTO(
     var institution: InstitutionDTO? = null,
     val cnpqLevelId: Int? = null,
     var postDoctorate: InstitutionDTO? = null,
-    var finishedDoctorateOnUFF: Boolean? = null,
+    var hasFinishedDoctorateOnUFF: Boolean? = null,
+    var hasFinishedMasterDegreeOnUFF: Boolean? = null,
 ) {
     fun addInstitutionInfo(institution: Institution) {
         this.institution = InstitutionDTO(institution.id, institution.type!!.id!!, institution.name)

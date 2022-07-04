@@ -4,11 +4,13 @@ import br.uff.graduatesapi.dto.InstitutionDTO
 import br.uff.graduatesapi.dto.WorkHistoryDTO
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
+import br.uff.graduatesapi.model.CNPQScholarship
 import br.uff.graduatesapi.model.Graduate
 import br.uff.graduatesapi.model.WorkHistory
 import br.uff.graduatesapi.repository.WorkHistoryRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class WorkHistoryService(
@@ -32,12 +34,13 @@ class WorkHistoryService(
     fun getWorkHistoryDTO(id: Int): WorkHistoryDTO? {
         val workHistory: WorkHistory = workHistoryRepository.findByIdOrNull(1) ?: return null
         val graduate: Graduate = workHistory.graduate
-        val cnpqId: Int? = cnpqScholarshipService.findActualCNPQScholarshipByGraduate(graduate)?.id
+        val cnpq: CNPQScholarship? = cnpqScholarshipService.findActualCNPQScholarshipByGraduate(graduate)
         val workHistoryDTO = WorkHistoryDTO(
             email = workHistory.graduate.user.email,
             position = workHistory.position,
-            cnpqLevelId = cnpqId,
-            finishedDoctorateOnUFF = workHistory.graduate.finishedDoctorateOnUFF,
+            cnpqLevelId = cnpq!!.level!!.id,
+            hasFinishedDoctorateOnUFF = workHistory.graduate.hasFinishedDoctorateOnUFF,
+            hasFinishedMasterDegreeOnUFF = workHistory.graduate.hasFinishedMasterDegreeOnUFF,
             knownWorkPlace = graduate.historyStatus!!.knownWorkplace,
         )
         if (workHistory.institution != null)
@@ -74,6 +77,7 @@ class WorkHistoryService(
             val resultInst = institutionService.createInstitutionByInstitutionDTO(institutionDTO)
             if (resultInst is ResponseResult.Error) return ResponseResult.Error(resultInst.errorReason)
             history.institution = resultInst.data
+            history.updatedAt = Date(System.currentTimeMillis())
         }
         return this.save(history)
     }

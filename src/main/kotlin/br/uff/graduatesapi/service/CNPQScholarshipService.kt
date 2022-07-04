@@ -30,17 +30,17 @@ class CNPQScholarshipService(
         val resultLevel = cnpqLevelService.findById(id)
         if (resultLevel is ResponseResult.Error) return ResponseResult.Error(resultLevel.errorReason)
 
-        var scholarship = this.findActualCNPQScholarshipByGraduate(graduate)
+        var scholarship = findActualCNPQScholarshipByGraduate(graduate)
 
         if (scholarship == null || scholarship.level!!.id != id) {
             if (scholarship != null) {
                 scholarship.endYear = Date(System.currentTimeMillis())
-                this.save(scholarship)
+                save(scholarship)
             }
             val newScholarship = CNPQScholarship()
             newScholarship.level = resultLevel.data
             newScholarship.graduate = graduate
-            val resultCNPQ = this.save(newScholarship)
+            val resultCNPQ = save(newScholarship)
             if (resultCNPQ is ResponseResult.Error) return ResponseResult.Error(resultCNPQ.errorReason)
             scholarship = resultCNPQ.data
         }

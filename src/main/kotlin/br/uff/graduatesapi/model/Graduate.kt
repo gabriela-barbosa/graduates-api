@@ -33,7 +33,10 @@ class Graduate(
     var workHistory: List<WorkHistory>? = null
 
     @Column(name = "finished_doctorate_on_uff")
-    var finishedDoctorateOnUFF: Boolean? = false
+    var hasFinishedDoctorateOnUFF: Boolean? = false
+
+    @Column(name = "finished_master_degree_on_uff")
+    var hasFinishedMasterDegreeOnUFF: Boolean? = false
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

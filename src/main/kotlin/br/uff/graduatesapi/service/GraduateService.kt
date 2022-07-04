@@ -3,7 +3,7 @@ package br.uff.graduatesapi.service
 import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.ListGraduatesDTO
 import br.uff.graduatesapi.dto.WorkHistoryDTO
-import br.uff.graduatesapi.dto.WorkPlaceDTO
+import br.uff.graduatesapi.dto.WorkHistoryInfoDTO
 import br.uff.graduatesapi.enums.Role
 import br.uff.graduatesapi.enums.WorkHistoryStatus
 import br.uff.graduatesapi.error.Errors
@@ -27,7 +27,7 @@ class GraduateService(
         val graduates = user.advisor?.let { graduateRepository.findAllByCoursesAdvisorIsOrderByHistoryStatusDesc(it) }
             ?: return null
         val knownHistoryGraduates = mutableListOf<Graduate>()
-        val resp = mutableListOf<ListGraduatesDTO>()
+        val graduatesList = mutableListOf<ListGraduatesDTO>()
         for (graduate in graduates) {
             var status = WorkHistoryStatus.PENDING
             if (graduate.historyStatus != null) {
@@ -36,24 +36,25 @@ class GraduateService(
                 }
                 status = graduate.historyStatus!!.status
             }
-            val item = ListGraduatesDTO(name = graduate.user.name, status, null, null)
-            resp.add(item)
+            val item = ListGraduatesDTO(name = graduate.user.name, email = graduate.user.email, id = graduate.id, status = status, workPlace = null, position = null)
+            graduatesList.add(item)
         }
         val workHistory = workHistoryService.findAllByGraduates(knownHistoryGraduates) ?: return null
         for (graduate in knownHistoryGraduates) {
             val singleWorkHistory = workHistory.find { history -> history.graduate.id == graduate.id }
-            val graduateResp = resp.find { r -> r.name == graduate.user.name }
+            val graduateResp = graduatesList.find { r -> r.name == graduate.user.name }
             if (graduateResp != null && singleWorkHistory != null) {
                 graduateResp.position = singleWorkHistory.position
-                val workPlaceDTO = WorkPlaceDTO(
+                val workHistoryInfoDTO = WorkHistoryInfoDTO(
+                    id = singleWorkHistory.id!!,
                     name = singleWorkHistory.institution!!.name,
                     type = singleWorkHistory.institution!!.type!!.id!!
                 )
-                graduateResp.workPlace = workPlaceDTO
+                graduateResp.workPlace = workHistoryInfoDTO
             }
 
         }
-        return resp
+        return graduatesList
     }
 
     fun save(graduate: Graduate): Graduate? {
@@ -68,8 +69,7 @@ class GraduateService(
             return ResponseResult.Error(respUser.errorReason)
         }
 
-        val user = respUser.data!!
-        val graduate = respUser.data.graduate!!
+        val graduate = respUser.data!!.graduate!!
 
         if (workDTO.newEmail != null) {
             val userResult = userService.updateEmail(workDTO.email, workDTO.newEmail)
@@ -92,9 +92,15 @@ class GraduateService(
         }
 
         var finishedDoctorateOnUFF: Boolean? = null
-        if (workDTO.finishedDoctorateOnUFF != null) {
-            finishedDoctorateOnUFF = workDTO.finishedDoctorateOnUFF
-            graduate.finishedDoctorateOnUFF = finishedDoctorateOnUFF
+        var hasFinishedMasterDegreeOnUFF: Boolean? = null
+        if (workDTO.hasFinishedDoctorateOnUFF != null) {
+            finishedDoctorateOnUFF = workDTO.hasFinishedDoctorateOnUFF
+            graduate.hasFinishedDoctorateOnUFF = finishedDoctorateOnUFF
+            this.save(graduate)
+        }
+        if (workDTO.hasFinishedMasterDegreeOnUFF != null) {
+            hasFinishedMasterDegreeOnUFF = workDTO.hasFinishedMasterDegreeOnUFF
+            graduate.hasFinishedMasterDegreeOnUFF = hasFinishedMasterDegreeOnUFF
             this.save(graduate)
         }
 
