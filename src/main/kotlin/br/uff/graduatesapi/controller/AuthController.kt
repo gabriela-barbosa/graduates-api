@@ -5,18 +5,19 @@ import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.dto.RegisterDTO
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.PlatformUser
+import br.uff.graduatesapi.service.AuthService
 import br.uff.graduatesapi.service.UserService
 import org.springframework.http.ResponseEntity
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.web.bind.annotation.*
-import java.util.*
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("api/v1")
-class AuthController(private val userService: UserService) {
+class AuthController(
+    private val userService: UserService,
+    private val authService: AuthService,
+) {
 
     @PostMapping("register")
     fun register(@RequestBody body: RegisterDTO): ResponseEntity<PlatformUser> {
@@ -31,26 +32,14 @@ class AuthController(private val userService: UserService) {
 
     @PostMapping("login")
     fun login(@RequestBody body: LoginDTO, response: HttpServletResponse): ResponseEntity<Any> {
-        val resultUser = this.userService.findByEmail(body.email)
-        if (resultUser is ResponseResult.Error) return ResponseEntity.badRequest().body(Message("User not found!"))
-        val user = resultUser.data!!
-
-
-        if (!user.comparePassword(body.password)) {
-            return ResponseEntity.badRequest().body(Message("Invalid Password!"))
+        return when (val result = authService.login(body)) {
+            is ResponseResult.Success -> {
+                response.addCookie(result.data)
+                ResponseEntity.ok(Message("Success!"))
+            }
+            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+                .body(result.errorReason.responseMessage)
         }
-
-        val issuer = user.id.toString()
-
-        val jwt = Jwts.builder()
-            .setIssuer(issuer)
-            .setExpiration(Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
-            .signWith(SignatureAlgorithm.HS512, "secret").compact()
-
-        val cookie = Cookie("jwt", jwt)
-        cookie.isHttpOnly = true
-        response.addCookie(cookie)
-        return ResponseEntity.ok(Message("Success!"))
     }
 
     @GetMapping("user")
