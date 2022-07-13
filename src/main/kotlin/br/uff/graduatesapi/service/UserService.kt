@@ -1,10 +1,10 @@
 package br.uff.graduatesapi.service
 
-import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.repository.UserRepository
+import br.uff.graduatesapi.security.JWTUtil
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: BCryptPasswordEncoder,
+    private val jwtUtil: JWTUtil,
 ) {
 
     fun saveNewUser(user: PlatformUser): PlatformUser {
@@ -38,8 +39,8 @@ class UserService(
 
     fun getUserByJwt(jwt: String): PlatformUser? {
         return try {
-            val body = Utils.parseJwtToBody(jwt)
-            getById(body.issuer.toInt())
+            val body = jwtUtil.parseJwtToBody(jwt)
+            return getById(body.issuer.toInt())
         } catch (e: Exception) {
             null
         }

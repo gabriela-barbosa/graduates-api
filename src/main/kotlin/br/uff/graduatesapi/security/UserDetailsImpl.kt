@@ -1,11 +1,10 @@
-package br.uff.graduatesapi.service
+package br.uff.graduatesapi.security
 
 import br.uff.graduatesapi.model.PlatformUser
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class UserDetailsImpl(
-    private val user: PlatformUser) : UserDetails {
+class UserDetailsImpl(private val user: PlatformUser) : UserDetails {
     override fun getAuthorities() = mutableListOf<GrantedAuthority>()
 
     override fun isEnabled() = true

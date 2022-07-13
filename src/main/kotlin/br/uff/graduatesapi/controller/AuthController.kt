@@ -3,11 +3,13 @@ package br.uff.graduatesapi.controller
 import br.uff.graduatesapi.dto.LoginDTO
 import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.dto.RegisterDTO
+import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.service.AuthService
 import br.uff.graduatesapi.service.UserService
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
@@ -42,14 +44,12 @@ class AuthController(
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("user")
-    fun user(@CookieValue("jwt") jwt: String?): ResponseEntity<Any> {
-        if (jwt == null) {
-            return ResponseEntity.status(401).body(Message("Unauthenticated"))
-        }
+    fun user(@CookieValue("jwt") jwt: String): ResponseEntity<Any> {
         val user = this.userService.getUserByJwt(jwt)
 
-        return if (user == null) ResponseEntity.status(401).body(Message("Unauthenticated"))
+        return if (user == null) ResponseEntity.status(Errors.USER_NOT_FOUND.errorCode).body(Errors.USER_NOT_FOUND.responseMessage)
         else ResponseEntity.ok(user)
     }
 
@@ -67,6 +67,7 @@ class AuthController(
 //        }
 //    }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("logout")
     fun logout(response: HttpServletResponse): ResponseEntity<Any> {
         val cookie = Cookie("jwt", "")
