@@ -7,6 +7,8 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     EMAIL_IN_USE("Email already in use", "Novo email já está sendo utilizado.", HttpStatus.UNPROCESSABLE_ENTITY),
 
     USER_NOT_FOUND("User not found", "Usuário não encontrado.", HttpStatus.NOT_FOUND),
+    UNAUTHORIZED("Username or password is wrong.", "Usuário ou senha incorretos. Tente novamente.", HttpStatus.UNAUTHORIZED),
+    FORBIDDEN("Forbidden.", "Não autorizado.", HttpStatus.FORBIDDEN),
 
     INSTITUTION_TYPE_NOT_FOUND("Institution type not found", "Tipo da instituição não encontrado.", HttpStatus.NOT_FOUND),
     CANT_RETRIEVE_INSTITUTION_TYPE("Cant retrieve institution types", "Erro ao retornar tipos de instituição.", HttpStatus.INTERNAL_SERVER_ERROR),
@@ -31,7 +33,6 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     CANT_RETRIEVE_CI_PROGRAMS("Cant retrieve CI programs", "Erro ao retornar programas do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_DELETE_CI_PROGRAM("Error deleting CI program", "Erro ao excluir programa do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_CREATE_CI_PROGRAM("Error creating CI program", "Erro ao criar programa do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
-
 
     INVALID_DATA("Invalid data", "Dados inválidos.", HttpStatus.UNPROCESSABLE_ENTITY),
 }
