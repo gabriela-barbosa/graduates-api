@@ -1,6 +1,5 @@
 package br.uff.graduatesapi.security
 
-import br.uff.graduatesapi.error.Errors
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -10,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
@@ -32,8 +30,6 @@ class SecurityConfig(
             ),
             UsernamePasswordAuthenticationFilter::class.java,
         )
-        http.exceptionHandling()
-            .authenticationEntryPoint(HttpStatusEntryPoint(Errors.FORBIDDEN.errorCode))
     }
 
     @Bean
