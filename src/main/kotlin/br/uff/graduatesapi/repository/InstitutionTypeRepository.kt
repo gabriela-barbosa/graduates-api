@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query
 
 interface InstitutionTypeRepository : JpaRepository<InstitutionType, Int> {
     @Modifying
-    @Query("update InstitutionType institutionType set institutionType.active=false where institutionType.id = ?2")
+    @Query("update InstitutionType institutionType set institutionType.active=false where institutionType.id = ?1")
     override fun deleteById(id: Int)
 
     @Modifying

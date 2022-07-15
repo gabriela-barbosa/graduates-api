@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query
 
 interface CNPQLevelRepository : JpaRepository<CNPQLevel, Int> {
     @Modifying
-    @Query("update CNPQLevel level set level.active=false where level.id = ?2")
+    @Query("update CNPQLevel level set level.active=false where level.id = ?1")
     override fun deleteById (id: Int)
 
     @Modifying

@@ -8,7 +8,8 @@ import br.uff.graduatesapi.enums.Role
 import br.uff.graduatesapi.enums.WorkHistoryStatus
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
-import br.uff.graduatesapi.model.*
+import br.uff.graduatesapi.model.Graduate
+import br.uff.graduatesapi.model.HistoryStatus
 import br.uff.graduatesapi.repository.GraduateRepository
 import org.springframework.stereotype.Service
 
@@ -22,7 +23,10 @@ class GraduateService(
     private val graduateRepository: GraduateRepository,
 ) {
     fun getGraduatesByAdvisor(jwt: String): List<ListGraduatesDTO>? {
-        val user = userService.getUserByJwt(jwt) ?: return null
+        val result = userService.getUserByJwt(jwt)
+        if(result is ResponseResult.Error)
+            return null
+        val user = result.data!!
         if (user.role != Role.PROFESSOR) return null
         val graduates = user.advisor?.let { graduateRepository.findAllByCoursesAdvisorIsOrderByHistoryStatusDesc(it) }
             ?: return null

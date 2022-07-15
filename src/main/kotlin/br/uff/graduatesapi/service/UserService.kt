@@ -33,16 +33,23 @@ class UserService(
         return ResponseResult.Success(userUpdated)
     }
 
-    fun getById(id: Int): PlatformUser {
-        return this.userRepository.getById(id)
+    fun getById(id: Int): ResponseResult<PlatformUser> {
+        return try {
+            ResponseResult.Success(this.userRepository.getById(id))
+        }catch (ex: Exception) {
+            ResponseResult.Error(Errors.USER_NOT_FOUND)
+        }
     }
 
-    fun getUserByJwt(jwt: String): PlatformUser? {
-        return try {
+    fun getUserByJwt(jwt: String): ResponseResult<PlatformUser> {
+        try {
             val body = jwtUtil.parseJwtToBody(jwt)
-            return getById(body.issuer.toInt())
+            val result = getById(body.issuer.toInt())
+            if (result is ResponseResult.Success)
+                return ResponseResult.Success(result.data!!)
+            return ResponseResult.Error(Errors.USER_NOT_FOUND)
         } catch (e: Exception) {
-            null
+            return ResponseResult.Error(Errors.USER_NOT_FOUND)
         }
     }
 }

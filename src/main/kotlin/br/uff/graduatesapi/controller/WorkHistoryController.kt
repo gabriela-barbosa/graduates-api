@@ -22,6 +22,13 @@ class WorkHistoryController(
     }
 
     @PreAuthorize("isAuthenticated()")
+    @GetMapping("workhistory/graduate/{id}")
+    fun getWorkHistoryByGraduate(@PathVariable id: Int): ResponseEntity<Any> {
+        val workHistory = workHistoryService.getLastWorkHistoryByGraduate(id)
+        return ResponseEntity.ok(workHistory)
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("workhistory/{id}")
     fun updateWorkHistory(
         @PathVariable id: Int,
