@@ -43,4 +43,18 @@ class CNPQLevelService(
             ResponseResult.Error(Errors.CANT_CREATE_CNPQ_LEVEL)
         }
     }
+
+    fun editLevel(levelDTO: CNPQLevelDTO, id: Int): ResponseResult<Nothing?> {
+        return try {
+            val result = this.findById(id)
+            if (result is ResponseResult.Error)
+                return ResponseResult.Error(result.errorReason)
+            val level = result.data!!
+            level.level = levelDTO.level
+            cnpqLevelRepository.save(level)
+            ResponseResult.Success(null)
+        } catch (err: Error) {
+            ResponseResult.Error(Errors.CANT_UPDATE_CNPQ_LEVEL)
+        }
+    }
 }

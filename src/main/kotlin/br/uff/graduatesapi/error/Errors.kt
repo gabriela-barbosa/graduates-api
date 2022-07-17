@@ -14,6 +14,7 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     CANT_RETRIEVE_INSTITUTION_TYPE("Cant retrieve institution types", "Erro ao retornar tipos de instituição.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_DELETE_INSTITUTION_TYPE("Error deleting institution type", "Erro ao excluir tipo de instituição.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_CREATE_INSTITUTION_TYPE("Error creating institution type", "Erro ao criar tipo de instituição.", HttpStatus.INTERNAL_SERVER_ERROR),
+    CANT_UPDATE_INSTITUTION_TYPE("Error updating institution type", "Erro ao atualizar tipo de instituição.", HttpStatus.INTERNAL_SERVER_ERROR),
 
 
     CANT_CREATE_INSTITUTION("Error creating institution", "Erro ao criar instituição.", HttpStatus.INTERNAL_SERVER_ERROR),
@@ -29,10 +30,14 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     CANT_DELETE_CNPQ_LEVEL("Error deleting CNPQ level", "Erro ao excluir nível CNPQ.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_CREATE_CNPQ_LEVEL("Error creating CNPQ level", "Erro ao criar nível CNPQ.", HttpStatus.INTERNAL_SERVER_ERROR),
     CNPQ_LEVEL_NOT_FOUND("CNPQ level not found", "Nível CNPQ não encontrado.", HttpStatus.NOT_FOUND),
+    CANT_UPDATE_CNPQ_LEVEL("Error updating CNPQ level", "Erro ao atualizar nível CNPQ.", HttpStatus.INTERNAL_SERVER_ERROR),
+
 
     CANT_RETRIEVE_CI_PROGRAMS("Cant retrieve CI programs", "Erro ao retornar programas do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
+    CI_PROGRAM_NOT_FOUND("CI program was not found", "Programa do IC não encontrado. Tente novamente.", HttpStatus.NOT_FOUND),
     CANT_DELETE_CI_PROGRAM("Error deleting CI program", "Erro ao excluir programa do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_CREATE_CI_PROGRAM("Error creating CI program", "Erro ao criar programa do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
+    CANT_UPDATE_CI_PROGRAM("Error updating CI program", "Erro ao atualizar programa do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
 
     INVALID_DATA("Invalid data", "Dados inválidos.", HttpStatus.UNPROCESSABLE_ENTITY),
 }

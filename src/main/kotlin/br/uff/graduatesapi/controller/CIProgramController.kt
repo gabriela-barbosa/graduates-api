@@ -36,4 +36,13 @@ class CIProgramController(private val ciProgramService: CIProgramService) {
             is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
                 .body(result.errorReason.responseMessage)
         }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("ciprogram/{id}")
+    fun editCIProgram(@RequestBody ciProgramDTO: CIProgramDTO, @PathVariable id: Int): ResponseEntity<Any> =
+        when (val result = this.ciProgramService.editProgram(ciProgramDTO, id)) {
+            is ResponseResult.Success -> ResponseEntity.noContent().build()
+            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+                .body(result.errorReason.responseMessage)
+        }
 }
