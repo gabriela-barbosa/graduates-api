@@ -36,7 +36,7 @@ class AuthController(
     return when (val result = authService.login(body)) {
       is ResponseResult.Success -> {
         response.addCookie(result.data)
-        ResponseEntity.ok(Message("Success!"))
+        ResponseEntity.ok(Message("Logado com sucesso!"))
       }
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
@@ -85,6 +85,6 @@ class AuthController(
     val cookie = Cookie("jwt", "")
     cookie.maxAge = 0
     response.addCookie(cookie)
-    return ResponseEntity.ok(Message("Success!"))
+    return ResponseEntity.ok(Message("Deslogado com sucesso!"))
   }
 }
