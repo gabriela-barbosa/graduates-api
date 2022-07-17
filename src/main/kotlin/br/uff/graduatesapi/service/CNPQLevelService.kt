@@ -48,7 +48,7 @@ class CNPQLevelService(
         return try {
             val result = this.findById(id)
             if (result is ResponseResult.Error)
-                return ResponseResult.Error(result.errorReason)
+                return ResponseResult.Error(Errors.INVALID_DATA)
             val level = result.data!!
             level.level = levelDTO.level
             cnpqLevelRepository.save(level)

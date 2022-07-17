@@ -48,7 +48,7 @@ class CIProgramService(
     return try {
       val result = this.findProgram(id)
       if (result is ResponseResult.Error)
-        return ResponseResult.Error(result.errorReason)
+        return ResponseResult.Error(Errors.INVALID_DATA)
       val ciProgram = result.data!!
       ciProgram.initials = ciProgramDTO.initials
       programRepository.save(ciProgram)
