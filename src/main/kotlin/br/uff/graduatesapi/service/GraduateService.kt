@@ -73,12 +73,17 @@ class GraduateService(
       val graduates = graduateRepository.findAllByWorkHistoryInstitutionId(institutionId)
       ResponseResult.Success(graduates)
     }catch (ex: Exception) {
-      ResponseResult.Error(Errors.INVALID_DATA)
+      ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
     }
   }
 
-  fun save(graduate: Graduate): Graduate? {
-    return graduateRepository.save(graduate)
+  fun save(graduate: Graduate): ResponseResult<Graduate> {
+    return try{
+      val savedGraduate = graduateRepository.save(graduate)
+      ResponseResult.Success(savedGraduate)
+    } catch (ex: Exception){
+      ResponseResult.Error(Errors.CANT_CREATE_GRADUATE)
+    }
   }
 
   fun createGraduateWorkHistory(workDTO: WorkHistoryDTO, id: Int? = null): ResponseResult<Int> {
