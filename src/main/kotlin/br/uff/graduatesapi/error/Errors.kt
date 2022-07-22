@@ -11,6 +11,7 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     FORBIDDEN("Forbidden.", "Não autorizado.", HttpStatus.FORBIDDEN),
 
 
+
     INSTITUTION_TYPE_NOT_FOUND("Institution type not found", "Tipo da instituição não encontrado.", HttpStatus.NOT_FOUND),
     CANT_RETRIEVE_INSTITUTION_TYPE("Cant retrieve institution types", "Erro ao retornar tipos de instituição.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_DELETE_INSTITUTION_TYPE("Error deleting institution type", "Erro ao excluir tipo de instituição.", HttpStatus.INTERNAL_SERVER_ERROR),

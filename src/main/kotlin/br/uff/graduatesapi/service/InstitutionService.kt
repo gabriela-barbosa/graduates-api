@@ -16,6 +16,14 @@ class InstitutionService(
     fun findById(id: Int): Institution? {
         return institutionRepository.findByIdOrNull(id)
     }
+    fun deleteInstitution(id: Int): ResponseResult<Nothing?> {
+        return try{
+            institutionRepository.deleteById(id)
+            return ResponseResult.Success(null)
+        } catch (ex: Exception) {
+            ResponseResult.Error(Errors.INVALID_DATA)
+        }
+    }
 
     fun findByNameAndType(name: String, type: Int): ResponseResult<Institution> {
         val resultInstitution = institutionRepository.findByNameAndTypeId(name, type)

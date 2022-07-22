@@ -6,6 +6,7 @@ import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.CNPQScholarship
 import br.uff.graduatesapi.model.Graduate
+import br.uff.graduatesapi.model.Institution
 import br.uff.graduatesapi.model.WorkHistory
 import br.uff.graduatesapi.repository.WorkHistoryRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -17,6 +18,7 @@ class WorkHistoryService(
   private val workHistoryRepository: WorkHistoryRepository,
   private val cnpqScholarshipService: CNPQScholarshipService,
   private val institutionService: InstitutionService,
+  private val graduateService: GraduateService,
 ) {
   fun findAllByGraduates(graduates: List<Graduate>): List<WorkHistory>? {
     return workHistoryRepository.findTopByGraduateOrderByCreatedAtDesc(graduates)
@@ -66,30 +68,74 @@ class WorkHistoryService(
     return ResponseResult.Success(resp)
   }
 
+
+  fun updateWorkHistory(
+    institutionDTO: InstitutionDTO?,
+    position: String?,
+    oldWorkHistory: WorkHistory
+  ): ResponseResult<WorkHistory> {
+    val newInstitution: Institution? = null
+
+    if ((institutionDTO == null && oldWorkHistory.institution != null) || (institutionDTO != null && oldWorkHistory.institution != null)) {
+      val oldWHInstitutionId = oldWorkHistory.institution!!.id
+      val result = graduateService.getGraduatesByWorkHistory(oldWHInstitutionId)
+      if (result is ResponseResult.Error)
+        return ResponseResult.Error(result.errorReason)
+      val graduatesWithOldWorkHistory = result.data!!
+      if (graduatesWithOldWorkHistory.isEmpty()) {
+        val resultDelete = institutionService.deleteInstitution(oldWHInstitutionId)
+        if (resultDelete is ResponseResult.Error)
+          return ResponseResult.Error(resultDelete.errorReason)
+      }
+    }
+    if (institutionDTO != null) {
+      institutionService.createInstitutionByInstitutionDTO(institutionDTO)
+    }
+    oldWorkHistory.institution = newInstitution
+    oldWorkHistory.position = position
+    val resultSave = this.save(oldWorkHistory)
+    if (resultSave is ResponseResult.Error) {
+      return ResponseResult.Error(resultSave.errorReason)
+    }
+    return ResponseResult.Success(resultSave.data!!)
+  }
+
+  fun createWorkHistory(
+    graduate: Graduate,
+    position: String?,
+    institutionDTO: InstitutionDTO?
+  ): ResponseResult<WorkHistory> {
+    val hw = WorkHistory(
+      position = position,
+      graduate = graduate
+    )
+    if (institutionDTO != null) {
+      val resultInst = institutionService.createInstitutionByInstitutionDTO(institutionDTO)
+      if (resultInst is ResponseResult.Error) return ResponseResult.Error(resultInst.errorReason)
+      hw.institution = resultInst.data
+      hw.updatedAt = Date(System.currentTimeMillis())
+    }
+
+    val resultSave = this.save(hw)
+    if (resultSave is ResponseResult.Error) {
+      return ResponseResult.Error(resultSave.errorReason)
+    }
+    return ResponseResult.Success(resultSave.data!!)
+  }
+
   fun createOrUpdateWorkHistory(
     id: Int?,
     graduate: Graduate,
     position: String?,
     institutionDTO: InstitutionDTO?
   ): ResponseResult<WorkHistory> {
-    val history = if (id != null) {
+    if (id != null) {
       val respHistory = this.getWorkHistory(id)
       if (respHistory is ResponseResult.Error)
         return ResponseResult.Error(respHistory.errorReason)
-      respHistory.data!!.position = position
-      respHistory.data
+      return updateWorkHistory(institutionDTO, position, respHistory.data!!)
     } else {
-      WorkHistory(
-        position = position,
-        graduate = graduate
-      )
+      return createWorkHistory(graduate, position, institutionDTO)
     }
-    if (institutionDTO != null) {
-      val resultInst = institutionService.createInstitutionByInstitutionDTO(institutionDTO)
-      if (resultInst is ResponseResult.Error) return ResponseResult.Error(resultInst.errorReason)
-      history.institution = resultInst.data
-      history.updatedAt = Date(System.currentTimeMillis())
-    }
-    return this.save(history)
   }
 }
