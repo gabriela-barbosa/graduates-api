@@ -10,6 +10,9 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     UNAUTHORIZED("Username or password is wrong.", "Usuário ou senha incorretos. Tente novamente.", HttpStatus.UNAUTHORIZED),
     FORBIDDEN("Forbidden.", "Não autorizado.", HttpStatus.FORBIDDEN),
 
+    USER_IS_NOT_A_PROFESSOR("User is not a professor", "Usuário não é um orientador.", HttpStatus.UNPROCESSABLE_ENTITY),
+
+
     CANT_RETRIEVE_GRADUATES("Cant retrieve graduates", "Erro ao retornar os egressos. Tente novamente", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_CREATE_GRADUATE("Cant create graduates", "Erro ao tentar criar egresso. Tente novamente", HttpStatus.INTERNAL_SERVER_ERROR),
 
@@ -25,7 +28,8 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     INSTITUTION_NOT_FOUND("Institution not found", "Instituição não encontrada.", HttpStatus.NOT_FOUND),
 
     CANT_CREATE_WORK_HISTORY("Error creating work history", "Erro ao criar histórico de trabalho.", HttpStatus.INTERNAL_SERVER_ERROR),
-    WORK_HISTORY_NOT_FOUND("User not found", "Usuário não encontrado.", HttpStatus.NOT_FOUND),
+    WORK_HISTORY_NOT_FOUND("Work history not found", "Histórico de trabalho não encontrado.", HttpStatus.NOT_FOUND),
+    WORK_HISTORIES_NOT_FOUND("Cant retrieve work histories", "Não foi possível retornar os históricos de trabalho.Tente novamente.", HttpStatus.INTERNAL_SERVER_ERROR),
 
     CNPQSCHOLARSHIP_NOT_FOUND("CNPQ scholarship not found", "Bolsa CNPQ não encontrada.", HttpStatus.NOT_FOUND),
     CANT_CREATE_CNPQSCHOLARSHIP("Error creating CNPQ scholarship", "Erro ao criar bolsa CNPQ.", HttpStatus.INTERNAL_SERVER_ERROR),

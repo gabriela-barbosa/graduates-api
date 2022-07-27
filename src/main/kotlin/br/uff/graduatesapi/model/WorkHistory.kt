@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.model
 
+import br.uff.graduatesapi.enums.WorkHistoryStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
@@ -18,6 +19,9 @@ class WorkHistory(
     @JsonIgnore
     @ManyToOne(optional = false)
     var graduate: Graduate,
+
+    @Column(name = "status", nullable = false)
+    var status: WorkHistoryStatus = WorkHistoryStatus.PENDING
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

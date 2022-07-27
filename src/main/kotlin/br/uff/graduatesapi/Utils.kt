@@ -9,11 +9,12 @@ class Utils {
         fun getHistoryStatus(
             history: WorkHistory?,
             postDoctorate: Institution?,
-            finishedDoctorateOnUFF: Boolean?
+            finishedDoctorateOnUFF: Boolean?,
+            finishedMasterDegreeOnUFF: Boolean?,
         ): WorkHistoryStatus {
-            if (history != null && postDoctorate != null && finishedDoctorateOnUFF != null)
+            if (history != null && postDoctorate != null && finishedDoctorateOnUFF != null && finishedMasterDegreeOnUFF != null)
                 return WorkHistoryStatus.UPDATED
-            else if (history != null || postDoctorate != null || finishedDoctorateOnUFF != null)
+            else if (history != null || postDoctorate != null || finishedDoctorateOnUFF != null || finishedMasterDegreeOnUFF != null)
                 return WorkHistoryStatus.UPDATED_PARTIALLY
             return WorkHistoryStatus.PENDING
         }
