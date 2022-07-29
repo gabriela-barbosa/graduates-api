@@ -10,42 +10,45 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("api/v1")
 class WorkHistoryController(
-    private val workHistoryService: WorkHistoryService,
+  private val workHistoryService: WorkHistoryService,
 ) {
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("workhistory/{id}")
-    fun getWorkHistory(@PathVariable id: Int): ResponseEntity<Any> {
-        val workHistory = workHistoryService.getWorkHistoryDTO(id)
-        return ResponseEntity.ok(workHistory)
-    }
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("workhistory/{id}")
+  fun getWorkHistory(@PathVariable id: Int): ResponseEntity<Any> {
+    val workHistory = workHistoryService.getWorkHistoryDTO(id)
+    return ResponseEntity.ok(workHistory)
+  }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("workhistory/graduate/{id}")
-    fun getWorkHistoryByGraduate(@PathVariable id: Int): ResponseEntity<Any> {
-        val workHistory = workHistoryService.getLastWorkHistoryByGraduate(id)
-        return ResponseEntity.ok(workHistory)
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("workhistory/graduate/{id}")
+  fun getWorkHistoryByGraduate(@PathVariable id: Int): ResponseEntity<Any> {
+    return when (val result = workHistoryService.getLastWorkHistoryByGraduate(id)) {
+      is ResponseResult.Success -> ResponseEntity.ok(result)
+      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+        .body(result.errorReason.responseMessage)
     }
+  }
 
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("workhistory")
-    fun createGraduateWorkHistory(@RequestBody workDTO: WorkHistoryDTO): ResponseEntity<String> {
-        return when (val result = workHistoryService.createGraduateHistory(workDTO)) {
-            is ResponseResult.Success -> ResponseEntity.status(201).build()
-            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-                .body(result.errorReason.responseMessage)
-        }
+  @PreAuthorize("isAuthenticated()")
+  @PostMapping("workhistory")
+  fun createGraduateWorkHistory(@RequestBody workDTO: WorkHistoryDTO): ResponseEntity<String> {
+    return when (val result = workHistoryService.createGraduateHistory(workDTO)) {
+      is ResponseResult.Success -> ResponseEntity.status(201).build()
+      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+        .body(result.errorReason.responseMessage)
     }
+  }
 
-    @PreAuthorize("isAuthenticated()")
-    @PutMapping("workhistory/{id}")
-    fun updateWorkHistory(
-        @PathVariable id: Int,
-        @RequestBody workDTO: WorkHistoryDTO
-    ): ResponseEntity<String> {
-        return when (val result = workHistoryService.createGraduateHistory(workDTO, id)) {
-            is ResponseResult.Success -> ResponseEntity.noContent().build()
-            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-                .body(result.errorReason.responseMessage)
-        }
+  @PreAuthorize("isAuthenticated()")
+  @PutMapping("workhistory/{id}")
+  fun updateWorkHistory(
+    @PathVariable id: Int,
+    @RequestBody workDTO: WorkHistoryDTO
+  ): ResponseEntity<String> {
+    return when (val result = workHistoryService.createGraduateHistory(workDTO, id)) {
+      is ResponseResult.Success -> ResponseEntity.noContent().build()
+      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+        .body(result.errorReason.responseMessage)
     }
+  }
 }

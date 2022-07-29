@@ -34,13 +34,15 @@ class WorkHistoryService(
     }
   }
 
-  fun getLastWorkHistoryByGraduate(graduateId: Int): WorkHistoryDTO? {
+  fun getLastWorkHistoryByGraduate(graduateId: Int): ResponseResult<WorkHistoryDTO> {
     return try {
       val workHistory: WorkHistory = workHistoryRepository.findFirstByGraduateIdIsOrderByCreatedAtDesc(graduateId)
       val workHistoryDTO = getWorkHistoryDTO(workHistory.id!!)
-      workHistoryDTO
+      if (workHistoryDTO != null)
+        return ResponseResult.Success(workHistoryDTO)
+      ResponseResult.Error(Errors.CANT_GET_LAST_WORK_HISTORY)
     } catch (ex: Exception) {
-      null
+      return ResponseResult.Error(Errors.LAST_WORK_HISTORY_NOT_FOUND)
     }
   }
 

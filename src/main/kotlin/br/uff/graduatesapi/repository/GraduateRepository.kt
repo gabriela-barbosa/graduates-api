@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface GraduateRepository : JpaRepository<Graduate, Int> {
 
-    fun findAllByWorkHistoryInstitutionId(institutionId: Int) : List<Graduate>
-    fun findAllByCoursesAdvisorIsOrderByHistoryStatusDesc(
-        advisor: Advisor
-    ): MutableList<Graduate>?
+  fun findAllByOrderByUserNameAsc(): List<Graduate>
+  fun findAllByWorkHistoryInstitutionId(institutionId: Int): List<Graduate>
+  fun findAllByCoursesAdvisorIsOrderByHistoryStatusDesc(
+    advisor: Advisor
+  ): MutableList<Graduate>?
 }

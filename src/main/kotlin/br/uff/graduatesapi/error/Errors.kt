@@ -14,6 +14,7 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
 
 
     CANT_RETRIEVE_GRADUATES("Cant retrieve graduates", "Erro ao retornar os egressos. Tente novamente", HttpStatus.INTERNAL_SERVER_ERROR),
+    GRADUATE_NOT_FOUND("Graduate not found", "Egresso não encontrado", HttpStatus.NOT_FOUND),
     CANT_CREATE_GRADUATE("Cant create graduates", "Erro ao tentar criar egresso. Tente novamente", HttpStatus.INTERNAL_SERVER_ERROR),
 
 
@@ -23,6 +24,8 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     CANT_CREATE_INSTITUTION_TYPE("Error creating institution type", "Erro ao criar tipo de instituição.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_UPDATE_INSTITUTION_TYPE("Error updating institution type", "Erro ao atualizar tipo de instituição.", HttpStatus.INTERNAL_SERVER_ERROR),
 
+    CANT_GET_LAST_WORK_HISTORY("Error trying to get last work history", "Erro ao tentar retornar último histórico de trabalho.", HttpStatus.INTERNAL_SERVER_ERROR),
+    LAST_WORK_HISTORY_NOT_FOUND("Last work history not found", "Último histórico de trabalho não encontrado.", HttpStatus.NOT_FOUND),
 
     CANT_CREATE_INSTITUTION("Error creating institution", "Erro ao criar instituição.", HttpStatus.INTERNAL_SERVER_ERROR),
     INSTITUTION_NOT_FOUND("Institution not found", "Instituição não encontrada.", HttpStatus.NOT_FOUND),
