@@ -20,6 +20,7 @@ class CIProgramService(
       ResponseResult.Error(Errors.CANT_RETRIEVE_CI_PROGRAMS)
     }
   }
+
   fun findProgram(id: Int): ResponseResult<CIProgram?> {
     val result = programRepository.findByIdOrNull(id) ?: return ResponseResult.Error(Errors.CI_PROGRAM_NOT_FOUND)
     return ResponseResult.Success(result)
@@ -51,7 +52,7 @@ class CIProgramService(
         return ResponseResult.Error(Errors.INVALID_DATA)
       val ciProgram = result.data!!
       ciProgram.initials = ciProgramDTO.initials
-      programRepository.save(ciProgram)
+      programRepository.updateInitials(ciProgram.initials, id)
       ResponseResult.Success(null)
     } catch (err: Error) {
       ResponseResult.Error(Errors.CANT_UPDATE_CI_PROGRAM)
