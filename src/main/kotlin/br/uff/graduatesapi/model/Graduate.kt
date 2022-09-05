@@ -3,8 +3,11 @@ package br.uff.graduatesapi.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.JoinFormula
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
+
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -30,7 +33,11 @@ class Graduate(
     var postDoctorate: Institution? = null
 
     @OneToMany(mappedBy = "graduate")
-    var workHistory: List<WorkHistory>? = null
+    var workHistories: List<WorkHistory>? = null
+
+    @ManyToOne
+    @JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id ORDER BY w.created_at DESC LIMIT 1)")
+    val latestWorkHistory: WorkHistory? = null
 
     @Column(name = "finished_doctorate_on_uff")
     var hasFinishedDoctorateOnUFF: Boolean? = false
@@ -39,7 +46,6 @@ class Graduate(
     var hasFinishedMasterDegreeOnUFF: Boolean? = false
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date? = null
+    var createdAt: LocalDate? = null
 }

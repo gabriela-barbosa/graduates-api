@@ -10,6 +10,7 @@ import br.uff.graduatesapi.model.*
 import br.uff.graduatesapi.repository.WorkHistoryRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.util.*
 
 @Service
@@ -116,7 +117,7 @@ class WorkHistoryService(
       val resultInst = institutionService.createInstitutionByInstitutionDTO(institutionDTO)
       if (resultInst is ResponseResult.Error) return ResponseResult.Error(resultInst.errorReason)
       hw.institution = resultInst.data
-      hw.updatedAt = Date(System.currentTimeMillis())
+      hw.updatedAt = LocalDate.now()
     }
 
     val resultSave = this.save(hw)

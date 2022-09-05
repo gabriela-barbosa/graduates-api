@@ -2,7 +2,7 @@ package br.uff.graduatesapi.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
-import java.util.*
+import java.time.LocalDate
 import javax.persistence.*
 
 
@@ -25,7 +25,6 @@ class InstitutionType(
     val active: Boolean = true,
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date? = null,
+    var createdAt: LocalDate? = null,
 )

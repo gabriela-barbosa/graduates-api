@@ -4,7 +4,7 @@ import br.uff.graduatesapi.enums.WorkHistoryStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
-import java.util.*
+import java.time.LocalDate
 import javax.persistence.*
 
 @Entity(name = "work_history")
@@ -29,12 +29,10 @@ class WorkHistory(
     var id: Int? = null
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date? = null
+    var createdAt: LocalDate? = null
 
     @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", nullable = true, updatable = true)
-    var updatedAt: Date? = null
+    var updatedAt: LocalDate? = null
 }

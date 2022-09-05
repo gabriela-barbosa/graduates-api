@@ -13,6 +13,7 @@ import br.uff.graduatesapi.repository.GraduateRepository
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class GraduateService(
@@ -29,106 +30,113 @@ class GraduateService(
     return ResponseResult.Success(graduateDTO)
   }
 
-  fun getAllGraduates(): ResponseResult<List<ListGraduatesDTO>> {
-    return try {
-      val graduates = graduateRepository.findAllByOrderByUserNameAsc()
-      val knownHistoryGraduates = mutableListOf<Graduate>()
-      val graduatesList = mutableListOf<ListGraduatesDTO>()
-
-      for (graduate in graduates) {
-        var status = WorkHistoryStatus.PENDING
-        if (graduate.historyStatus != null) {
-          if (graduate.historyStatus!!.knownWorkplace!!) {
-            knownHistoryGraduates.add(graduate)
-          }
-          status = graduate.historyStatus!!.status
-        }
-        val item = ListGraduatesDTO(
-          name = graduate.user.name,
-          email = graduate.user.email,
-          id = graduate.id,
-          status = status,
-          workPlace = null,
-          position = null
-        )
-        graduatesList.add(item)
-      }
-      val workHistory = workHistoryService.findAllByGraduates(knownHistoryGraduates)
-        ?: return ResponseResult.Error(Errors.WORK_HISTORIES_NOT_FOUND)
-      for (graduate in knownHistoryGraduates) {
-        val singleWorkHistory = workHistory.find { history -> history.graduate.id == graduate.id }
-        val graduateResp = graduatesList.find { r -> r.name == graduate.user.name }
-        if (graduateResp != null && singleWorkHistory != null) {
-          graduateResp.position = singleWorkHistory.position
-          val workHistoryInfoDTO = WorkHistoryInfoDTO(
-            id = singleWorkHistory.id!!,
-            name = singleWorkHistory.institution!!.name,
-            type = singleWorkHistory.institution!!.type!!.id!!
-          )
-          graduateResp.workPlace = workHistoryInfoDTO
-        }
-
-      }
-      ResponseResult.Success(graduatesList)
-    } catch (ex: Exception) {
-      ResponseResult.Error(Errors.INVALID_DATA)
-    }
+  fun getAllGraduates(): ResponseResult<List<Graduate>> = try {
+    val graduates = graduateRepository.findAllByOrderByLatestWorkHistoryStatusDesc()
+    ResponseResult.Success(graduates)
+  } catch (ex: Exception) {
+    ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
   }
+//  fun getAllGraduates(): ResponseResult<List<ListGraduatesDTO>> {
+//    return try {
+//      val graduates = graduateRepository.findAllByOrderByUserNameAsc()
+//      val knownHistoryGraduates = mutableListOf<Graduate>()
+//      val graduatesList = mutableListOf<ListGraduatesDTO>()
+//
+//      for (graduate in graduates) {
+//        var status = WorkHistoryStatus.PENDING
+//        if (graduate.historyStatus != null) {
+//          if (graduate.historyStatus!!.knownWorkplace!!) {
+//            knownHistoryGraduates.add(graduate)
+//          }
+//          status = graduate.historyStatus!!.status
+//        }
+//        val item = ListGraduatesDTO(
+//          name = graduate.user.name,
+//          email = graduate.user.email,
+//          id = graduate.id,
+//          status = status,
+//          workPlace = null,
+//          position = null
+//        )
+//        graduatesList.add(item)
+//      }
+//      val workHistory = workHistoryService.findAllByGraduates(knownHistoryGraduates)
+//        ?: return ResponseResult.Error(Errors.WORK_HISTORIES_NOT_FOUND)
+//      for (graduate in knownHistoryGraduates) {
+//        val singleWorkHistory = workHistory.find { history -> history.graduate.id == graduate.id }
+//        val graduateResp = graduatesList.find { r -> r.name == graduate.user.name }
+//        if (graduateResp != null && singleWorkHistory != null) {
+//          graduateResp.position = singleWorkHistory.position
+//          val workHistoryInfoDTO = WorkHistoryInfoDTO(
+//            id = singleWorkHistory.id!!,
+//            name = singleWorkHistory.institution!!.name,
+//            type = singleWorkHistory.institution!!.type!!.id!!
+//          )
+//          graduateResp.workPlace = workHistoryInfoDTO
+//        }
+//
+//      }
+//      ResponseResult.Success(graduatesList)
+//    } catch (ex: Exception) {
+//      ResponseResult.Error(Errors.INVALID_DATA)
+//    }
+//  }
 
   fun getGraduatesByAdvisor(jwt: String): ResponseResult<List<ListGraduatesDTO>> {
     val result = userService.getUserByJwt(jwt)
     if (result is ResponseResult.Error)
       return ResponseResult.Error(result.errorReason)
     val user = result.data!!
-    if (user.role != Role.PROFESSOR)
-      return ResponseResult.Error(Errors.USER_IS_NOT_A_PROFESSOR)
-
-    val graduates = user.advisor?.let { graduateRepository.findAllByCoursesAdvisorIsOrderByHistoryStatusDesc(it) }
-      ?: return ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
-
-    val knownHistoryGraduates = mutableListOf<Graduate>()
-    val graduatesList = mutableListOf<ListGraduatesDTO>()
+    val graduatesDTOList = mutableListOf<ListGraduatesDTO>()
+    val graduates: List<Graduate>
+    when (user.role) {
+      Role.PROFESSOR -> {
+        graduates =
+          user.advisor?.let { graduateRepository.findAllByCoursesAdvisorIsOrderByHistoryStatusDesc(it).content }
+            ?: return ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
+      }
+      Role.ADMIN -> {
+        val result = this.getAllGraduates()
+        if (result is ResponseResult.Success)
+          graduates = result.data!!
+        else
+          return ResponseResult.Error(result.errorReason)
+      }
+      else -> {
+        return ResponseResult.Error(Errors.USER_NOT_ALLOWED)
+      }
+    }
 
     for (graduate in graduates) {
+      val latestWorkHistory = graduate.latestWorkHistory
       var status = WorkHistoryStatus.PENDING
-      if (graduate.historyStatus != null) {
-        if (graduate.historyStatus!!.knownWorkplace!!) {
-          knownHistoryGraduates.add(graduate)
-        }
-        status = graduate.historyStatus!!.status
-      }
-      val item = ListGraduatesDTO(
+
+      val workHistory = if (latestWorkHistory != null && latestWorkHistory.createdAt!!.year == LocalDate.now().year) {
+        status = latestWorkHistory.status
+        WorkHistoryInfoDTO(
+          latestWorkHistory.id!!,
+          latestWorkHistory.institution?.name,
+          latestWorkHistory.institution?.type?.id
+        )
+      } else null
+
+      val graduateDTO = ListGraduatesDTO(
+        id = graduate.id,
         name = graduate.user.name,
         email = graduate.user.email,
-        id = graduate.id,
         status = status,
-        workPlace = null,
-        position = null
+        workPlace = workHistory,
+        position = latestWorkHistory?.position
       )
-      graduatesList.add(item)
-    }
-    val workHistory = workHistoryService.findAllByGraduates(knownHistoryGraduates)
-      ?: return ResponseResult.Error(Errors.WORK_HISTORIES_NOT_FOUND)
-    for (graduate in knownHistoryGraduates) {
-      val singleWorkHistory = workHistory.find { history -> history.graduate.id == graduate.id }
-      val graduateResp = graduatesList.find { r -> r.name == graduate.user.name }
-      if (graduateResp != null && singleWorkHistory != null) {
-        graduateResp.position = singleWorkHistory.position
-        val workHistoryInfoDTO = WorkHistoryInfoDTO(
-          id = singleWorkHistory.id!!,
-          name = singleWorkHistory.institution!!.name,
-          type = singleWorkHistory.institution!!.type!!.id!!
-        )
-        graduateResp.workPlace = workHistoryInfoDTO
-      }
 
+      graduatesDTOList.add(graduateDTO)
     }
-    return ResponseResult.Success(graduatesList)
+    return ResponseResult.Success(graduatesDTOList)
   }
 
   fun getGraduatesByWorkHistory(institutionId: Int): ResponseResult<List<Graduate>> {
     return try {
-      val graduates = graduateRepository.findAllByWorkHistoryInstitutionId(institutionId)
+      val graduates = graduateRepository.findAllByWorkHistoriesInstitutionId(institutionId)
       ResponseResult.Success(graduates)
     } catch (ex: Exception) {
       ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)

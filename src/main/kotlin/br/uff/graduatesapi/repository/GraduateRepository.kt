@@ -4,13 +4,14 @@ import br.uff.graduatesapi.model.Advisor
 import br.uff.graduatesapi.model.Graduate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.PagingAndSortingRepository
 
-interface GraduateRepository : JpaRepository<Graduate, Int> {
+interface GraduateRepository : PagingAndSortingRepository<Graduate, Int> {
 
-  fun findAllByOrderByUserNameAsc(): List<Graduate>
-  fun findAllByWorkHistoryInstitutionId(institutionId: Int): List<Graduate>
+  fun findAllByOrderByLatestWorkHistoryStatusDesc(): List<Graduate>
+
+  fun findAllByWorkHistoriesInstitutionId(institutionId: Int): List<Graduate>
   fun findAllByCoursesAdvisorIsOrderByHistoryStatusDesc(
-    advisor: Advisor, pageable: Pageable
+    advisor: Advisor, pageable: Pageable = Pageable.unpaged()
   ): Page<Graduate>
 }

@@ -10,7 +10,7 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     UNAUTHORIZED("Username or password is wrong.", "Usuário ou senha incorretos. Tente novamente.", HttpStatus.UNAUTHORIZED),
     FORBIDDEN("Forbidden.", "Não autorizado.", HttpStatus.FORBIDDEN),
 
-    USER_IS_NOT_A_PROFESSOR("User is not a professor", "Usuário não é um orientador.", HttpStatus.UNPROCESSABLE_ENTITY),
+    USER_NOT_ALLOWED("User is not allowed", "Usuário não é permitido.", HttpStatus.FORBIDDEN),
 
 
     CANT_RETRIEVE_GRADUATES("Cant retrieve graduates", "Erro ao retornar os egressos. Tente novamente", HttpStatus.INTERNAL_SERVER_ERROR),
