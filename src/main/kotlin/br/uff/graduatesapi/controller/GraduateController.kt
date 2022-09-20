@@ -1,9 +1,10 @@
 package br.uff.graduatesapi.controller
 
+import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.error.ResponseResult
+import br.uff.graduatesapi.model.GraduateFilters
 import br.uff.graduatesapi.service.GraduateService
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.jpa.repository.Query
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -18,9 +19,19 @@ class GraduateController(private val graduateService: GraduateService) {
     @CookieValue("jwt") jwt: String,
     @RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
     @RequestParam(value = "pageSize", required = false, defaultValue = "10") pageSize: Int,
+    @RequestParam(value = "name", required = false) name: String?,
+    @RequestParam(value = "institutionType", required = false) institutionType: Int?,
+    @RequestParam(value = "institutionName", required = false) institutionName: String?,
   ): ResponseEntity<Any>? {
-    val pageSetting = PageRequest.of(page, pageSize)
-    return when (val result = graduateService.getGraduatesByAdvisor(jwt, pageSetting)) {
+//    val pageSetting = PageRequest.of(page, pageSize)
+    val filters = GraduateFilters(
+      name = name,
+      institutionName = institutionName,
+      institutionType = institutionType,
+    )
+
+    val pageSetting = Utils.convertPagination(page, pageSize)
+    return when (val result = graduateService.getGraduatesByAdvisor(jwt, pageSetting, filters)) {
       is ResponseResult.Success -> ResponseEntity.ok(result.data)
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
@@ -32,7 +43,7 @@ class GraduateController(private val graduateService: GraduateService) {
   fun getAllGraduate(
     @RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
     @RequestParam(value = "pageSize", required = false, defaultValue = "10") pageSize: Int,
-    ): ResponseEntity<Any>? {
+  ): ResponseEntity<Any>? {
     val pageSetting = PageRequest.of(page, pageSize)
     return when (val result = graduateService.getAllGraduates(pageSetting)) {
       is ResponseResult.Success -> ResponseEntity.ok(result.data)

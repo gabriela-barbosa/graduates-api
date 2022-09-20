@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository
 
 interface GraduateRepository : PagingAndSortingRepository<Graduate, Int> {
 
-  fun findAllByOrderByLatestWorkHistoryStatusDesc(pageable: Pageable = Pageable.unpaged()): Page<Graduate>
+  fun findAllByOrderByCurrentWorkHistoryStatusDesc(pageable: Pageable = Pageable.unpaged()): Page<Graduate>
 
   fun findAllByWorkHistoriesInstitutionId(institutionId: Int): List<Graduate>
   fun findAllByCoursesAdvisorIsOrderByHistoryStatusDesc(
