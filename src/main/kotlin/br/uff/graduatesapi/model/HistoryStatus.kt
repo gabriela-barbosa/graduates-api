@@ -3,6 +3,7 @@ package br.uff.graduatesapi.model
 import br.uff.graduatesapi.enums.WorkHistoryStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -24,7 +25,6 @@ class HistoryStatus(
     var status: WorkHistoryStatus = WorkHistoryStatus.PENDING,
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date? = null
+    var createdAt: LocalDate? = null
 )

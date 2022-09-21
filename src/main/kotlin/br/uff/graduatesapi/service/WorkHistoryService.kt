@@ -1,16 +1,16 @@
 package br.uff.graduatesapi.service
 
+import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.InstitutionDTO
 import br.uff.graduatesapi.dto.WorkHistoryDTO
+import br.uff.graduatesapi.enums.WorkHistoryStatus
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
-import br.uff.graduatesapi.model.CNPQScholarship
-import br.uff.graduatesapi.model.Graduate
-import br.uff.graduatesapi.model.Institution
-import br.uff.graduatesapi.model.WorkHistory
+import br.uff.graduatesapi.model.*
 import br.uff.graduatesapi.repository.WorkHistoryRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.util.*
 
 @Service
@@ -19,6 +19,8 @@ class WorkHistoryService(
   private val cnpqScholarshipService: CNPQScholarshipService,
   private val institutionService: InstitutionService,
   private val graduateService: GraduateService,
+  private val userService: UserService,
+  private val historyStatusService: HistoryStatusService,
 ) {
   fun findAllByGraduates(graduates: List<Graduate>): List<WorkHistory>? {
     return workHistoryRepository.findTopByGraduateOrderByCreatedAtDesc(graduates)
@@ -33,13 +35,15 @@ class WorkHistoryService(
     }
   }
 
-  fun getLastWorkHistoryByGraduate(graduateId: Int): WorkHistoryDTO? {
+  fun getLastWorkHistoryByGraduate(graduateId: Int): ResponseResult<WorkHistoryDTO> {
     return try {
       val workHistory: WorkHistory = workHistoryRepository.findFirstByGraduateIdIsOrderByCreatedAtDesc(graduateId)
       val workHistoryDTO = getWorkHistoryDTO(workHistory.id!!)
-      workHistoryDTO
+      if (workHistoryDTO != null)
+        return ResponseResult.Success(workHistoryDTO)
+      ResponseResult.Error(Errors.CANT_GET_LAST_WORK_HISTORY)
     } catch (ex: Exception) {
-      null
+      return ResponseResult.Error(Errors.LAST_WORK_HISTORY_NOT_FOUND)
     }
   }
 
@@ -113,7 +117,7 @@ class WorkHistoryService(
       val resultInst = institutionService.createInstitutionByInstitutionDTO(institutionDTO)
       if (resultInst is ResponseResult.Error) return ResponseResult.Error(resultInst.errorReason)
       hw.institution = resultInst.data
-      hw.updatedAt = Date(System.currentTimeMillis())
+      hw.updatedAt = LocalDate.now()
     }
 
     val resultSave = this.save(hw)
@@ -137,5 +141,68 @@ class WorkHistoryService(
     } else {
       return createWorkHistory(graduate, position, institutionDTO)
     }
+  }
+
+  fun createGraduateHistory(workDTO: WorkHistoryDTO, id: Int? = null): ResponseResult<Int> {
+    val respUser = userService.findByEmail(workDTO.email)
+    if (respUser is ResponseResult.Error) {
+      if (respUser.errorReason == Errors.USER_NOT_FOUND)
+        return ResponseResult.Error(Errors.INVALID_DATA)
+      return ResponseResult.Error(respUser.errorReason)
+    }
+
+    val graduate = respUser.data!!.graduate!!
+
+    if (workDTO.newEmail != null) {
+      val userResult = userService.updateEmail(workDTO.email, workDTO.newEmail)
+      if (userResult is ResponseResult.Error) {
+        return ResponseResult.Error(userResult.errorReason)
+      }
+    }
+
+    val resultHistory =
+      this.createOrUpdateWorkHistory(id, graduate, workDTO.position, workDTO.institution)
+    if (resultHistory is ResponseResult.Error) return ResponseResult.Error(resultHistory.errorReason)
+
+    val institutionPostDoctorateDTO = workDTO.postDoctorate
+    val hasFinishedDoctorateOnUFF = workDTO.hasFinishedDoctorateOnUFF
+    val hasFinishedMasterDegreeOnUFF = workDTO.hasFinishedMasterDegreeOnUFF
+
+    val resultUpdateGraduatePostGraduationInfo = graduateService.updateGraduatePostGraduationInfo(
+      graduate,
+      institutionPostDoctorateDTO,
+      hasFinishedDoctorateOnUFF,
+      hasFinishedMasterDegreeOnUFF,
+    )
+    if (resultUpdateGraduatePostGraduationInfo is ResponseResult.Error)
+      return ResponseResult.Error(resultUpdateGraduatePostGraduationInfo.errorReason)
+
+    val graduateUpdated = resultUpdateGraduatePostGraduationInfo.data!!
+    val postDoctorate = graduateUpdated.postDoctorate
+    val finishedDoctorateOnUFF = graduateUpdated.hasFinishedDoctorateOnUFF
+    val finishedMasterDegreeOnUFF = graduateUpdated.hasFinishedMasterDegreeOnUFF
+
+    if (workDTO.cnpqLevelId != null) {
+      val resultCNPQScholarship = cnpqScholarshipService.createOrUpdateCNPQScholarship(workDTO.cnpqLevelId, graduate)
+      if (resultCNPQScholarship is ResponseResult.Error) return ResponseResult.Error(resultCNPQScholarship.errorReason)
+    }
+
+    val status: WorkHistoryStatus =
+      if (workDTO.knownWorkPlace == false) WorkHistoryStatus.UNKNOWN else Utils.getHistoryStatus(
+        resultHistory.data,
+        postDoctorate,
+        finishedDoctorateOnUFF,
+        finishedMasterDegreeOnUFF,
+      )
+    val historyStatus = if (graduate.historyStatus != null) {
+      graduate.historyStatus!!.status = status
+      graduate.historyStatus
+    } else HistoryStatus(
+      knownWorkplace = workDTO.knownWorkPlace,
+      graduate = graduate,
+      status = status,
+    )
+    historyStatusService.save(historyStatus!!)
+    return ResponseResult.Success(graduate.id)
   }
 }

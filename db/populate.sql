@@ -46,7 +46,13 @@ values (1, now(), 1, 1),
        (3, now(), 3, 3),
        (4, now(), null, 4),
        (5, now(), 4, 5),
-       (6, now(), null, 7)
+       (6, now(), null, 7),
+       (7, now(), null, 13),
+       (8, now(), null, 14),
+       (9, now(), null, 15),
+       (10, now(), null, 16),
+       (11, now(), null, 17),
+       (12, now(), null, 18)
 ;
 
 insert into cnpqlevel (id, level, created_at, active)
@@ -81,14 +87,13 @@ values (1, now(), 'OLX', 1),
        (5, now(), 'SNC', 1),
        (6, now(), 'Alura', 1)
 ;
-
-insert into work_history (id, created_at, "position", graduate_id, institution_id, updated_at)
-values (1, now(), 'Dev Jr', 1, 1, null),
-       (2, now(), 'Estagiário', 5, 2, null),
-       (3, now(), 'Estagiário', 1, 2, null),
-       (4, now(), 'Senior Associate', 2, 3, null),
-       (5, now(), 'Dev Jr', 1, 4, null),
-       (6, now(), 'Dev Jr', 2, 5, null)
+insert into work_history (id, created_at, "position", graduate_id, institution_id, updated_at, status)
+values (1, now(), 'Dev Jr', 1, 1, null, 1),
+       (2, now(), 'Estagiário', 5, 2, null, 1),
+       (3, now(), 'Estagiário', 1, 2, null, 1),
+       (4, now(), 'Senior Associate', 2, 3, null, 1),
+       (5, now(), 'Dev Jr', 1, 4, null, 1),
+       (6, now(), 'Dev Jr', 2, 5, null, 1)
 ;
 
 insert into course (id, created_at, minute_defense, program_id, advisor_id, graduate_id)

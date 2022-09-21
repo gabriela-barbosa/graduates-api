@@ -16,7 +16,6 @@ interface CIProgramRepository : JpaRepository<CIProgram, Int> {
     @Query("update CIProgram program set program.initials = ?1 where program.id = ?2")
     fun updateInitials(initials: String, id: Int)
 
-
     @Modifying
     @Query("select program from CIProgram program where program.active=true")
     fun findAllActives(): List<CIProgram>

@@ -37,13 +37,12 @@ class InstitutionService(
         return try {
             val respInstitution = institutionRepository.save(institution)
             ResponseResult.Success(respInstitution)
-        } catch (err: java.lang.Exception) {
+        } catch (err: Exception) {
             ResponseResult.Error(Errors.CANT_CREATE_INSTITUTION)
         }
     }
 
     fun createInstitutionByInstitutionDTO(newInstitution: InstitutionDTO): ResponseResult<Institution> {
-
         val institutionTypeRes = institutionTypeService.findById(newInstitution.type)
         if (institutionTypeRes is ResponseResult.Error) {
             return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND)

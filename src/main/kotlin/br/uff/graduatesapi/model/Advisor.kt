@@ -3,6 +3,7 @@ package br.uff.graduatesapi.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -22,7 +23,6 @@ class Advisor {
     var courses: List<Course>? = null
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date? = null
+    var createdAt: LocalDate? = null
 }

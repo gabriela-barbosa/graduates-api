@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.hibernate.annotations.CreationTimestamp
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import java.util.*
+import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
@@ -34,9 +34,8 @@ class PlatformUser(
     var graduate: Graduate? = null,
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: Date? = null
+    var createdAt: LocalDate? = null
 ) {
     @Column(nullable = false)
     var password = ""

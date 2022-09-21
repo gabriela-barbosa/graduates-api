@@ -52,7 +52,7 @@ class CIProgramService(
         return ResponseResult.Error(Errors.INVALID_DATA)
       val ciProgram = result.data!!
       ciProgram.initials = ciProgramDTO.initials
-      programRepository.updateInitials(ciProgram.initials, id)
+      programRepository.updateInitials(ciProgramDTO.initials, id)
       ResponseResult.Success(null)
     } catch (err: Error) {
       ResponseResult.Error(Errors.CANT_UPDATE_CI_PROGRAM)

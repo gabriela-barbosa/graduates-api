@@ -6,6 +6,7 @@ import br.uff.graduatesapi.model.CNPQScholarship
 import br.uff.graduatesapi.model.Graduate
 import br.uff.graduatesapi.repository.CNPQScholarshipRepository
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.util.*
 
 @Service
@@ -34,7 +35,7 @@ class CNPQScholarshipService(
 
         if (scholarship == null || scholarship.level!!.id != id) {
             if (scholarship != null) {
-                scholarship.endYear = Date(System.currentTimeMillis())
+                scholarship.endYear = LocalDate.now()
                 save(scholarship)
             }
             val newScholarship = CNPQScholarship()
