@@ -25,10 +25,7 @@ class GraduateService(
   private val graduateRepository: GraduateRepository,
   private val institutionService: InstitutionService,
   private val queryFactory: SpringDataQueryFactory,
-
-  ) {
-
-
+) {
   fun getCount(filters: GraduateFilters, pageSettings: OffsetLimit): Long {
     return queryFactory.singleQuery {
       select(count(column(Graduate::id)))
@@ -102,7 +99,7 @@ class GraduateService(
     val user = result.data!!
     val graduatesDTOList: ListGraduatesDTO
     val dataList = mutableListOf<DataListGraduatesDTO>()
-    var metaList = MetaListGraduatesDTO(0, 0, 0)
+    var metaList = MetaDTO(0, 0, 0)
     val graduates: List<Graduate>
     when (user.role) {
       Role.PROFESSOR -> {
@@ -112,7 +109,7 @@ class GraduateService(
             try {
               val count = getCount(filters, OffsetLimit())
               val grad = getGraduates(filters, page)
-              metaList = MetaListGraduatesDTO(page.page, grad.count(), count)
+              metaList = MetaDTO(page.page, grad.count(), count)
               grad
             } catch (ex: Exception) {
               return ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
@@ -121,11 +118,12 @@ class GraduateService(
           }
             ?: return ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
       }
+
       Role.ADMIN -> {
         try {
           val count = getCount(filters, OffsetLimit())
           val grad = getGraduates(filters, page)
-          metaList = MetaListGraduatesDTO(page.page, grad.count(), count)
+          metaList = MetaDTO(page.page, grad.count(), count)
           graduates = grad
         } catch (ex: Exception) {
           return ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
@@ -136,6 +134,7 @@ class GraduateService(
 //        } else
 //          return ResponseResult.Error(result.errorReason)
       }
+
       else -> {
         return ResponseResult.Error(Errors.USER_NOT_ALLOWED)
       }

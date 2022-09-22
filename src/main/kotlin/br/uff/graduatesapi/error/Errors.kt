@@ -50,5 +50,7 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     CANT_CREATE_CI_PROGRAM("Error creating CI program", "Erro ao criar programa do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_UPDATE_CI_PROGRAM("Error updating CI program", "Erro ao atualizar programa do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
 
+    CANT_RETRIEVE_EMAILS("Cant retrieve emails", "Erro ao recuperar emails.", HttpStatus.INTERNAL_SERVER_ERROR),
+
     INVALID_DATA("Invalid data", "Dados inválidos.", HttpStatus.UNPROCESSABLE_ENTITY),
 }
