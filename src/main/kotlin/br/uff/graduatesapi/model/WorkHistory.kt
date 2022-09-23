@@ -9,6 +9,11 @@ import javax.persistence.*
 
 @Entity(name = "work_history")
 class WorkHistory(
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    var id: Int? = null,
+
     @Column(name = "position", nullable = true)
     var position: String? = null,
 
@@ -23,11 +28,6 @@ class WorkHistory(
     @Column(name = "status", nullable = false)
     var status: WorkHistoryStatus = WorkHistoryStatus.PENDING
 ) {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    var id: Int? = null
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDate? = null

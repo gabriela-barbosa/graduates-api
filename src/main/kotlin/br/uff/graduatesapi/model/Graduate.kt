@@ -15,9 +15,6 @@ class Graduate(
   @GeneratedValue(strategy = GenerationType.AUTO)
   val id: Int,
 
-  @OneToOne(optional = true)
-  var historyStatus: HistoryStatus? = null,
-
   @JsonIgnore
   @OneToOne(optional = false)
   var user: PlatformUser,

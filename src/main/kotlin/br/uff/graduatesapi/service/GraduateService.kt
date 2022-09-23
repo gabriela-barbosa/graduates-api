@@ -35,7 +35,6 @@ class GraduateService(
       from(entity(Graduate::class))
       join(Graduate::user)
       join(Graduate::currentWorkHistory, JoinType.LEFT)
-      join(Graduate::historyStatus, JoinType.LEFT)
       join(Graduate::courses, JoinType.LEFT)
       join(Course::advisor, JoinType.LEFT)
       join(WorkHistory::institution, JoinType.LEFT)
@@ -57,7 +56,6 @@ class GraduateService(
       from(entity(Graduate::class))
       join(Graduate::user)
       join(Graduate::currentWorkHistory, JoinType.LEFT)
-      join(Graduate::historyStatus, JoinType.LEFT)
       join(Graduate::courses, JoinType.LEFT)
       join(Course::advisor, JoinType.LEFT)
       join(WorkHistory::institution, JoinType.LEFT)
@@ -70,7 +68,7 @@ class GraduateService(
           filters.advisor?.run { column(Advisor::id).equal(this.id) },
         )
       )
-      orderBy(column(HistoryStatus::status).desc())
+      orderBy(column(WorkHistory::status).desc())
       limit(
         pageSettings.offset,
         pageSettings.limit,

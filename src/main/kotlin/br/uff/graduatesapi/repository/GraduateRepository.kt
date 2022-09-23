@@ -11,7 +11,4 @@ interface GraduateRepository : PagingAndSortingRepository<Graduate, Int> {
   fun findAllByOrderByCurrentWorkHistoryStatusDesc(pageable: Pageable = Pageable.unpaged()): Page<Graduate>
 
   fun findAllByWorkHistoriesInstitutionId(institutionId: Int): List<Graduate>
-  fun findAllByCoursesAdvisorIsOrderByHistoryStatusDesc(
-    advisor: Advisor, pageable: Pageable = Pageable.unpaged()
-  ): Page<Graduate>
 }
