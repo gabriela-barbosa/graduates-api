@@ -1,12 +1,11 @@
 package br.uff.graduatesapi.service
 
-import br.uff.graduatesapi.dto.CIProgramDTO
 import br.uff.graduatesapi.dto.CreateEmailDTO
 import br.uff.graduatesapi.dto.GetEmailsDTO
 import br.uff.graduatesapi.dto.MetaDTO
+import br.uff.graduatesapi.dto.UpdateEmailDTO
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
-import br.uff.graduatesapi.model.CIProgram
 import br.uff.graduatesapi.model.Email
 import br.uff.graduatesapi.model.EmailFilters
 import br.uff.graduatesapi.model.OffsetLimit
@@ -40,9 +39,9 @@ class EmailService(
     return ResponseResult.Success(result)
   }
 
-  fun deleteProgram(id: Int): ResponseResult<Nothing?> {
+  fun createEmail(id: Int): ResponseResult<Nothing?> {
     return try {
-      programRepository.deleteById(id)
+      emailRepository.deleteById(id)
       ResponseResult.Success(null)
     } catch (err: Error) {
       ResponseResult.Error(Errors.CANT_DELETE_CI_PROGRAM)
@@ -60,21 +59,38 @@ class EmailService(
       isGraduateEmail = createEmailDTO.isGraduateEmail,
     )
     return try {
-      programRepository.save(program)
+      emailRepository.save(email)
       ResponseResult.Success(null)
     } catch (err: Error) {
-      ResponseResult.Error(Errors.CANT_CREATE_CI_PROGRAM)
+      ResponseResult.Error(Errors.CANT_CREATE_EMAIL)
     }
   }
 
-  fun editProgram(ciProgramDTO: CIProgramDTO, id: Int): ResponseResult<Nothing?> {
+  fun deactivateEmails(isGraduateEmail: Boolean): ResponseResult<Nothing?> {
+    return try {
+      emailRepository.deactivateEmails(isGraduateEmail)
+      ResponseResult.Success(null)
+    } catch (ex: Exception) {
+      ResponseResult.Error(Errors.CANT_DEACTIVATE_EMAILS)
+    }
+  }
+
+  fun editEmail(updateEmailDTO: UpdateEmailDTO, id: Int): ResponseResult<Nothing?> {
     return try {
       val result = this.findEmail(id)
       if (result is ResponseResult.Error)
         return ResponseResult.Error(Errors.INVALID_DATA)
-      val ciProgram = result.data!!
-      ciProgram.initials = ciProgramDTO.initials
-      programRepository.updateInitials(ciProgramDTO.initials, id)
+      val email = result.data!!
+      updateEmailDTO.title?.let { email.title = it }
+      updateEmailDTO.content?.let { email.content = it }
+      updateEmailDTO.buttonText?.let { email.buttonText = it }
+      updateEmailDTO.buttonURL?.let { email.buttonURL = it }
+      updateEmailDTO.active?.let {
+        if (it && email.active) {
+          deactivateEmails(email.isGraduateEmail)
+          email.active = true
+        }
+      }
       ResponseResult.Success(null)
     } catch (err: Error) {
       ResponseResult.Error(Errors.CANT_UPDATE_CI_PROGRAM)

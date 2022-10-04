@@ -20,7 +20,7 @@ class Email(
   @Column(name = "name", nullable = false, updatable = false)
   var name: String = "",
 
-  @Column(name = "name", nullable = false, updatable = true)
+  @Column(name = "content", nullable = false, updatable = true)
   var content: String = "",
 
   @Column(name = "button_text", nullable = false, updatable = true)
@@ -30,7 +30,7 @@ class Email(
   var buttonURL: String = "",
 
   @Column(name = "active", nullable = false, updatable = true)
-  val active: Boolean = true,
+  var active: Boolean = true,
 
   @Column(name = "is_graduate_email", nullable = false, updatable = true)
   val isGraduateEmail: Boolean = true,

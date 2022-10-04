@@ -104,3 +104,10 @@ values (1, now(), 1, 1, 1, 1),
        (5, now(), 5, 2, 5, 5),
        (6, now(), 6, 2, 6, 6)
 ;
+
+insert into email (id, title, name, content, button_text, button_url, is_graduate_email, active, created_at)
+values (1, 'Primeiro Email', 'Primeiro nome', 'Esse ;e o conteúdo do primeiro email', 'Clique Aqui', 'www.google.com',
+        true, true, now()),
+       (2, 'Segundo Email', 'Segundo nome', 'Esse ;e o conteúdo do segundo email', 'Clique Aqui', 'www.google.com',
+        false, true, now())
+;

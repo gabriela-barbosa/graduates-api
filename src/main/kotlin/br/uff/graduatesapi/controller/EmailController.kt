@@ -1,8 +1,8 @@
 package br.uff.graduatesapi.controller
 
 import br.uff.graduatesapi.Utils
-import br.uff.graduatesapi.dto.CIProgramDTO
 import br.uff.graduatesapi.dto.CreateEmailDTO
+import br.uff.graduatesapi.dto.UpdateEmailDTO
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.EmailFilters
 import br.uff.graduatesapi.service.EmailService
@@ -30,14 +30,14 @@ class EmailController(private val emailService: EmailService) {
     }
   }
 
-  @PreAuthorize("isAuthenticated()")
-  @DeleteMapping("email/{id}")
-  fun deleteCIPrograms(@PathVariable id: Int): ResponseEntity<Any> =
-    when (val result = this.emailService.deleteProgram(id)) {
-      is ResponseResult.Success -> ResponseEntity.noContent().build()
-      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-        .body(result.errorReason.responseMessage)
-    }
+//  @PreAuthorize("isAuthenticated()")
+//  @DeleteMapping("email/{id}")
+//  fun deleteCIPrograms(@PathVariable id: Int): ResponseEntity<Any> =
+//    when (val result = this.emailService.deleteProgram(id)) {
+//      is ResponseResult.Success -> ResponseEntity.noContent().build()
+//      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+//        .body(result.errorReason.responseMessage)
+//    }
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("email/{id}")
@@ -58,9 +58,9 @@ class EmailController(private val emailService: EmailService) {
     }
 
   @PreAuthorize("isAuthenticated()")
-  @PutMapping("ciprogram/{id}")
-  fun editCIProgram(@RequestBody ciProgramDTO: CIProgramDTO, @PathVariable id: Int): ResponseEntity<Any> =
-    when (val result = this.ciProgramService.editProgram(ciProgramDTO, id)) {
+  @PutMapping("email/{id}")
+  fun editEmail(@RequestBody updateEmailDTO: UpdateEmailDTO, @PathVariable id: Int): ResponseEntity<Any> =
+    when (val result = this.emailService.editEmail(updateEmailDTO, id)) {
       is ResponseResult.Success -> ResponseEntity.noContent().build()
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
