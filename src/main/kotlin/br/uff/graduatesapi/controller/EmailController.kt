@@ -2,9 +2,11 @@ package br.uff.graduatesapi.controller
 
 import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.CreateEmailDTO
+import br.uff.graduatesapi.dto.EmailSendDTO
 import br.uff.graduatesapi.dto.UpdateEmailDTO
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.EmailFilters
+import br.uff.graduatesapi.service.EmailSenderService
 import br.uff.graduatesapi.service.EmailService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -12,7 +14,34 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("api/v1")
-class EmailController(private val emailService: EmailService) {
+class EmailController(
+  private val emailService: EmailService,
+  private val emailSenderService: EmailSenderService,
+  ) {
+
+  @PostMapping("/email/send")
+  fun sendSimpleEmail(
+    @RequestBody request: EmailSendDTO
+  ): ResponseEntity<Any> {
+    emailSenderService.sendEmail(
+      subject = request.subject!!,
+      targetEmail = request.targetEmail!!,
+      text = request.text!!
+    )
+    return ResponseEntity.noContent().build()
+  }
+
+  @PostMapping("/email/template")
+  fun sendSimpleTemplateEmail(
+    @RequestBody request: EmailSendDTO
+  ): ResponseEntity<Any> {
+    emailSenderService.sendEmailUsingTemplate(
+      name = request.name!!,
+      targetEmail = request.targetEmail!!
+    )
+    return ResponseEntity.noContent().build()
+  }
+
   @PreAuthorize("isAuthenticated()")
   @GetMapping("emails")
   fun getEmails(

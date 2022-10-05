@@ -20,8 +20,8 @@ class EmailRepositoryImpl(
       from(entity(Email::class))
       where(
         or(
-          emailFilters.name.run { column(Email::name).like("%${this}") },
-          emailFilters.id.run { column(Email::id).equal(this) }
+          emailFilters.name?.run { column(Email::name).like("%${this}") },
+          emailFilters.id?.run { column(Email::id).equal(this) }
         )
       )
     }
@@ -33,8 +33,8 @@ class EmailRepositoryImpl(
       from(entity(Email::class))
       where(
         or(
-          emailFilters.name.run { column(Email::name).like("%${this}") },
-          emailFilters.id.run { column(Email::id).equal(this) }
+          emailFilters.name?.run { column(Email::name).like("%${this.lowercase()}") },
+          emailFilters.id?.run { column(Email::id).equal(this) }
         )
       )
       orderBy(column(Email::createdAt).desc())

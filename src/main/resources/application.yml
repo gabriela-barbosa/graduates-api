@@ -9,6 +9,30 @@ spring:
   jpa:
     generate-ddl: true
     show-sql: true
+  mail:
+    host: ${MAIL_SENDER_HOST}
+    port: ${MAIL_SENDER_PORT}
+    username: ${MAIL_SENDER_USERNAME}
+    password: ${MAIL_SENDER_PASSWORD}
+    properties:
+      mail:
+        transport:
+          protocol: ${MAIL_SENDER_PROTOCOL}
+        debug: ${MAIL_SENDER_DEBUG}
+        smtp:
+          auth: ${MAIL_SENDER_AUTH}
+          starttls:
+            enable: ${MAIL_SENDER_STARTTLS_ENABLE}
+
+mail-sender:
+  host: ${MAIL_SENDER_HOST}
+  port: ${MAIL_SENDER_PORT}
+  username: ${MAIL_SENDER_USERNAME}
+  password: ${MAIL_SENDER_PASSWORD}
+  protocol: ${MAIL_SENDER_PROTOCOL}
+  auth: ${MAIL_SENDER_AUTH}
+  starttls-enable: ${MAIL_SENDER_STARTTLS_ENABLE}
+  debug: ${MAIL_SENDER_DEBUG}
 
 jwt:
   secret: ${JWT_SECRET}

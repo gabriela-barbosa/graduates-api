@@ -20,6 +20,8 @@ repositories {
 
 dependencies {
     implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:2.0.3.RELEASE")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
