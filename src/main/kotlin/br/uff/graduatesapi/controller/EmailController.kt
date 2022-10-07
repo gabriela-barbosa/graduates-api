@@ -17,16 +17,15 @@ import org.springframework.web.bind.annotation.*
 class EmailController(
   private val emailService: EmailService,
   private val emailSenderService: EmailSenderService,
-  ) {
+) {
 
   @PostMapping("/email/send")
   fun sendSimpleEmail(
     @RequestBody request: EmailSendDTO
   ): ResponseEntity<Any> {
-    emailSenderService.sendEmail(
+    emailSenderService.sendEmailHtmlTemplate(
       subject = request.subject!!,
       targetEmail = request.targetEmail!!,
-      text = request.text!!
     )
     return ResponseEntity.noContent().build()
   }

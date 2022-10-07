@@ -1,4 +1,4 @@
-package br.uff.graduatesapi
+package br.uff.graduatesapi.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

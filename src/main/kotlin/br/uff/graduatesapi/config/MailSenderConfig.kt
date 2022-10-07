@@ -1,4 +1,4 @@
-package br.uff.graduatesapi
+package br.uff.graduatesapi.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding

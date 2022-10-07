@@ -25,6 +25,7 @@ class SecurityConfig(
     override fun configure(http: HttpSecurity) {
         http.csrf().disable().authorizeRequests()
             .antMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/v1/register").permitAll()
             .anyRequest().authenticated()
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.addFilterBefore(
