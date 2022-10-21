@@ -20,31 +20,15 @@
         <td bgcolor="#ffffff" style="padding: 40px 30px;">
             <table align="center" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td width="100%" style="color: #000000; font-family: 'Roboto Light',sans-serif; font-size: 1.3rem;">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit aliquam
-                            consequat.
-                            Nunc
-                            a eros leo. Morbi eu tellus rutrum, convallis massa id, ullamcorper diam. Curabitur sed
-                            rhoncus
-                            nunc. Donec eu eros mauris. Nullam et turpis id nisi tristique tempor. Curabitur
-                            vestibulum
-                            nisl
-                            at nunc vestibulum, vitae congue neque venenatis.
-
-                            Para que isso seja possível, é necessário que o local de trabalho deles esteja
-                            atualizado
-                            nos
-                            nossos sistemas.
-                            <br/>
-                            <br/>
-                            Clique no botão abaixo para atualizar o registro dos seus ex-orientandos.
+                    <td th:text="${content}" width="100%"
+                        style="color: #000000; font-family: 'Roboto Light',sans-serif; font-size: 1.3rem;">
                     </td>
                 </tr>
                 <tr>
-                    <td align="center">
-                        <button style="cursor: pointer; border: none; color: #ffff; background-color: #0B6951; font-family: 'Roboto Light',sans-serif; font-size: 1.2rem; height: 60px; border-radius: 30px; padding: 20px;">
-                            Clique aqui para atualizar
-                        </button>
+                    <td align="center" style="height: 60px;">
+                        <a th:href="@{${buttonLink}}" th:text="${buttonText}" href="https://www.google.com" target="_blank"
+                           style="text-decoration: none; cursor: pointer; border: none; color: #ffff; background-color: #0B6951; font-family: 'Roboto Light',sans-serif; font-size: 1.2rem; height: 60px; border-radius: 30px; padding: 20px;">
+                        </a>
                     </td>
                 </tr>
             </table>

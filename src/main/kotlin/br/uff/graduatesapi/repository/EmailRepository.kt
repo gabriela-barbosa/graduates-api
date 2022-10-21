@@ -13,4 +13,5 @@ interface EmailRepository : JpaRepository<Email, Int>, EmailRepositoryCustom {
   @Transactional
   @Query("update Email email set email.active = false where email.active = true and email.isGraduateEmail= ?1")
   fun deactivateEmails(isGraduateEmail: Boolean)
+
 }

@@ -51,6 +51,7 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     CANT_UPDATE_CI_PROGRAM("Error updating CI program", "Erro ao atualizar programa do IC.", HttpStatus.INTERNAL_SERVER_ERROR),
 
     CANT_RETRIEVE_EMAILS("Cant retrieve emails", "Erro ao recuperar emails.", HttpStatus.INTERNAL_SERVER_ERROR),
+    EMAIL_NOT_FOUND("Email not found", "Email não encontrado.", HttpStatus.NOT_FOUND),
     CANT_CREATE_EMAIL("Error creating email", "Erro ao criar email.", HttpStatus.INTERNAL_SERVER_ERROR),
     CANT_DEACTIVATE_EMAILS("Error deactivating emails", "Erro ao desativar emails.", HttpStatus.INTERNAL_SERVER_ERROR),
 

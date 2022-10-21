@@ -10,6 +10,7 @@ import br.uff.graduatesapi.model.Email
 import br.uff.graduatesapi.model.EmailFilters
 import br.uff.graduatesapi.model.OffsetLimit
 import br.uff.graduatesapi.repository.EmailRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -31,6 +32,15 @@ class EmailService(
       ResponseResult.Success(resp)
     } catch (err: Error) {
       ResponseResult.Error(Errors.CANT_RETRIEVE_EMAILS)
+    }
+  }
+
+  fun findEmailById(id: Int): ResponseResult<Email> {
+    val email = emailRepository.findByIdOrNull(id)
+    return if (email == null) {
+      ResponseResult.Error(Errors.EMAIL_NOT_FOUND)
+    } else {
+      ResponseResult.Success(email)
     }
   }
 
