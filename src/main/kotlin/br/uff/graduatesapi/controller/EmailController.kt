@@ -64,14 +64,15 @@ class EmailController(
     }
   }
 
-//  @PreAuthorize("isAuthenticated()")
-//  @DeleteMapping("email/{id}")
-//  fun deleteCIPrograms(@PathVariable id: Int): ResponseEntity<Any> =
-//    when (val result = this.emailService.deleteProgram(id)) {
-//      is ResponseResult.Success -> ResponseEntity.noContent().build()
-//      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-//        .body(result.errorReason.responseMessage)
-//    }
+  @PreAuthorize("isAuthenticated()")
+  @DeleteMapping("email/{id}")
+  @ResponseBody
+  fun deleteEmail(@PathVariable id: Int): ResponseEntity<Any> =
+    when (val result = this.emailService.deleteEmail(id)) {
+      is ResponseResult.Success -> ResponseEntity.noContent().build()
+      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+        .body(result.errorReason.responseMessage)
+    }
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("email/{id}")

@@ -4,8 +4,10 @@ import br.uff.graduatesapi.model.PlatformUser
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.stereotype.Repository
 
-interface UserRepository : JpaRepository<PlatformUser, Int> {
+@Repository
+interface UserRepository : JpaRepository<PlatformUser, Int>, UserRepositoryCustom {
     fun findByEmail(email: String): PlatformUser?
 
     @Modifying

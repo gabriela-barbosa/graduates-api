@@ -7,6 +7,8 @@ import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.service.AuthService
 import br.uff.graduatesapi.service.UserService
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -54,6 +56,21 @@ class AuthController(
         .body(result.errorReason.responseMessage)
     }
 
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("users")
+  fun user(@RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
+           @RequestParam(value = "pageSize", required = false, defaultValue = "10") pageSize: Int,): ResponseEntity<Any> {
+
+    val pageable: Pageable = PageRequest.of(page, pageSize)
+    return when (val result = this.userService.getUsers(pageable)) {
+      is ResponseResult.Success -> {
+        ResponseEntity.ok(result.data)
+      }
+
+      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+        .body(result.errorReason.responseMessage)
+    }
+  }
   @PreAuthorize("isAuthenticated()")
   @GetMapping("user/{id}")
   fun getUserById(@PathVariable id: Int): ResponseEntity<Any> =

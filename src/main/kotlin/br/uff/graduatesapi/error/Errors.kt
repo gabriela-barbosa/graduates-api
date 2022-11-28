@@ -11,6 +11,7 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
   EMAIL_IN_USE("Email already in use", "Novo email já está sendo utilizado.", HttpStatus.UNPROCESSABLE_ENTITY),
 
   USER_NOT_FOUND("User not found", "Usuário não encontrado.", HttpStatus.NOT_FOUND),
+  CANT_RETRIEVE_USERS("Cant retrieve users", "Erro ao retorar usuários. Tente novamente.", HttpStatus.INTERNAL_SERVER_ERROR),
   UNAUTHORIZED(
     "Username or password is wrong.",
     "Usuário ou senha incorretos. Tente novamente.",
