@@ -11,7 +11,6 @@ import br.uff.graduatesapi.repository.WorkHistoryRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.util.*
 
 @Service
 class WorkHistoryService(
@@ -48,23 +47,28 @@ class WorkHistoryService(
   }
 
   fun getWorkHistoryDTO(id: Int): WorkHistoryDTO? {
-    val workHistory: WorkHistory = workHistoryRepository.findByIdOrNull(id) ?: return null
-    val graduate: Graduate = workHistory.graduate
-    val cnpq: CNPQScholarship? = cnpqScholarshipService.findActualCNPQScholarshipByGraduate(graduate)
-    val cnpqScholarship = if (cnpq != null) cnpq.level!!.id else null
-    val workHistoryDTO = WorkHistoryDTO(
-      email = workHistory.graduate.user.email,
-      position = workHistory.position,
-      cnpqLevelId = cnpqScholarship,
-      hasFinishedDoctorateOnUFF = workHistory.graduate.hasFinishedDoctorateOnUFF,
-      hasFinishedMasterDegreeOnUFF = workHistory.graduate.hasFinishedMasterDegreeOnUFF,
-      knownWorkPlace = graduate.historyStatus!!.knownWorkplace,
-    )
-    if (workHistory.institution != null)
-      workHistoryDTO.addInstitutionInfo(workHistory.institution!!)
-    if (graduate.postDoctorate != null)
-      workHistoryDTO.addPostDoctorate(graduate.postDoctorate!!)
-    return workHistoryDTO
+    try {
+      val workHistory: WorkHistory = workHistoryRepository.findByIdOrNull(id) ?: return null
+      val graduate: Graduate = workHistory.graduate
+      val cnpq: CNPQScholarship? = cnpqScholarshipService.findActualCNPQScholarshipByGraduate(graduate)
+      val cnpqScholarship = if (cnpq != null) cnpq.level!!.id else null
+      val workHistoryDTO = WorkHistoryDTO(
+        email = graduate.user.email,
+        position = workHistory.position,
+        cnpqLevelId = cnpqScholarship,
+        hasFinishedDoctorateOnUFF = workHistory.graduate.hasFinishedDoctorateOnUFF,
+        hasFinishedMasterDegreeOnUFF = workHistory.graduate.hasFinishedMasterDegreeOnUFF,
+        knownWorkPlace = workHistory.status === WorkHistoryStatus.UNKNOWN,
+      )
+      if (workHistory.institution != null)
+        workHistoryDTO.addInstitutionInfo(workHistory.institution!!)
+      if (graduate.postDoctorate != null)
+        workHistoryDTO.addPostDoctorate(graduate.postDoctorate!!)
+      return workHistoryDTO
+    } catch (err: Exception) {
+      throw err
+    }
+
   }
 
   fun getWorkHistory(id: Int): ResponseResult<WorkHistory> {
@@ -153,7 +157,7 @@ class WorkHistoryService(
 
     val graduate = respUser.data!!.graduate!!
 
-    if (workDTO.newEmail != null) {
+    if (!workDTO.newEmail.isNullOrBlank()) {
       val userResult = userService.updateEmail(workDTO.email, workDTO.newEmail)
       if (userResult is ResponseResult.Error) {
         return ResponseResult.Error(userResult.errorReason)

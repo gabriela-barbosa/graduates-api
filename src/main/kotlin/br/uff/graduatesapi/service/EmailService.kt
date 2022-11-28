@@ -35,6 +35,26 @@ class EmailService(
     }
   }
 
+  fun deleteEmail(
+    id: Int
+  ): ResponseResult<Nothing?> {
+    return try {
+      val result = this.findEmail(id)
+
+      if (result is ResponseResult.Error)
+        return ResponseResult.Error(Errors.INVALID_DATA)
+
+      val data = result.data
+
+      if (data!!.active)
+        return ResponseResult.Error(Errors.CANT_DELETE_AN_ACTIVE_EMAIL)
+      emailRepository.delete(data)
+      ResponseResult.Success(null)
+    } catch (err: Error) {
+      ResponseResult.Error(Errors.CANT_DELETE_EMAIL)
+    }
+  }
+
   fun findEmailById(id: Int): ResponseResult<Email> {
     val email = emailRepository.findByIdOrNull(id)
     return if (email == null) {
@@ -45,7 +65,7 @@ class EmailService(
   }
 
   fun findEmail(id: Int): ResponseResult<Email?> {
-    val result = emailRepository.getEmailById(id) ?: return ResponseResult.Error(Errors.CI_PROGRAM_NOT_FOUND)
+    val result = emailRepository.findByIdOrNull(id) ?: return ResponseResult.Error(Errors.EMAIL_NOT_FOUND)
     return ResponseResult.Success(result)
   }
 
@@ -65,10 +85,12 @@ class EmailService(
       content = createEmailDTO.content,
       buttonText = createEmailDTO.buttonText,
       buttonURL = createEmailDTO.buttonURL,
-      active = false,
+      active = createEmailDTO.active,
       isGraduateEmail = createEmailDTO.isGraduateEmail,
     )
     return try {
+      if(createEmailDTO.active)
+        emailRepository.deactivateEmails(createEmailDTO.isGraduateEmail)
       emailRepository.save(email)
       ResponseResult.Success(null)
     } catch (err: Error) {
@@ -96,11 +118,12 @@ class EmailService(
       updateEmailDTO.buttonText?.let { email.buttonText = it }
       updateEmailDTO.buttonURL?.let { email.buttonURL = it }
       updateEmailDTO.active?.let {
-        if (it && email.active) {
+        if (it && !email.active) {
           deactivateEmails(email.isGraduateEmail)
           email.active = true
         }
       }
+      emailRepository.save(email)
       ResponseResult.Success(null)
     } catch (err: Error) {
       ResponseResult.Error(Errors.CANT_UPDATE_CI_PROGRAM)

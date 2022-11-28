@@ -6,5 +6,6 @@ data class CreateEmailDTO(
   val content: String,
   val buttonText: String,
   val buttonURL: String,
+  val active: Boolean = false,
   val isGraduateEmail: Boolean,
   )

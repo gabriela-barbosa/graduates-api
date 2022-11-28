@@ -37,7 +37,7 @@ class EmailRepositoryImpl(
           emailFilters.id?.run { column(Email::id).equal(this) }
         )
       )
-      orderBy(column(Email::createdAt).desc())
+      orderBy(column(Email::active).desc(),column(Email::createdAt).desc())
       limit(
         pageConfig.offset,
         pageConfig.limit,

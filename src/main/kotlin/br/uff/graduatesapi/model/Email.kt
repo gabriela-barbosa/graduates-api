@@ -17,7 +17,7 @@ class Email(
   @Column(name = "title", nullable = false, updatable = true)
   var title: String = "",
 
-  @Column(name = "name", nullable = false, updatable = false)
+  @Column(name = "name", nullable = false, updatable = false, unique = true)
   var name: String = "",
 
   @Column(name = "content", nullable = false, updatable = true)
