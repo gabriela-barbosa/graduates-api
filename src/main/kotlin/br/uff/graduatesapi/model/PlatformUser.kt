@@ -1,7 +1,6 @@
 package br.uff.graduatesapi.model
 
 import br.uff.graduatesapi.enums.Role
-import br.uff.graduatesapi.enums.WorkHistoryStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude

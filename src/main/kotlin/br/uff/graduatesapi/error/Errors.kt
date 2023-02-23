@@ -3,15 +3,21 @@ package br.uff.graduatesapi.error
 import org.springframework.http.HttpStatus
 
 enum class Errors(val message: String, val responseMessage: String, val errorCode: HttpStatus) {
+  CANT_CREATE_USER(
+    "Error creating user",
+    "Erro ao tentar criar o usuário. Tente novamente.",
+    HttpStatus.INTERNAL_SERVER_ERROR
+  ),
+
   CANT_UPDATE_EMAIL(
     "Error updating email",
     "Erro ao atualizar email. Tente novamente.",
     HttpStatus.INTERNAL_SERVER_ERROR
   ),
-  EMAIL_IN_USE("Email already in use", "Novo email já está sendo utilizado.", HttpStatus.UNPROCESSABLE_ENTITY),
+  EMAIL_IN_USE("Email already in use", "Email em uso.", HttpStatus.UNPROCESSABLE_ENTITY),
 
   USER_NOT_FOUND("User not found", "Usuário não encontrado.", HttpStatus.NOT_FOUND),
-  CANT_RETRIEVE_USERS("Cant retrieve users", "Erro ao retorar usuários. Tente novamente.", HttpStatus.INTERNAL_SERVER_ERROR),
+  CANT_RETRIEVE_USERS("Cant retrieve users", "Erro ao retornar usuários. Tente novamente.", HttpStatus.INTERNAL_SERVER_ERROR),
   UNAUTHORIZED(
     "Username or password is wrong.",
     "Usuário ou senha incorretos. Tente novamente.",

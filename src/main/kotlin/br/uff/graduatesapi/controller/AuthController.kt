@@ -4,7 +4,6 @@ import br.uff.graduatesapi.dto.LoginDTO
 import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.dto.RegisterDTO
 import br.uff.graduatesapi.error.ResponseResult
-import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.service.AuthService
 import br.uff.graduatesapi.service.UserService
 import org.springframework.data.domain.PageRequest
@@ -23,15 +22,12 @@ class AuthController(
 ) {
 
   @PostMapping("register")
-  fun register(@RequestBody body: RegisterDTO): ResponseEntity<PlatformUser> {
-    val user = PlatformUser(
-      name = body.name,
-      email = body.email
-    )
-    user.password = body.password
-
-    return ResponseEntity.ok(this.userService.saveNewUser(user))
-  }
+  fun register(@RequestBody body: RegisterDTO): ResponseEntity<Any> =
+    when (val result = this.userService.createUpdateUser(body)) {
+      is ResponseResult.Success -> ResponseEntity.ok(result.data)
+      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+        .body(result.errorReason.responseMessage)
+    }
 
   @PostMapping("login")
   fun login(@RequestBody body: LoginDTO, response: HttpServletResponse): ResponseEntity<Any> {
@@ -47,7 +43,7 @@ class AuthController(
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("user")
-  fun user(@CookieValue("jwt") jwt: String): ResponseEntity<Any> =
+  fun getUserByJwt(@CookieValue("jwt") jwt: String): ResponseEntity<Any> =
     when (val result = this.userService.getUserByJwt(jwt)) {
       is ResponseResult.Success -> {
         ResponseEntity.ok(result.data)
@@ -58,7 +54,7 @@ class AuthController(
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("users")
-  fun user(@RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
+  fun getUsers(@RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
            @RequestParam(value = "pageSize", required = false, defaultValue = "10") pageSize: Int,): ResponseEntity<Any> {
 
     val pageable: Pageable = PageRequest.of(page, pageSize)

@@ -1,6 +1,8 @@
 package br.uff.graduatesapi.service
 
+import br.uff.graduatesapi.Utils.Companion.getRandomString
 import br.uff.graduatesapi.dto.GetUsersDTO
+import br.uff.graduatesapi.dto.RegisterDTO
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.PlatformUser
@@ -16,16 +18,45 @@ class UserService(
   private val passwordEncoder: BCryptPasswordEncoder,
   private val jwtUtil: JWTUtil,
 ) {
-
-  fun saveNewUser(user: PlatformUser): PlatformUser {
-    user.password = passwordEncoder.encode(user.password)
-    return this.userRepository.save(user)
-  }
-
   fun findByEmail(email: String): ResponseResult<PlatformUser> {
     val result = this.userRepository.findByEmail(email) ?: return ResponseResult.Error(Errors.USER_NOT_FOUND)
     return ResponseResult.Success(result)
   }
+  fun createUpdateUser(userDTO: RegisterDTO): ResponseResult<PlatformUser> {
+    try {
+      val user: PlatformUser
+      if (userDTO.id != null) {
+        val userResp = this.getById(userDTO.id)
+        if (userResp is ResponseResult.Success) {
+          val userUpdate = userResp.data!!
+          if (userDTO.email != userUpdate.email && this.findByEmail(userDTO.email) is ResponseResult.Success) {
+              return ResponseResult.Error( Errors.EMAIL_IN_USE)
+          }
+          userUpdate.email=userDTO.email
+          userUpdate.name = userDTO.name
+          userUpdate.role = userDTO.role
+          if (userDTO.password != null)
+            userUpdate.password = passwordEncoder.encode(userDTO.password)
+          user = userUpdate
+        } else {
+          return ResponseResult.Error( Errors.CANT_CREATE_USER)
+        }
+      } else {
+        if (this.findByEmail(userDTO.email) is ResponseResult.Success) {
+          return ResponseResult.Error(Errors.EMAIL_IN_USE)
+        }
+        user = PlatformUser(
+          name = userDTO.name,
+          email = userDTO.email,
+          role = userDTO.role,
+        )
+        user.password = passwordEncoder.encode(getRandomString(10))
+      }
+        return ResponseResult.Success(this.userRepository.save(user))
+      } catch (ex:Exception) {
+        return ResponseResult.Error(Errors.CANT_CREATE_USER)
+      }
+    }
 
   fun updateEmail(oldEmail: String, newEmail: String): ResponseResult<PlatformUser> {
     if (findByEmail(newEmail) is ResponseResult.Error)

@@ -15,6 +15,13 @@ class Utils {
       return OffsetLimit(offset = 0, limit = 100000000)
     }
 
+    fun getRandomString(length: Int) : String {
+      val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+      return (1..length)
+        .map { allowedChars.random() }
+        .joinToString("")
+    }
+
     fun getHistoryStatus(
       history: WorkHistory?,
       postDoctorate: Institution?,
