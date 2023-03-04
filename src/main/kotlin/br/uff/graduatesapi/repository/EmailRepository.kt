@@ -6,9 +6,10 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Repository
-interface EmailRepository : JpaRepository<Email, Int>, EmailRepositoryCustom {
+interface EmailRepository : JpaRepository<Email, UUID>, EmailRepositoryCustom {
   @Modifying
   @Transactional
   @Query("update Email email set email.active = false where email.active = true and email.isGraduateEmail= ?1")

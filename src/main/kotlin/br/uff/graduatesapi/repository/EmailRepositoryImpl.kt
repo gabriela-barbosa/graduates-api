@@ -1,13 +1,14 @@
 package br.uff.graduatesapi.repository
 
+import br.uff.graduatesapi.entity.EmailFilters
+import br.uff.graduatesapi.entity.OffsetLimit
 import br.uff.graduatesapi.model.Email
-import br.uff.graduatesapi.model.EmailFilters
-import br.uff.graduatesapi.model.OffsetLimit
 import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.spring.data.SpringDataQueryFactory
 import com.linecorp.kotlinjdsl.spring.data.listQuery
 import com.linecorp.kotlinjdsl.spring.data.singleQuery
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 class EmailRepositoryImpl(
@@ -45,7 +46,7 @@ class EmailRepositoryImpl(
     }
   }
 
-  override fun getEmailById(id: Int): Email? {
+  override fun getEmailById(id: UUID): Email? {
     return queryFactory.singleQuery {
       select(entity(Email::class))
       from(entity(Email::class))

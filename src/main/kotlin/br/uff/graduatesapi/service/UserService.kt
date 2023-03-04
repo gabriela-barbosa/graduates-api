@@ -11,86 +11,88 @@ import br.uff.graduatesapi.security.JWTUtil
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class UserService(
-  private val userRepository: UserRepository,
-  private val passwordEncoder: BCryptPasswordEncoder,
-  private val jwtUtil: JWTUtil,
+    private val userRepository: UserRepository,
+    private val passwordEncoder: BCryptPasswordEncoder,
+    private val jwtUtil: JWTUtil,
 ) {
-  fun findByEmail(email: String): ResponseResult<PlatformUser> {
-    val result = this.userRepository.findByEmail(email) ?: return ResponseResult.Error(Errors.USER_NOT_FOUND)
-    return ResponseResult.Success(result)
-  }
-  fun createUpdateUser(userDTO: RegisterDTO): ResponseResult<PlatformUser> {
-    try {
-      val user: PlatformUser
-      if (userDTO.id != null) {
-        val userResp = this.getById(userDTO.id)
-        if (userResp is ResponseResult.Success) {
-          val userUpdate = userResp.data!!
-          if (userDTO.email != userUpdate.email && this.findByEmail(userDTO.email) is ResponseResult.Success) {
-              return ResponseResult.Error( Errors.EMAIL_IN_USE)
-          }
-          userUpdate.email=userDTO.email
-          userUpdate.name = userDTO.name
-          userUpdate.role = userDTO.role
-          if (userDTO.password != null)
-            userUpdate.password = passwordEncoder.encode(userDTO.password)
-          user = userUpdate
-        } else {
-          return ResponseResult.Error( Errors.CANT_CREATE_USER)
+    fun findByEmail(email: String): ResponseResult<PlatformUser> {
+        val result = this.userRepository.findByEmail(email) ?: return ResponseResult.Error(Errors.USER_NOT_FOUND)
+        return ResponseResult.Success(result)
+    }
+
+    fun createUpdateUser(userDTO: RegisterDTO): ResponseResult<PlatformUser> {
+        try {
+            val user: PlatformUser
+            if (userDTO.id != null) {
+                val userResp = this.getById(userDTO.id)
+                if (userResp is ResponseResult.Success) {
+                    val userUpdate = userResp.data!!
+                    if (userDTO.email != userUpdate.email && this.findByEmail(userDTO.email) is ResponseResult.Success) {
+                        return ResponseResult.Error(Errors.EMAIL_IN_USE)
+                    }
+                    userUpdate.email = userDTO.email
+                    userUpdate.name = userDTO.name
+                    userUpdate.roles = userDTO.role
+                    if (userDTO.password != null)
+                        userUpdate.password = passwordEncoder.encode(userDTO.password)
+                    user = userUpdate
+                } else {
+                    return ResponseResult.Error(Errors.CANT_CREATE_USER)
+                }
+            } else {
+                if (this.findByEmail(userDTO.email) is ResponseResult.Success) {
+                    return ResponseResult.Error(Errors.EMAIL_IN_USE)
+                }
+                user = PlatformUser(
+                    name = userDTO.name,
+                    email = userDTO.email,
+                    roles = userDTO.role,
+                )
+                user.password = passwordEncoder.encode(getRandomString(10))
+            }
+            return ResponseResult.Success(this.userRepository.save(user))
+        } catch (ex: Exception) {
+            return ResponseResult.Error(Errors.CANT_CREATE_USER)
         }
-      } else {
-        if (this.findByEmail(userDTO.email) is ResponseResult.Success) {
-          return ResponseResult.Error(Errors.EMAIL_IN_USE)
+    }
+
+    fun updateEmail(oldEmail: String, newEmail: String): ResponseResult<PlatformUser> {
+        if (findByEmail(newEmail) is ResponseResult.Error)
+            return ResponseResult.Error(Errors.EMAIL_IN_USE)
+        val userUpdated = this.userRepository.updateEmail(newEmail, oldEmail)
+            ?: return ResponseResult.Error(Errors.CANT_UPDATE_EMAIL)
+        return ResponseResult.Success(userUpdated)
+    }
+
+    fun getById(id: UUID): ResponseResult<PlatformUser> {
+        return try {
+            ResponseResult.Success(this.userRepository.getById(id))
+        } catch (ex: Exception) {
+            ResponseResult.Error(Errors.USER_NOT_FOUND)
         }
-        user = PlatformUser(
-          name = userDTO.name,
-          email = userDTO.email,
-          role = userDTO.role,
-        )
-        user.password = passwordEncoder.encode(getRandomString(10))
-      }
-        return ResponseResult.Success(this.userRepository.save(user))
-      } catch (ex:Exception) {
-        return ResponseResult.Error(Errors.CANT_CREATE_USER)
-      }
     }
 
-  fun updateEmail(oldEmail: String, newEmail: String): ResponseResult<PlatformUser> {
-    if (findByEmail(newEmail) is ResponseResult.Error)
-      return ResponseResult.Error(Errors.EMAIL_IN_USE)
-    val userUpdated = this.userRepository.updateEmail(newEmail, oldEmail)
-      ?: return ResponseResult.Error(Errors.CANT_UPDATE_EMAIL)
-    return ResponseResult.Success(userUpdated)
-  }
-
-  fun getById(id: Int): ResponseResult<PlatformUser> {
-    return try {
-      ResponseResult.Success(this.userRepository.getById(id))
-    } catch (ex: Exception) {
-      ResponseResult.Error(Errors.USER_NOT_FOUND)
+    fun getUsers(pageable: Pageable): ResponseResult<GetUsersDTO> {
+        return try {
+            ResponseResult.Success(this.userRepository.findAllUsers(pageable)!!)
+        } catch (ex: Exception) {
+            ResponseResult.Error(Errors.CANT_RETRIEVE_USERS)
+        }
     }
-  }
 
-  fun getUsers(pageable: Pageable): ResponseResult<GetUsersDTO> {
-    return try {
-      ResponseResult.Success(this.userRepository.findAllUsers(pageable)!!)
-    } catch (ex: Exception) {
-      ResponseResult.Error(Errors.CANT_RETRIEVE_USERS)
-    }
-  }
+    fun getUserByJwt(jwt: String): ResponseResult<PlatformUser> =
+        try {
+            val body = jwtUtil.parseJwtToBody(jwt)
 
-  fun getUserByJwt(jwt: String): ResponseResult<PlatformUser> {
-    try {
-      val body = jwtUtil.parseJwtToBody(jwt)
-      val result = getById(body.issuer.toInt())
-      if (result is ResponseResult.Success)
-        return ResponseResult.Success(result.data!!)
-      return ResponseResult.Error(Errors.USER_NOT_FOUND)
-    } catch (e: Exception) {
-      return ResponseResult.Error(Errors.USER_NOT_FOUND)
-    }
-  }
+            when (val result = getById(UUID.fromString(body.issuer))) {
+                is ResponseResult.Success -> ResponseResult.Success(result.data!!)
+                is ResponseResult.Error -> ResponseResult.Error(Errors.USER_NOT_FOUND)
+            }
+        } catch (e: Exception) {
+            ResponseResult.Error(Errors.USER_NOT_FOUND)
+        }
 }

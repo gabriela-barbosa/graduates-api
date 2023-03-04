@@ -1,8 +1,9 @@
 package br.uff.graduatesapi.controller
 
 import br.uff.graduatesapi.Utils
+import br.uff.graduatesapi.entity.GraduateFilters
+import br.uff.graduatesapi.enum.Role
 import br.uff.graduatesapi.error.ResponseResult
-import br.uff.graduatesapi.model.GraduateFilters
 import br.uff.graduatesapi.service.GraduateService
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
@@ -20,6 +21,7 @@ class GraduateController(private val graduateService: GraduateService) {
     @RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
     @RequestParam(value = "pageSize", required = false, defaultValue = "10") pageSize: Int,
     @RequestParam(value = "name", required = false) name: String?,
+    @RequestParam(value = "currentRole", required = true) currentRole: Role,
     @RequestParam(value = "institutionType", required = false) institutionType: Int?,
     @RequestParam(value = "institutionName", required = false) institutionName: String?,
   ): ResponseEntity<Any>? {
@@ -31,7 +33,7 @@ class GraduateController(private val graduateService: GraduateService) {
     )
 
     val pageSetting = Utils.convertPagination(page, pageSize)
-    return when (val result = graduateService.getGraduatesByAdvisor(jwt, pageSetting, filters)) {
+    return when (val result = graduateService.getGraduatesByAdvisor(jwt, currentRole, pageSetting, filters)) {
       is ResponseResult.Success -> ResponseEntity.ok(result.data)
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)

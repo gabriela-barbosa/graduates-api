@@ -1,8 +1,8 @@
 package br.uff.graduatesapi
 
-import br.uff.graduatesapi.enums.WorkHistoryStatus
+import br.uff.graduatesapi.enum.WorkHistoryStatus
 import br.uff.graduatesapi.model.Institution
-import br.uff.graduatesapi.model.OffsetLimit
+import br.uff.graduatesapi.entity.OffsetLimit
 import br.uff.graduatesapi.model.WorkHistory
 
 class Utils {

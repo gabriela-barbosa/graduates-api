@@ -9,22 +9,24 @@ import javax.persistence.*
 
 @Entity
 class CNPQLevel(
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    var id: Int? = null,
 
-    @Column(name = "level", nullable = false, updatable = false)
-    var level: String,
+  @Column(name = "level", nullable = false, updatable = false)
+  var level: String,
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "level")
-    var cnpqScholarship: List<CNPQScholarship>? = null,
+  @Column(name = "active", nullable = false, updatable = true)
+  val active: Boolean = true,
 
-    @Column(name = "active", nullable = false, updatable = true)
-    val active: Boolean = true,
+  ) {
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", nullable = false)
+  lateinit var id: UUID
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: LocalDate? = null
-)
+  @JsonIgnore
+  @OneToMany(mappedBy = "level")
+  var cnpqScholarship: List<CNPQScholarship> = emptyList()
+
+  @CreationTimestamp
+  @Column(name = "created_at", nullable = false, updatable = false)
+  lateinit var createdAt: LocalDate
+}

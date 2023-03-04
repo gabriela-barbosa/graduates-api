@@ -7,12 +7,13 @@ import br.uff.graduatesapi.model.CNPQLevel
 import br.uff.graduatesapi.repository.CNPQLevelRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class CNPQLevelService(
     private val cnpqLevelRepository: CNPQLevelRepository
 ) {
-    fun findById(id: Int): ResponseResult<CNPQLevel> {
+    fun findById(id: UUID): ResponseResult<CNPQLevel> {
         val result = cnpqLevelRepository.findByIdOrNull(id) ?: return ResponseResult.Error(Errors.CNPQ_LEVEL_NOT_FOUND)
         return ResponseResult.Success(result)
     }
@@ -25,7 +26,8 @@ class CNPQLevelService(
             ResponseResult.Error(Errors.CANT_RETRIEVE_CNPQ_LEVELS)
         }
     }
-    fun deleteCNPQLevel (id: Int): ResponseResult<Nothing?> {
+
+    fun deleteCNPQLevel(id: UUID): ResponseResult<Nothing?> {
         return try {
             cnpqLevelRepository.deleteById(id)
             ResponseResult.Success(null)
@@ -44,12 +46,12 @@ class CNPQLevelService(
         }
     }
 
-    fun editLevel(levelDTO: CNPQLevelDTO, id: Int): ResponseResult<Nothing?> {
+    fun editLevel(levelDTO: CNPQLevelDTO, id: UUID): ResponseResult<Nothing?> {
         return try {
-            val result = this.findById(id)
-            if (result is ResponseResult.Error)
-                return ResponseResult.Error(Errors.INVALID_DATA)
-            val level = result.data!!
+            val level = when (val result = this.findById(id)) {
+                is ResponseResult.Success -> result.data!!
+                is ResponseResult.Error -> return ResponseResult.Error(Errors.INVALID_DATA)
+            }
             level.level = levelDTO.level
             cnpqLevelRepository.save(level)
             ResponseResult.Success(null)

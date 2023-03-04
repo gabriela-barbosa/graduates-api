@@ -1,6 +1,4 @@
-package br.uff.graduatesapi.model
-
-import br.uff.graduatesapi.model.Institution
+package br.uff.graduatesapi.entity
 
 data class OffsetLimit(
   val offset: Int = 0,

@@ -5,7 +5,7 @@ import br.uff.graduatesapi.dto.CreateEmailDTO
 import br.uff.graduatesapi.dto.EmailSendDTO
 import br.uff.graduatesapi.dto.UpdateEmailDTO
 import br.uff.graduatesapi.error.ResponseResult
-import br.uff.graduatesapi.model.EmailFilters
+import br.uff.graduatesapi.entity.EmailFilters
 import br.uff.graduatesapi.service.EmailSenderService
 import br.uff.graduatesapi.service.EmailService
 import org.springframework.http.ResponseEntity

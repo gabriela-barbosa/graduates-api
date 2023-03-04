@@ -7,16 +7,17 @@ import br.uff.graduatesapi.model.Institution
 import br.uff.graduatesapi.repository.InstitutionRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class InstitutionService(
     private val institutionRepository: InstitutionRepository,
     private val institutionTypeService: InstitutionTypeService,
 ) {
-    fun findById(id: Int): Institution? {
+    fun findById(id: UUID): Institution? {
         return institutionRepository.findByIdOrNull(id)
     }
-    fun deleteInstitution(id: Int): ResponseResult<Nothing?> {
+    fun deleteInstitution(id: UUID): ResponseResult<Nothing?> {
         return try{
             institutionRepository.deleteById(id)
             return ResponseResult.Success(null)
@@ -25,14 +26,14 @@ class InstitutionService(
         }
     }
 
-    fun findByNameAndType(name: String, type: Int): ResponseResult<Institution> {
+    fun findByNameAndType(name: String, type: UUID): ResponseResult<Institution> {
         val resultInstitution = institutionRepository.findByNameAndTypeId(name, type)
             ?: return ResponseResult.Error(Errors.INSTITUTION_NOT_FOUND)
         return ResponseResult.Success(resultInstitution)
     }
 
     fun createInstitution(institution: Institution): ResponseResult<Institution> {
-        val resultInstitution = findByNameAndType(institution.name, institution.type!!.id!!)
+        val resultInstitution = findByNameAndType(institution.name, institution.type.id)
         if (resultInstitution is ResponseResult.Success) return resultInstitution
         return try {
             val respInstitution = institutionRepository.save(institution)
@@ -43,15 +44,17 @@ class InstitutionService(
     }
 
     fun createInstitutionByInstitutionDTO(newInstitution: InstitutionDTO): ResponseResult<Institution> {
-        val institutionTypeRes = institutionTypeService.findById(newInstitution.type)
-        if (institutionTypeRes is ResponseResult.Error) {
-            return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND)
+
+        val institutionType = when (val resultLevel = institutionTypeService.findById(newInstitution.type)) {
+            is ResponseResult.Success -> resultLevel.data!!
+            is ResponseResult.Error -> return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND)
         }
-        val institutionType = institutionTypeRes.data
+
         val institution = Institution(
             name = newInstitution.name,
             type = institutionType
         )
+
         val institutionSaved = createInstitution(institution)
         if (institutionSaved is ResponseResult.Error) return ResponseResult.Error(institutionSaved.errorReason)
         return institutionSaved

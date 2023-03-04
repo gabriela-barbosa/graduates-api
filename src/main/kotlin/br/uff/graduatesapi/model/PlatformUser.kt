@@ -1,21 +1,19 @@
 package br.uff.graduatesapi.model
 
-import br.uff.graduatesapi.enums.Role
+import br.uff.graduatesapi.enum.Role
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.hibernate.annotations.CreationTimestamp
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.time.LocalDate
+import java.util.UUID
 import javax.persistence.*
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class PlatformUser(
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Int? = null,
 
     @Column(nullable = false)
     var name: String,
@@ -23,19 +21,25 @@ class PlatformUser(
     @Column(unique = true, nullable = false)
     var email: String,
 
-    @Column(name = "role", nullable = true)
-    var role: Role? = Role.GRADUATE,
+    @ElementCollection
+    @Enumerated(EnumType.ORDINAL)
+    var roles: List<Role> = mutableListOf(),
 
     @OneToOne(mappedBy = "user")
     var advisor: Advisor? = null,
 
     @OneToOne(mappedBy = "user")
-    var graduate: Graduate? = null,
+    var graduate: Graduate,
+
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    lateinit var id: UUID
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: LocalDate? = null
-) {
+    lateinit var createdAt: LocalDate
+
     @Column(nullable = false)
     var password = ""
         @JsonIgnore

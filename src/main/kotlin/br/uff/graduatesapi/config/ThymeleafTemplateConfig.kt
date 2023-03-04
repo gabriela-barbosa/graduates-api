@@ -15,9 +15,9 @@ class ThymeleafTemplateConfig {
     emailTemplateResolver.prefix = "/email/"
     emailTemplateResolver.suffix = ".html"
     emailTemplateResolver.templateMode = TemplateMode.HTML
-    emailTemplateResolver.characterEncoding = StandardCharsets.UTF_8.name();
-    emailTemplateResolver.isCacheable = false;
-    return emailTemplateResolver;
+    emailTemplateResolver.characterEncoding = StandardCharsets.UTF_8.name()
+    emailTemplateResolver.isCacheable = false
+    return emailTemplateResolver
   }
 
   @Bean

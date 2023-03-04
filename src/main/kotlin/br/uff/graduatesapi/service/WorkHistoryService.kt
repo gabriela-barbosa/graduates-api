@@ -3,7 +3,7 @@ package br.uff.graduatesapi.service
 import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.InstitutionDTO
 import br.uff.graduatesapi.dto.WorkHistoryDTO
-import br.uff.graduatesapi.enums.WorkHistoryStatus
+import br.uff.graduatesapi.enum.WorkHistoryStatus
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.*
@@ -11,6 +11,7 @@ import br.uff.graduatesapi.repository.WorkHistoryRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.util.*
 
 @Service
 class WorkHistoryService(
@@ -34,10 +35,10 @@ class WorkHistoryService(
     }
   }
 
-  fun getLastWorkHistoryByGraduate(graduateId: Int): ResponseResult<WorkHistoryDTO> {
+  fun getLastWorkHistoryByGraduate(graduateId: UUID): ResponseResult<WorkHistoryDTO> {
     return try {
       val workHistory: WorkHistory = workHistoryRepository.findFirstByGraduateIdIsOrderByCreatedAtDesc(graduateId)
-      val workHistoryDTO = getWorkHistoryDTO(workHistory.id!!)
+      val workHistoryDTO = getWorkHistoryDTO(workHistory.id)
       if (workHistoryDTO != null)
         return ResponseResult.Success(workHistoryDTO)
       ResponseResult.Error(Errors.CANT_GET_LAST_WORK_HISTORY)
@@ -46,12 +47,12 @@ class WorkHistoryService(
     }
   }
 
-  fun getWorkHistoryDTO(id: Int): WorkHistoryDTO? {
+  fun getWorkHistoryDTO(id: UUID): WorkHistoryDTO? {
     try {
       val workHistory: WorkHistory = workHistoryRepository.findByIdOrNull(id) ?: return null
       val graduate: Graduate = workHistory.graduate
       val cnpq: CNPQScholarship? = cnpqScholarshipService.findActualCNPQScholarshipByGraduate(graduate)
-      val cnpqScholarship = if (cnpq != null) cnpq.level!!.id else null
+      val cnpqScholarship = cnpq?.level?.id
       val workHistoryDTO = WorkHistoryDTO(
         email = graduate.user.email,
         position = workHistory.position,
@@ -71,8 +72,8 @@ class WorkHistoryService(
 
   }
 
-  fun getWorkHistory(id: Int): ResponseResult<WorkHistory> {
-    val resp = workHistoryRepository.findByIdOrNull(1) ?: return ResponseResult.Error(Errors.WORK_HISTORY_NOT_FOUND)
+  fun getWorkHistory(id: UUID): ResponseResult<WorkHistory> {
+    val resp = workHistoryRepository.findByIdOrNull(id) ?: return ResponseResult.Error(Errors.WORK_HISTORY_NOT_FOUND)
     return ResponseResult.Success(resp)
   }
 
@@ -132,7 +133,7 @@ class WorkHistoryService(
   }
 
   fun createOrUpdateWorkHistory(
-    id: Int?,
+    id: UUID?,
     graduate: Graduate,
     position: String?,
     institutionDTO: InstitutionDTO?
@@ -147,7 +148,9 @@ class WorkHistoryService(
     }
   }
 
-  fun createGraduateHistory(workDTO: WorkHistoryDTO, id: Int? = null): ResponseResult<Int> {
+  fun createGraduateHistory(workDTO: WorkHistoryDTO, id: UUID? = null): ResponseResult<UUID> {
+
+
     val respUser = userService.findByEmail(workDTO.email)
     if (respUser is ResponseResult.Error) {
       if (respUser.errorReason == Errors.USER_NOT_FOUND)
@@ -155,7 +158,7 @@ class WorkHistoryService(
       return ResponseResult.Error(respUser.errorReason)
     }
 
-    val graduate = respUser.data!!.graduate!!
+    val graduate = respUser.data!!.graduate
 
     if (!workDTO.newEmail.isNullOrBlank()) {
       val userResult = userService.updateEmail(workDTO.email, workDTO.newEmail)

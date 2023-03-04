@@ -1,4 +1,4 @@
-package br.uff.graduatesapi.enums
+package br.uff.graduatesapi.enum
 
 enum class Role {
     ADMIN,

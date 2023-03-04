@@ -1,8 +1,10 @@
 package br.uff.graduatesapi.dto
 
+import java.util.*
+
 
 data class InstitutionDTO(
-    val id: Int?,
-    val type: Int,
+    val id: UUID?,
+    val type: UUID,
     val name: String,
 )

@@ -4,8 +4,9 @@ import br.uff.graduatesapi.model.Graduate
 import br.uff.graduatesapi.model.WorkHistory
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import java.util.*
 
-interface WorkHistoryRepository : JpaRepository<WorkHistory, Int> {
+interface WorkHistoryRepository : JpaRepository<WorkHistory, UUID> {
     @Query(
         "WITH ranked_messages AS (\n" +
                 "    SELECT m.*, ROW_NUMBER() OVER (PARTITION BY graduate_id ORDER BY created_at DESC, updated_at DESC ) AS rn\n" +
@@ -15,5 +16,5 @@ interface WorkHistoryRepository : JpaRepository<WorkHistory, Int> {
     )
     fun findTopByGraduateOrderByCreatedAtDesc(graduates: List<Graduate>): List<WorkHistory>?
 
-    fun findFirstByGraduateIdIsOrderByCreatedAtDesc(id: Int): WorkHistory
+    fun findFirstByGraduateIdIsOrderByCreatedAtDesc(id: UUID): WorkHistory
 }

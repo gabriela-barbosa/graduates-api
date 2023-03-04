@@ -1,6 +1,6 @@
 package br.uff.graduatesapi.model
 
-import br.uff.graduatesapi.enums.WorkHistoryStatus
+import br.uff.graduatesapi.enum.WorkHistoryStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDate
@@ -9,11 +9,6 @@ import javax.persistence.*
 
 @Entity
 class HistoryStatus(
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    var id: Int? = null,
-
     @Column(name = "known_workplace", nullable = true)
     var knownWorkplace: Boolean?,
 
@@ -23,8 +18,13 @@ class HistoryStatus(
 
     @Column(name = "status", nullable = false)
     var status: WorkHistoryStatus = WorkHistoryStatus.PENDING,
+    ) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    lateinit var id: UUID
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: LocalDate? = null
-)
+    lateinit var createdAt: LocalDate
+}
