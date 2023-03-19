@@ -6,6 +6,7 @@ import br.uff.graduatesapi.service.WorkHistoryService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("api/v1")
@@ -14,14 +15,14 @@ class WorkHistoryController(
 ) {
   @PreAuthorize("isAuthenticated()")
   @GetMapping("workhistory/{id}")
-  fun getWorkHistory(@PathVariable id: Int): ResponseEntity<Any> {
+  fun getWorkHistory(@PathVariable id: UUID): ResponseEntity<Any> {
     val workHistory = workHistoryService.getWorkHistoryDTO(id)
     return ResponseEntity.ok(workHistory)
   }
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("workhistory/graduate/{id}")
-  fun getWorkHistoryByGraduate(@PathVariable id: Int): ResponseEntity<Any> {
+  fun getWorkHistoryByGraduate(@PathVariable id: UUID): ResponseEntity<Any> {
     return when (val result = workHistoryService.getLastWorkHistoryByGraduate(id)) {
       is ResponseResult.Success -> ResponseEntity.ok(result)
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
@@ -42,7 +43,7 @@ class WorkHistoryController(
   @PreAuthorize("isAuthenticated()")
   @PutMapping("workhistory/{id}")
   fun updateWorkHistory(
-    @PathVariable id: Int,
+    @PathVariable id: UUID,
     @RequestBody workDTO: WorkHistoryDTO
   ): ResponseEntity<String> {
     return when (val result = workHistoryService.createGraduateHistory(workDTO, id)) {

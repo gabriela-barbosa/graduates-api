@@ -168,7 +168,7 @@ class WorkHistoryService(
     }
 
     val resultHistory =
-      this.createOrUpdateWorkHistory(id, graduate, workDTO.position, workDTO.institution)
+      this.createOrUpdateWorkHistory(id, graduate!!, workDTO.position, workDTO.institution)
     if (resultHistory is ResponseResult.Error) return ResponseResult.Error(resultHistory.errorReason)
 
     val institutionPostDoctorateDTO = workDTO.postDoctorate

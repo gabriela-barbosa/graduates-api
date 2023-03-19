@@ -8,6 +8,6 @@ data class RegisterDTO(
     val id: UUID?,
     val name: String,
     val email: String,
-    val role: Role,
+    val roles: List<Role>,
     val password: String?,
 )

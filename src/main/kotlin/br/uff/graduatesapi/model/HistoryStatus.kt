@@ -17,6 +17,7 @@ class HistoryStatus(
     var graduate: Graduate,
 
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     var status: WorkHistoryStatus = WorkHistoryStatus.PENDING,
     ) {
     @Id

@@ -11,7 +11,7 @@ import br.uff.graduatesapi.security.JWTUtil
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 class UserService(
@@ -24,41 +24,53 @@ class UserService(
         return ResponseResult.Success(result)
     }
 
-    fun createUpdateUser(userDTO: RegisterDTO): ResponseResult<PlatformUser> {
+    fun updateUser(id: UUID, userDTO: RegisterDTO): ResponseResult<PlatformUser> {
         try {
-            val user: PlatformUser
-            if (userDTO.id != null) {
-                val userResp = this.getById(userDTO.id)
-                if (userResp is ResponseResult.Success) {
-                    val userUpdate = userResp.data!!
-                    if (userDTO.email != userUpdate.email && this.findByEmail(userDTO.email) is ResponseResult.Success) {
-                        return ResponseResult.Error(Errors.EMAIL_IN_USE)
-                    }
-                    userUpdate.email = userDTO.email
-                    userUpdate.name = userDTO.name
-                    userUpdate.roles = userDTO.role
-                    if (userDTO.password != null)
-                        userUpdate.password = passwordEncoder.encode(userDTO.password)
-                    user = userUpdate
-                } else {
-                    return ResponseResult.Error(Errors.CANT_CREATE_USER)
-                }
-            } else {
-                if (this.findByEmail(userDTO.email) is ResponseResult.Success) {
-                    return ResponseResult.Error(Errors.EMAIL_IN_USE)
-                }
-                user = PlatformUser(
-                    name = userDTO.name,
-                    email = userDTO.email,
-                    roles = userDTO.role,
-                )
-                user.password = passwordEncoder.encode(getRandomString(10))
+            val user = when (val userResp = this.getById(id)) {
+                is ResponseResult.Success -> userResp.data!!
+                is ResponseResult.Error -> return ResponseResult.Error(Errors.CANT_CREATE_USER)
             }
+
+            if (userDTO.email != user.email && this.findByEmail(userDTO.email) is ResponseResult.Success) {
+                return ResponseResult.Error(Errors.EMAIL_IN_USE)
+            }
+
+            user.email = userDTO.email
+            user.name = userDTO.name
+            user.roles = userDTO.roles
+
+            if (userDTO.password != null)
+                user.password = passwordEncoder.encode(userDTO.password)
+
             return ResponseResult.Success(this.userRepository.save(user))
         } catch (ex: Exception) {
             return ResponseResult.Error(Errors.CANT_CREATE_USER)
         }
     }
+
+    fun createUser(userDTO: RegisterDTO): ResponseResult<PlatformUser> {
+        try {
+            if (this.findByEmail(userDTO.email) is ResponseResult.Success) {
+                return ResponseResult.Error(Errors.EMAIL_IN_USE)
+            }
+            val user = PlatformUser(
+                name = userDTO.name,
+                email = userDTO.email,
+                roles = userDTO.roles,
+            )
+            user.password = passwordEncoder.encode(getRandomString(10))
+            return ResponseResult.Success(this.userRepository.save(user))
+        } catch (ex: Exception) {
+            return ResponseResult.Error(Errors.CANT_CREATE_USER)
+        }
+    }
+
+    fun createUpdateUser(userDTO: RegisterDTO): ResponseResult<PlatformUser> =
+        if (userDTO.id != null) {
+            this.updateUser(userDTO.id, userDTO)
+        } else {
+            this.createUser(userDTO)
+        }
 
     fun updateEmail(oldEmail: String, newEmail: String): ResponseResult<PlatformUser> {
         if (findByEmail(newEmail) is ResponseResult.Error)

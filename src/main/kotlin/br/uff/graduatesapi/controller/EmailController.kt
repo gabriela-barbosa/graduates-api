@@ -4,13 +4,14 @@ import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.CreateEmailDTO
 import br.uff.graduatesapi.dto.EmailSendDTO
 import br.uff.graduatesapi.dto.UpdateEmailDTO
-import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.entity.EmailFilters
+import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.service.EmailSenderService
 import br.uff.graduatesapi.service.EmailService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("api/v1")
@@ -67,7 +68,7 @@ class EmailController(
   @PreAuthorize("isAuthenticated()")
   @DeleteMapping("email/{id}")
   @ResponseBody
-  fun deleteEmail(@PathVariable id: Int): ResponseEntity<Any> =
+  fun deleteEmail(@PathVariable id: UUID): ResponseEntity<Any> =
     when (val result = this.emailService.deleteEmail(id)) {
       is ResponseResult.Success -> ResponseEntity.noContent().build()
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
@@ -76,7 +77,7 @@ class EmailController(
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("email/{id}")
-  fun getEmail(@PathVariable id: Int): ResponseEntity<Any> =
+  fun getEmail(@PathVariable id: UUID): ResponseEntity<Any> =
     when (val result = this.emailService.findEmail(id)) {
       is ResponseResult.Success -> ResponseEntity.ok(result.data)
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
@@ -94,7 +95,7 @@ class EmailController(
 
   @PreAuthorize("isAuthenticated()")
   @PutMapping("email/{id}")
-  fun editEmail(@RequestBody updateEmailDTO: UpdateEmailDTO, @PathVariable id: Int): ResponseEntity<Any> =
+  fun editEmail(@RequestBody updateEmailDTO: UpdateEmailDTO, @PathVariable id: UUID): ResponseEntity<Any> =
     when (val result = this.emailService.editEmail(updateEmailDTO, id)) {
       is ResponseResult.Success -> ResponseEntity.noContent().build()
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)

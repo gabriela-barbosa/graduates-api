@@ -21,15 +21,17 @@ class PlatformUser(
     @Column(unique = true, nullable = false)
     var email: String,
 
-    @ElementCollection
-    @Enumerated(EnumType.ORDINAL)
+    @ElementCollection(targetClass = Role::class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name="platform_user_role")
+    @Column(name="role")
     var roles: List<Role> = mutableListOf(),
 
     @OneToOne(mappedBy = "user")
     var advisor: Advisor? = null,
 
     @OneToOne(mappedBy = "user")
-    var graduate: Graduate,
+    var graduate: Graduate? = null,
 
 ) {
     @Id

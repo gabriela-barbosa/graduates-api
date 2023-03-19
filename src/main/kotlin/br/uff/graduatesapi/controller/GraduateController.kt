@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 
 @RestController
@@ -22,7 +23,7 @@ class GraduateController(private val graduateService: GraduateService) {
     @RequestParam(value = "pageSize", required = false, defaultValue = "10") pageSize: Int,
     @RequestParam(value = "name", required = false) name: String?,
     @RequestParam(value = "currentRole", required = true) currentRole: Role,
-    @RequestParam(value = "institutionType", required = false) institutionType: Int?,
+    @RequestParam(value = "institutionType", required = false) institutionType: UUID?,
     @RequestParam(value = "institutionName", required = false) institutionName: String?,
   ): ResponseEntity<Any>? {
 //    val pageSetting = PageRequest.of(page, pageSize)
@@ -56,7 +57,7 @@ class GraduateController(private val graduateService: GraduateService) {
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("graduate/{id}")
-  fun getGraduateById(@PathVariable id: Int): ResponseEntity<Any>? {
+  fun getGraduateById(@PathVariable id: UUID): ResponseEntity<Any>? {
     return when (val result = graduateService.getGraduateById(id)) {
       is ResponseResult.Success -> ResponseEntity.ok(result.data)
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)

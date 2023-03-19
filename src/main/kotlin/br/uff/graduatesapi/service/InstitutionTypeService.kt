@@ -53,13 +53,8 @@ class InstitutionTypeService(
 
       val type = when (val result = this.findById(id)) {
         is ResponseResult.Success -> result.data!!
-        is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
+        is ResponseResult.Error -> return ResponseResult.Error(Errors.INVALID_DATA)
       }
-
-      val result = this.findById(id)
-      if (result is ResponseResult.Error)
-        return ResponseResult.Error(Errors.INVALID_DATA)
-      val type = result.data!!
       type.name = createInstitutionTypeDTO.name
       institutionTypeRepository.save(type)
       ResponseResult.Success(null)

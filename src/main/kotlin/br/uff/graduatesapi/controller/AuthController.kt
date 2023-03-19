@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 
@@ -69,7 +70,7 @@ class AuthController(
   }
   @PreAuthorize("isAuthenticated()")
   @GetMapping("user/{id}")
-  fun getUserById(@PathVariable id: Int): ResponseEntity<Any> =
+  fun getUserById(@PathVariable id: UUID): ResponseEntity<Any> =
     when (val result = this.userService.getById(id)) {
       is ResponseResult.Success -> {
         ResponseEntity.ok(result.data)
