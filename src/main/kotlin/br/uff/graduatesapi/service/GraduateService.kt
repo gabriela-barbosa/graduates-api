@@ -18,7 +18,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 import java.util.*
 import javax.persistence.criteria.JoinType
 
@@ -140,12 +139,12 @@ class GraduateService(
             var status = WorkHistoryStatus.PENDING
 
             val workHistory =
-                if (latestWorkHistory != null && latestWorkHistory.createdAt.year == LocalDate.now().year) {
+                if (latestWorkHistory != null) {
                     status = latestWorkHistory.status
                     WorkHistoryInfoDTO(
                         latestWorkHistory.id,
                         latestWorkHistory.institution?.name,
-                        latestWorkHistory.institution?.type?.id
+                        latestWorkHistory.institution?.type?.name
                     )
                 } else null
 
@@ -160,6 +159,7 @@ class GraduateService(
 
             dataList.add(graduateDTO)
         }
+        dataList.sortBy { it.status.value }
         graduatesDTOList = ListGraduatesDTO(dataList, metaList)
         return ResponseResult.Success(graduatesDTOList)
     }

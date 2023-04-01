@@ -16,9 +16,8 @@ class CIProgram(
   val active: Boolean = true,
 ) {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "id", nullable = false)
-  lateinit var id: UUID
+  @Column(name = "id", nullable = false, unique = true)
+  var id: UUID = UUID.randomUUID()
 
   @JsonIgnore
   @OneToMany(mappedBy = "program")

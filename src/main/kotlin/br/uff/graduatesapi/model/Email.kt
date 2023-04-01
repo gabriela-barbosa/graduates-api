@@ -5,7 +5,10 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDate
 import java.util.*
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -37,9 +40,8 @@ class Email(
     var updatedAt: LocalDate? = null,
 ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    lateinit var id: UUID
+    @Column(name = "id", nullable = false, unique = true)
+    var id: UUID = UUID.randomUUID()
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

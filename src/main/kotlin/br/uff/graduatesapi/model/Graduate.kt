@@ -20,9 +20,8 @@ class Graduate(
     var user: PlatformUser,
 ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    lateinit var id: UUID
+    @Column(name = "id", nullable = false, unique = true)
+    var id: UUID = UUID.randomUUID()
 
     @OneToMany(mappedBy = "graduate")
     var cnpqScholarship: List<CNPQScholarship> = emptyList()

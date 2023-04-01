@@ -22,6 +22,7 @@ dependencies {
   implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:2.0.3.RELEASE")
   // to create email templates using Thymeleaf server-side Java template engine
   implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+  runtimeOnly("org.springframework.boot:spring-boot-properties-migrator")
   implementation("org.springframework.boot:spring-boot-starter-mail")
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")

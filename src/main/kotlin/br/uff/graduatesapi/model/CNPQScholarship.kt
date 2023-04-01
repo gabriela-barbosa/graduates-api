@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDate
 import java.util.*
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.ManyToOne
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -19,9 +22,8 @@ class CNPQScholarship(
     var graduate: Graduate
 ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    lateinit var id: UUID
+    @Column(name = "id", nullable = false, unique = true)
+    var id: UUID = UUID.randomUUID()
 
     @CreationTimestamp
     @Column(name = "start_year", nullable = false, updatable = false)

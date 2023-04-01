@@ -14,9 +14,8 @@ class Advisor(
     var courses: List<Course> = mutableListOf()
 ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    lateinit var id: UUID
+    @Column(name = "id", nullable = false, unique = true)
+    var id: UUID = UUID.randomUUID()
 
     @JsonIgnore
     @OneToOne(optional = false)

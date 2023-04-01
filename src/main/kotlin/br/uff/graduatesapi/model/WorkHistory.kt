@@ -28,9 +28,8 @@ class WorkHistory(
     var institution: Institution? = null,
 ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    lateinit var id: UUID
+    @Column(name = "id", nullable = false, unique = true)
+    var id: UUID = UUID.randomUUID()
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -14,7 +14,6 @@ import javax.persistence.*
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class PlatformUser(
-
     @Column(nullable = false)
     var name: String,
 
@@ -23,7 +22,7 @@ class PlatformUser(
 
     @ElementCollection(targetClass = Role::class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name="platform_user_role")
+    @CollectionTable(name="platform_user_role", )
     @Column(name="role")
     var roles: List<Role> = mutableListOf(),
 
@@ -35,8 +34,8 @@ class PlatformUser(
 
 ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    lateinit var id: UUID
+    @Column(name = "id", nullable = false, unique = true)
+    var id: UUID = UUID.randomUUID()
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

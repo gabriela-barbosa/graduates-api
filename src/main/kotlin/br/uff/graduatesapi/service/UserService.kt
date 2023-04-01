@@ -56,10 +56,11 @@ class UserService(
             val user = PlatformUser(
                 name = userDTO.name,
                 email = userDTO.email,
-                roles = userDTO.roles,
+                roles = userDTO.roles
             )
             user.password = passwordEncoder.encode(getRandomString(10))
-            return ResponseResult.Success(this.userRepository.save(user))
+            val resp = this.userRepository.save(user)
+            return ResponseResult.Success(resp)
         } catch (ex: Exception) {
             return ResponseResult.Error(Errors.CANT_CREATE_USER)
         }
