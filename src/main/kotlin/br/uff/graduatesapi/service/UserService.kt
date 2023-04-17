@@ -83,7 +83,8 @@ class UserService(
 
     fun getById(id: UUID): ResponseResult<PlatformUser> {
         return try {
-            ResponseResult.Success(this.userRepository.getById(id))
+            val result = this.userRepository.getById(id)
+            ResponseResult.Success(result)
         } catch (ex: Exception) {
             ResponseResult.Error(Errors.USER_NOT_FOUND)
         }

@@ -43,6 +43,17 @@ class AuthController(
   }
 
   @PreAuthorize("isAuthenticated()")
+  @GetMapping("user/{id}")
+  fun getUserById(@PathVariable id: UUID): ResponseEntity<Any> =
+    when (val result = this.userService.getById(id)) {
+      is ResponseResult.Success -> {
+        ResponseEntity.ok(result.data)
+      }
+      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+        .body(result.errorReason.responseMessage)
+    }
+
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("user")
   fun getUserByJwt(@CookieValue("jwt") jwt: String): ResponseEntity<Any> =
     when (val result = this.userService.getUserByJwt(jwt)) {
@@ -68,16 +79,7 @@ class AuthController(
         .body(result.errorReason.responseMessage)
     }
   }
-  @PreAuthorize("isAuthenticated()")
-  @GetMapping("user/{id}")
-  fun getUserById(@PathVariable id: UUID): ResponseEntity<Any> =
-    when (val result = this.userService.getById(id)) {
-      is ResponseResult.Success -> {
-        ResponseEntity.ok(result.data)
-      }
-      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-        .body(result.errorReason.responseMessage)
-    }
+
 
 //    @GetMapping("user")
 //    fun user(@CookieValue("jwt") jwt: String?): ResponseEntity<Any> {
