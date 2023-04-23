@@ -137,6 +137,12 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     HttpStatus.INTERNAL_SERVER_ERROR
   ),
 
+  CANT_RETRIEVE_COURSES(
+    "Cant retrieve courses",
+    "Erro ao retornar cursos.",
+    HttpStatus.INTERNAL_SERVER_ERROR
+  ),
+
   CANT_RETRIEVE_EMAILS("Cant retrieve emails", "Erro ao recuperar emails.", HttpStatus.INTERNAL_SERVER_ERROR),
   CANT_DELETE_EMAIL("Cant delete email", "Erro ao deletar email.", HttpStatus.INTERNAL_SERVER_ERROR),
   EMAIL_NOT_FOUND("Email not found", "Email não encontrado.", HttpStatus.NOT_FOUND),

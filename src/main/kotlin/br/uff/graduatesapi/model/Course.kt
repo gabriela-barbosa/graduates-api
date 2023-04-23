@@ -15,7 +15,6 @@ class Course(
     @ManyToOne(optional = false)
     var program: CIProgram,
 
-    @JsonIgnore
     @ManyToOne(optional = false)
     var advisor: Advisor,
 
