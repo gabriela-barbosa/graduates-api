@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 class CNPQScholarship(
-    @JsonIgnore
     @ManyToOne(optional = false)
     var level: CNPQLevel,
 

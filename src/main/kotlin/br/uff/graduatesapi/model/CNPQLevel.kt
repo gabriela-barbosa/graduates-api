@@ -16,6 +16,7 @@ class CNPQLevel(
   @Column(name = "level", nullable = false, updatable = false)
   var level: String,
 
+  @JsonIgnore
   @Column(name = "active", nullable = false, updatable = true)
   val active: Boolean = true,
 
