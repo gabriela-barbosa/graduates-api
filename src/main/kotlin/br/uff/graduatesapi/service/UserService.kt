@@ -73,10 +73,10 @@ class UserService(
             this.createUser(userDTO)
         }
 
-    fun updateEmail(oldEmail: String, newEmail: String): ResponseResult<PlatformUser> {
+    fun updateEmail(userId: UUID, newEmail: String): ResponseResult<PlatformUser> {
         if (findByEmail(newEmail) is ResponseResult.Error)
             return ResponseResult.Error(Errors.EMAIL_IN_USE)
-        val userUpdated = this.userRepository.updateEmail(newEmail, oldEmail)
+        val userUpdated = this.userRepository.updateEmail(userId, newEmail)
             ?: return ResponseResult.Error(Errors.CANT_UPDATE_EMAIL)
         return ResponseResult.Success(userUpdated)
     }

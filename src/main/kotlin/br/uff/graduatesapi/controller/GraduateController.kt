@@ -1,6 +1,7 @@
 package br.uff.graduatesapi.controller
 
 import br.uff.graduatesapi.Utils
+import br.uff.graduatesapi.dto.toDTO
 import br.uff.graduatesapi.entity.GraduateFilters
 import br.uff.graduatesapi.enum.Role
 import br.uff.graduatesapi.error.ResponseResult
@@ -59,7 +60,9 @@ class GraduateController(private val graduateService: GraduateService) {
   @GetMapping("graduate/{id}")
   fun getGraduateById(@PathVariable id: UUID): ResponseEntity<Any>? {
     return when (val result = graduateService.getGraduateById(id)) {
-      is ResponseResult.Success -> ResponseEntity.ok(result.data)
+      is ResponseResult.Success -> {
+        ResponseEntity.ok(result.data!!.toDTO())
+      }
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }

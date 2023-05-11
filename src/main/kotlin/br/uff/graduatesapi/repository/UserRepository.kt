@@ -11,14 +11,15 @@ import java.util.*
 
 @Repository
 interface UserRepository : JpaRepository<PlatformUser, UUID>, UserRepositoryCustom {
-    fun findByEmail(email: String): PlatformUser?
-    @Query(
-        "insert into platform_user_role (platform_user_id, role) VALUES (:id, :role)", nativeQuery = true
-    )
-    fun insertRole(@Param("id") id: UUID, @Param("role") role: Role): PlatformUser?
+  fun findByEmail(email: String): PlatformUser?
 
-    @Modifying
-    @Query("update PlatformUser user set user.email=?1 where user.email = ?2")
-    fun updateEmail(newEmail: String, oldEmail: String): PlatformUser?
+  @Query(
+    "insert into platform_user_role (platform_user_id, role) VALUES (:id, :role)", nativeQuery = true
+  )
+  fun insertRole(@Param("id") id: UUID, @Param("role") role: Role): PlatformUser?
+
+  @Modifying
+  @Query("update PlatformUser user set user.email=?2, user.updatedAt=now() where user.id=?1")
+  fun updateEmail(id: UUID, newEmail: String): PlatformUser?
 
 }

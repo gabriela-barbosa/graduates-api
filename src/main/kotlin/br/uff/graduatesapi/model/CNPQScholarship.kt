@@ -25,9 +25,9 @@ class CNPQScholarship(
     var id: UUID = UUID.randomUUID()
 
     @CreationTimestamp
-    @Column(name = "start_year", nullable = false, updatable = false)
-    lateinit var startYear: LocalDate
+    @Column(name = "started_at", nullable = false, updatable = false)
+    lateinit var startedAt: LocalDate
 
-    @Column(name = "end_year", nullable = true, updatable = false)
-    var endYear: LocalDate? = null
+    @Column(name = "ended_at", nullable = true, updatable = false)
+    var endedAt: LocalDate? = null
 }

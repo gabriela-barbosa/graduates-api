@@ -13,8 +13,8 @@ import javax.persistence.OneToMany
 @Entity
 class CNPQLevel(
 
-  @Column(name = "level", nullable = false, updatable = false)
-  var level: String,
+  @Column(name = "name", nullable = false, updatable = false)
+  var name: String,
 
   @JsonIgnore
   @Column(name = "active", nullable = false, updatable = true)

@@ -1,6 +1,6 @@
 package br.uff.graduatesapi.controller
 
-import br.uff.graduatesapi.dto.WorkHistoryDTO
+import br.uff.graduatesapi.dto.CreateWorkHistoryDTO
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.service.WorkHistoryService
 import org.springframework.http.ResponseEntity
@@ -14,14 +14,14 @@ class WorkHistoryController(
   private val workHistoryService: WorkHistoryService,
 ) {
   @PreAuthorize("isAuthenticated()")
-  @GetMapping("workhistory/{id}")
+  @GetMapping("work-history/{id}")
   fun getWorkHistory(@PathVariable id: UUID): ResponseEntity<Any> {
     val workHistory = workHistoryService.getWorkHistoryDTO(id)
     return ResponseEntity.ok(workHistory)
   }
 
   @PreAuthorize("isAuthenticated()")
-  @GetMapping("workhistory/graduate/{id}")
+  @GetMapping("work-history/graduate/{id}")
   fun getWorkHistoryByGraduate(@PathVariable id: UUID): ResponseEntity<Any> {
     return when (val result = workHistoryService.getLastWorkHistoryByGraduate(id)) {
       is ResponseResult.Success -> ResponseEntity.ok(result)
@@ -31,9 +31,9 @@ class WorkHistoryController(
   }
 
   @PreAuthorize("isAuthenticated()")
-  @PostMapping("workhistory")
-  fun createGraduateWorkHistory(@RequestBody workDTO: WorkHistoryDTO): ResponseEntity<String> {
-    return when (val result = workHistoryService.createGraduateHistory(workDTO)) {
+  @PostMapping("work-history")
+  fun createGraduateWorkHistory(@RequestParam("graduateId") graduateId: String, @RequestBody workDTO: CreateWorkHistoryDTO): ResponseEntity<String> {
+    return when (val result = workHistoryService.createGraduateHistory(workDTO, graduateId)) {
       is ResponseResult.Success -> ResponseEntity.status(201).build()
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
@@ -41,12 +41,12 @@ class WorkHistoryController(
   }
 
   @PreAuthorize("isAuthenticated()")
-  @PutMapping("workhistory/{id}")
+  @PutMapping("work-history/{id}")
   fun updateWorkHistory(
     @PathVariable id: UUID,
-    @RequestBody workDTO: WorkHistoryDTO
+    @RequestBody workDTO: CreateWorkHistoryDTO
   ): ResponseEntity<String> {
-    return when (val result = workHistoryService.createGraduateHistory(workDTO, id)) {
+    return when (val result = workHistoryService.updateGraduateHistory(workDTO, id)) {
       is ResponseResult.Success -> ResponseEntity.noContent().build()
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
