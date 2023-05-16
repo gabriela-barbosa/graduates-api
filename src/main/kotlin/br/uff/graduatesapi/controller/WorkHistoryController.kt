@@ -32,7 +32,7 @@ class WorkHistoryController(
 
   @PreAuthorize("isAuthenticated()")
   @PostMapping("work-history")
-  fun createGraduateWorkHistory(@RequestParam("graduateId") graduateId: String, @RequestBody workDTO: CreateWorkHistoryDTO): ResponseEntity<String> {
+  fun createGraduateWorkHistory(@RequestParam("graduateId") graduateId: UUID, @RequestBody workDTO: CreateWorkHistoryDTO): ResponseEntity<String> {
     return when (val result = workHistoryService.createGraduateHistory(workDTO, graduateId)) {
       is ResponseResult.Success -> ResponseEntity.status(201).build()
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)

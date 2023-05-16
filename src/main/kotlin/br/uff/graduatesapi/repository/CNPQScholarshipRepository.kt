@@ -5,9 +5,10 @@ import br.uff.graduatesapi.model.Graduate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.util.*
+import kotlin.collections.List
 
 interface CNPQScholarshipRepository : JpaRepository<CNPQScholarship, UUID> {
 
     @Query("select scholarship from CNPQScholarship scholarship where scholarship.graduate = ?1 and scholarship.endedAt IS NULL")
-    fun findActualCNPQScholarshipByGraduate(graduate: Graduate) : CNPQScholarship?
+    fun findActualCNPQScholarshipByGraduate(graduate: Graduate) : List<CNPQScholarship>
 }

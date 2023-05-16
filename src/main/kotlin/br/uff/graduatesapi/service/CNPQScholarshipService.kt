@@ -15,7 +15,7 @@ class CNPQScholarshipService(
   private val cnpqScholarshipRepository: CNPQScholarshipRepository,
   private val cnpqLevelService: CNPQLevelService,
 ) {
-  fun findActualCNPQScholarshipByGraduate(graduate: Graduate): CNPQScholarship? {
+  fun findActualCNPQScholarshipsByGraduate(graduate: Graduate): List<CNPQScholarship> {
     return cnpqScholarshipRepository.findActualCNPQScholarshipByGraduate(graduate)
   }
 
@@ -57,7 +57,7 @@ class CNPQScholarshipService(
       is ResponseResult.Error -> return ResponseResult.Error(resultLevel.errorReason)
     }
 
-    var scholarship = findActualCNPQScholarshipByGraduate(graduate)
+    var scholarship = findActualCNPQScholarshipsByGraduate(graduate)
 
     if (scholarship == null || scholarship.level.id != id) {
       if (scholarship != null) {

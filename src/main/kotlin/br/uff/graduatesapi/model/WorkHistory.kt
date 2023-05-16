@@ -25,11 +25,9 @@ class WorkHistory(
   @ManyToOne(optional = false)
   var institution: Institution,
 
-  @CreationTimestamp
   @Column(name = "started_at", nullable = false, updatable = true)
   var startedAt: LocalDate,
 
-  @CreationTimestamp
   @Column(name = "finished_at", nullable = true, updatable = true)
   var finishedAt: LocalDate? = null,
 

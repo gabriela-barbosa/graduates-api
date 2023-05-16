@@ -1,9 +1,9 @@
 package br.uff.graduatesapi.service
 
-import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.InstitutionDTO
 import br.uff.graduatesapi.dto.CreateWorkHistoryDTO
-import br.uff.graduatesapi.enum.WorkHistoryStatus
+import br.uff.graduatesapi.dto.toCreateCNPQScholarshipDTO
+import br.uff.graduatesapi.dto.toDTO
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.*
@@ -51,21 +51,20 @@ class WorkHistoryService(
     try {
       val workHistory: WorkHistory = workHistoryRepository.findByIdOrNull(id) ?: return null
       val graduate: Graduate = workHistory.graduate
-      val cnpq: CNPQScholarship? = cnpqScholarshipService.findActualCNPQScholarshipByGraduate(graduate)
-      val cnpqScholarship = cnpq?.level?.id
-      val workHistoryDTO = CreateWorkHistoryDTO(
+      val scholarships: List<CNPQScholarship> = cnpqScholarshipService.findActualCNPQScholarshipsByGraduate(graduate)
+
+      return CreateWorkHistoryDTO(
         email = graduate.user.email,
         position = workHistory.position,
-        cnpqLevelId = cnpqScholarship,
+        startedAt = workHistory.startedAt,
+        finishedAt = workHistory.finishedAt,
+        institution = workHistory.institution.toDTO(),
+        cnpqLevels = scholarships.map { it.toCreateCNPQScholarshipDTO() },
         hasFinishedDoctorateOnUFF = workHistory.graduate.hasFinishedDoctorateOnUFF,
         hasFinishedMasterDegreeOnUFF = workHistory.graduate.hasFinishedMasterDegreeOnUFF,
-        knownWorkPlace = workHistory.status === WorkHistoryStatus.UNKNOWN,
+        successCase = graduate.successCase,
+        postDoctorate = graduate.postDoctorate?.toDTO()
       )
-      if (workHistory.institution != null)
-        workHistoryDTO.addInstitutionInfo(workHistory.institution!!)
-      if (graduate.postDoctorate != null)
-        workHistoryDTO.addPostDoctorate(graduate.postDoctorate!!)
-      return workHistoryDTO
     } catch (err: Exception) {
       throw err
     }

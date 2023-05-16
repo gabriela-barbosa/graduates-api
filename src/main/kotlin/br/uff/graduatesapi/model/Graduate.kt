@@ -62,7 +62,7 @@ class Graduate(
     if (isPending || currentWorkHistories.isEmpty()) return WorkHistoryStatus.PENDING
 
     val wasUpdatedPartiallyWorkHistories = this.currentWorkHistories.any {
-      it.position == null || it.institution == null
+      it.position == null
     }
     if (wasUpdatedPartiallyWorkHistories || this.hasFinishedDoctorateOnUFF == null || this.hasFinishedMasterDegreeOnUFF == null) return WorkHistoryStatus.UPDATED_PARTIALLY
 

@@ -35,7 +35,6 @@ class GraduateService(
       from(entity(Graduate::class))
       join(Graduate::user)
       join(Graduate::currentWorkHistories, JoinType.LEFT)
-      join(Graduate::historyStatus, JoinType.LEFT)
       join(Graduate::courses, JoinType.LEFT)
       join(Course::advisor, JoinType.LEFT)
       join(WorkHistory::institution, JoinType.LEFT)
@@ -57,7 +56,6 @@ class GraduateService(
       from(entity(Graduate::class))
       join(Graduate::user)
       join(Graduate::currentWorkHistories, JoinType.LEFT)
-      join(Graduate::historyStatus, JoinType.LEFT)
       join(Graduate::courses, JoinType.LEFT)
       join(Course::advisor, JoinType.LEFT)
       join(WorkHistory::institution, JoinType.LEFT)
@@ -70,7 +68,6 @@ class GraduateService(
           filters.advisor?.run { column(Advisor::id).equal(this.id) },
         )
       )
-      orderBy(column(HistoryStatus::status).desc())
       limit(
         pageSettings.offset,
         pageSettings.limit,
@@ -135,16 +132,16 @@ class GraduateService(
     }
 
     for (graduate in graduates) {
-      val latestWorkHistory = graduate.currentWorkHistories
+      val currentWorkHistories = graduate.currentWorkHistories
       var status = WorkHistoryStatus.PENDING
-
+      val lastWorkHistory = if (currentWorkHistories.isNotEmpty()) currentWorkHistories[0] else null
       val workHistory =
-        if (latestWorkHistory != null) {
-          status = latestWorkHistory.status
+        if (lastWorkHistory != null) {
+          status = graduate.getWorkHistoryStatus()
           WorkHistoryInfoDTO(
-            latestWorkHistory.id,
-            latestWorkHistory.institution?.name,
-            latestWorkHistory.institution?.type?.name
+            lastWorkHistory.id,
+            lastWorkHistory.institution.name,
+            lastWorkHistory.institution.type.name
           )
         } else null
 
@@ -154,7 +151,7 @@ class GraduateService(
         email = graduate.user.email,
         status = status,
         workPlace = workHistory,
-        position = latestWorkHistory?.position
+        position = lastWorkHistory?.position
       )
 
       dataList.add(graduateDTO)
