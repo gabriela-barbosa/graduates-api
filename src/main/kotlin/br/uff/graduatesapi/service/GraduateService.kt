@@ -1,10 +1,12 @@
 package br.uff.graduatesapi.service
 
-import br.uff.graduatesapi.dto.*
+import br.uff.graduatesapi.dto.InstitutionDTO
+import br.uff.graduatesapi.dto.ListGraduatesDTO
+import br.uff.graduatesapi.dto.MetaDTO
+import br.uff.graduatesapi.dto.toGraduateItemDTO
 import br.uff.graduatesapi.entity.GraduateFilters
 import br.uff.graduatesapi.entity.OffsetLimit
 import br.uff.graduatesapi.enum.Role
-import br.uff.graduatesapi.enum.WorkHistoryStatus
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.*
@@ -18,7 +20,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.criteria.JoinType
 
@@ -34,7 +36,7 @@ class GraduateService(
       select(count(column(Graduate::id)))
       from(entity(Graduate::class))
       join(Graduate::user)
-      join(Graduate::currentWorkHistories, JoinType.LEFT)
+      join(Graduate::lastWorkHistory, JoinType.LEFT)
       join(Graduate::courses, JoinType.LEFT)
       join(Course::advisor, JoinType.LEFT)
       join(WorkHistory::institution, JoinType.LEFT)
@@ -55,7 +57,7 @@ class GraduateService(
       select(entity(Graduate::class))
       from(entity(Graduate::class))
       join(Graduate::user)
-      join(Graduate::currentWorkHistories, JoinType.LEFT)
+      join(Graduate::lastWorkHistory, JoinType.LEFT)
       join(Graduate::courses, JoinType.LEFT)
       join(Course::advisor, JoinType.LEFT)
       join(WorkHistory::institution, JoinType.LEFT)
@@ -81,7 +83,7 @@ class GraduateService(
   }
 
   fun getAllGraduates(page: PageRequest): ResponseResult<Page<Graduate>> = try {
-    val graduates = graduateRepository.findAllByOrderByCurrentWorkHistoryStatusDesc(page)
+    val graduates = graduateRepository.findAllByOrderByLastWorkHistoryDesc(page)
     ResponseResult.Success(graduates)
   } catch (ex: Exception) {
     ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
@@ -111,15 +113,13 @@ class GraduateService(
       is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
     }
 
-    val graduatesDTOList: ListGraduatesDTO
-    val dataList = mutableListOf<DataListGraduatesDTO>()
-    val metaList: MetaDTO
-    val graduates: List<Graduate>
-
     val role = user.roles.find { it == currentRole }
 
     if (role == Role.GRADUATE) return ResponseResult.Error(Errors.USER_NOT_ALLOWED)
     if (role == Role.PROFESSOR) filters.advisor = user.advisor
+
+    val metaList: MetaDTO
+    val graduates: List<Graduate>
 
     when (val result = getGraduatePaged(filters, page)) {
       is ResponseResult.Success -> {
@@ -131,33 +131,10 @@ class GraduateService(
       is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
     }
 
-    for (graduate in graduates) {
-      val currentWorkHistories = graduate.currentWorkHistories
-      var status = WorkHistoryStatus.PENDING
-      val lastWorkHistory = if (currentWorkHistories.isNotEmpty()) currentWorkHistories[0] else null
-      val workHistory =
-        if (lastWorkHistory != null) {
-          status = graduate.getWorkHistoryStatus()
-          WorkHistoryInfoDTO(
-            lastWorkHistory.id,
-            lastWorkHistory.institution.name,
-            lastWorkHistory.institution.type.name
-          )
-        } else null
+    val dataList = graduates.map { it.toGraduateItemDTO() }
 
-      val graduateDTO = DataListGraduatesDTO(
-        id = graduate.id,
-        name = graduate.user.name,
-        email = graduate.user.email,
-        status = status,
-        workPlace = workHistory,
-        position = lastWorkHistory?.position
-      )
-
-      dataList.add(graduateDTO)
-    }
-    dataList.sortBy { it.status.value }
-    graduatesDTOList = ListGraduatesDTO(dataList, metaList)
+    dataList.sortedBy { it.status.value }
+    val graduatesDTOList = ListGraduatesDTO(dataList, metaList)
     return ResponseResult.Success(graduatesDTOList)
   }
 
@@ -180,20 +157,25 @@ class GraduateService(
   }
 
   fun updatePostDoctorate(postDoctorate: InstitutionDTO, graduate: Graduate): ResponseResult<Graduate> {
-    val resultInstitution = institutionService.createInstitutionByInstitutionDTO(postDoctorate)
-    if (resultInstitution is ResponseResult.Error) return ResponseResult.Error(resultInstitution.errorReason)
-    graduate.postDoctorate = resultInstitution.data
-    val resultUpdate = this.save(graduate)
-    if (resultUpdate is ResponseResult.Error)
-      return ResponseResult.Error(resultUpdate.errorReason)
-    return resultUpdate
+
+    graduate.postDoctorate = when (val result = institutionService.createInstitutionByInstitutionDTO(postDoctorate)) {
+      is ResponseResult.Success -> result.data!!
+      is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
+    }
+
+    return when (val result = this.save(graduate)) {
+      is ResponseResult.Success -> result
+      is ResponseResult.Error -> ResponseResult.Error(result.errorReason)
+    }
   }
 
-  fun updateGraduatePostGraduationInfo(
+
+  fun updateGraduateInfo(
     graduate: Graduate,
     institutionPostDoctorateDTO: InstitutionDTO?,
     hasFinishedDoctorateOnUFF: Boolean?,
     hasFinishedMasterDegreeOnUFF: Boolean?,
+    successCase: String?,
   ): ResponseResult<Graduate> {
     if (institutionPostDoctorateDTO != null) {
       val result = this.updatePostDoctorate(institutionPostDoctorateDTO, graduate)
@@ -207,7 +189,8 @@ class GraduateService(
     if (hasFinishedMasterDegreeOnUFF != null) {
       graduate.hasFinishedMasterDegreeOnUFF = hasFinishedMasterDegreeOnUFF
     }
-    graduate.updatedAt = LocalDate.now()
+    graduate.updatedAt = LocalDateTime.now()
+    graduate.successCase = successCase
     return this.save(graduate)
   }
 }

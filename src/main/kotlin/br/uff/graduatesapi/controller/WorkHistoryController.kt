@@ -23,8 +23,8 @@ class WorkHistoryController(
   @PreAuthorize("isAuthenticated()")
   @GetMapping("work-history/graduate/{id}")
   fun getWorkHistoryByGraduate(@PathVariable id: UUID): ResponseEntity<Any> {
-    return when (val result = workHistoryService.getLastWorkHistoryByGraduate(id)) {
-      is ResponseResult.Success -> ResponseEntity.ok(result)
+    return when (val result = workHistoryService.getWorkHistoriesByGraduate(id)) {
+      is ResponseResult.Success -> ResponseEntity.ok(result.data)
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }

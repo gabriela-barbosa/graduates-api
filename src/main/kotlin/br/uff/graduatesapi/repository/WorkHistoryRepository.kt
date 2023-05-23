@@ -16,5 +16,5 @@ interface WorkHistoryRepository : JpaRepository<WorkHistory, UUID> {
     )
     fun findTopByGraduateOrderByCreatedAtDesc(graduates: List<Graduate>): List<WorkHistory>?
 
-    fun findFirstByGraduateIdIsOrderByCreatedAtDesc(id: UUID): WorkHistory
+    fun findAllByGraduateIdIsOrderByEndedAtDesc(id: UUID): List<WorkHistory>
 }

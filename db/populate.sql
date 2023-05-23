@@ -82,13 +82,6 @@ values (gen_random_uuid(), now(), 'b706727c-786c-4daa-9e84-946451946dbc'),
        (gen_random_uuid(), now(), 'f8070687-cf08-4b59-bcca-016e992bd5f4')
 ;
 
-insert into history_status (id, created_at, known_workplace, status)
-values (gen_random_uuid(), now(), true, 'PENDING'),
-       (gen_random_uuid(), now(), true, 'PENDING'),
-       (gen_random_uuid(), now(), false, 'PENDING'),
-       (gen_random_uuid(), now(), true, 'PENDING')
-;
-
 insert into graduate (id, created_at, history_status_id, user_id)
 values (gen_random_uuid(), now(), '39393f16-f0ab-4ab1-8e51-89704470e8e0', 'fe52dbee-c4e2-46b3-b48a-2292a1a3e84b'),
        (gen_random_uuid(), now(), 'bfccb1cc-7d0c-4766-b595-e7e90d8deae6', 'f9194fdf-43b4-4730-ae79-f529f94c7036'),
@@ -104,7 +97,7 @@ values (gen_random_uuid(), now(), '39393f16-f0ab-4ab1-8e51-89704470e8e0', 'fe52d
        (gen_random_uuid(), now(), null, '2128f4f3-009b-45ee-af99-cd921f5e1d72')
 ;
 
-insert into cnpqlevel (id, level, created_at, active)
+insert into cnpqlevel (id, name, created_at, active)
 values (gen_random_uuid(), 'PQ2', now(), true),
        (gen_random_uuid(), 'PQ1D', now(), true),
        (gen_random_uuid(), 'PQ1C', now(), true),
@@ -137,13 +130,13 @@ values (gen_random_uuid(), now(), 'OLX', '997e504e-bc71-40cf-99da-f4c64cd31448')
        (gen_random_uuid(), now(), 'Alura', '997e504e-bc71-40cf-99da-f4c64cd31448')
 ;
 
-insert into work_history (id, created_at, "position", graduate_id, institution_id, updated_at, status)
-values (gen_random_uuid(), now(), 'Dev Jr', '07aa785c-301c-43e4-8286-989950a880f9', '9e13d8c8-d48f-4d34-b1b1-f18bea72598e', null, 'UPDATED'),
-       (gen_random_uuid(), now(), 'Estagiário', 'd6e22b02-da74-4a52-b69c-b8a178754412', 'b0a7b1f1-9544-484b-88f6-9bfc948a9427', null, 'UPDATED'),
-       (gen_random_uuid(), now(), 'Estagiário', '07aa785c-301c-43e4-8286-989950a880f9', 'b0a7b1f1-9544-484b-88f6-9bfc948a9427', null, 'UPDATED'),
-       (gen_random_uuid(), now(), 'Senior Associate', '94b55af5-82dd-440f-aa57-d60916442bf1', 'b5f3d4a0-c2f6-4994-874f-825afdf1db50', null, 'UPDATED'),
-       (gen_random_uuid(), now(), 'Dev Jr', '07aa785c-301c-43e4-8286-989950a880f9', 'd9dfce9e-0b89-4074-8fc6-1294c19ea4e8', null, 'UPDATED'),
-       (gen_random_uuid(), now(), 'Dev Jr', '94b55af5-82dd-440f-aa57-d60916442bf1', '22bcad2a-333d-4a20-bb6f-7d199e1b05f5', null, 'UPDATED')
+insert into work_history (id, created_at, "position", graduate_id, institution_id, updated_at, started_at)
+values (gen_random_uuid(), now(), 'Dev Jr', '07aa785c-301c-43e4-8286-989950a880f9', '9e13d8c8-d48f-4d34-b1b1-f18bea72598e', null, now()),
+       (gen_random_uuid(), now(), 'Estagiário', 'd6e22b02-da74-4a52-b69c-b8a178754412', 'b0a7b1f1-9544-484b-88f6-9bfc948a9427', null, now()),
+       (gen_random_uuid(), now(), 'Estagiário', '07aa785c-301c-43e4-8286-989950a880f9', 'b0a7b1f1-9544-484b-88f6-9bfc948a9427', null, now()),
+       (gen_random_uuid(), now(), 'Senior Associate', '94b55af5-82dd-440f-aa57-d60916442bf1', 'b5f3d4a0-c2f6-4994-874f-825afdf1db50', null, now()),
+       (gen_random_uuid(), now(), 'Dev Jr', '07aa785c-301c-43e4-8286-989950a880f9', 'd9dfce9e-0b89-4074-8fc6-1294c19ea4e8', null, now()),
+       (gen_random_uuid(), now(), 'Dev Jr', '94b55af5-82dd-440f-aa57-d60916442bf1', '22bcad2a-333d-4a20-bb6f-7d199e1b05f5', null, now())
 ;
 
 insert into course (id, created_at, minute_defense, program_id, advisor_id, graduate_id)
