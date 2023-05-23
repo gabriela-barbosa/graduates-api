@@ -2,7 +2,7 @@ package br.uff.graduatesapi.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
@@ -25,5 +25,5 @@ class CIProgram(
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
-  lateinit var createdAt: LocalDate
+  lateinit var createdAt: LocalDateTime
 }

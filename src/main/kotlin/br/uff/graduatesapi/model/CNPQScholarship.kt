@@ -3,7 +3,7 @@ package br.uff.graduatesapi.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -22,10 +22,10 @@ class CNPQScholarship(
 
   @CreationTimestamp
   @Column(name = "started_at", nullable = false, updatable = false)
-  var startedAt: LocalDate,
+  var startedAt: LocalDateTime,
 
   @Column(name = "ended_at", nullable = true, updatable = false)
-  var endedAt: LocalDate? = null
+  var endedAt: LocalDateTime? = null
 ) {
   @Id
   @Column(name = "id", nullable = false, unique = true)
@@ -33,5 +33,5 @@ class CNPQScholarship(
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
-  lateinit var createdAt: LocalDate
+  lateinit var createdAt: LocalDateTime
 }

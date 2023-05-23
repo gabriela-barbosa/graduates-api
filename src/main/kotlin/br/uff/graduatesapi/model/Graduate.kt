@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.JoinFormula
 import org.hibernate.annotations.UpdateTimestamp
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
@@ -23,7 +23,7 @@ class Graduate(
   var id: UUID = UUID.randomUUID()
 
   @OneToMany(mappedBy = "graduate")
-  var cnpqScholarship: List<CNPQScholarship> = emptyList()
+  var cnpqScholarships: List<CNPQScholarship> = emptyList()
 
   @OneToMany(mappedBy = "graduate")
   var courses: List<Course> = emptyList()
@@ -35,8 +35,12 @@ class Graduate(
   var workHistories: List<WorkHistory> = emptyList()
 
   @ManyToMany
-  @JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id AND w.finished_at is null ORDER BY w.started_at DESC)")
-  val currentWorkHistories: List<WorkHistory> = emptyList()
+  @JoinFormula("(SELECT c.id FROM CNPQScholarship c WHERE c.graduate_id = id AND c.ended_at is null ORDER BY w.started_at DESC)")
+  val currentCNPQScholarships: List<CNPQScholarship> = emptyList()
+
+  @ManyToOne
+  @JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id ORDER BY w.ended_at DESC, started_at DESC, created_at DESC limit 1)")
+  val lastWorkHistory: WorkHistory? = null
 
   @Column(name = "finished_doctorate_on_uff", nullable = true)
   var hasFinishedDoctorateOnUFF: Boolean? = null
@@ -49,21 +53,17 @@ class Graduate(
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
-  lateinit var createdAt: LocalDate
+  lateinit var createdAt: LocalDateTime
 
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = true, updatable = true)
-  var updatedAt: LocalDate? = null
+  var updatedAt: LocalDateTime? = null
 
   fun getWorkHistoryStatus(): WorkHistoryStatus {
-    val isPending = this.currentWorkHistories.any {
-      it.updatedAt == null || it.updatedAt!!.year < LocalDate.now().year
-    }
-    if (isPending || currentWorkHistories.isEmpty()) return WorkHistoryStatus.PENDING
+    val isPending = this.lastWorkHistory == null || this.lastWorkHistory.updatedAt == null|| this.lastWorkHistory.updatedAt!!.year < LocalDateTime.now().year
+    if (isPending) return WorkHistoryStatus.PENDING
 
-    val wasUpdatedPartiallyWorkHistories = this.currentWorkHistories.any {
-      it.position == null
-    }
+    val wasUpdatedPartiallyWorkHistories = this.lastWorkHistory?.position == null
     if (wasUpdatedPartiallyWorkHistories || this.hasFinishedDoctorateOnUFF == null || this.hasFinishedMasterDegreeOnUFF == null) return WorkHistoryStatus.UPDATED_PARTIALLY
 
     return WorkHistoryStatus.UPDATED

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -26,14 +26,14 @@ class WorkHistory(
   var institution: Institution,
 
   @Column(name = "started_at", nullable = false, updatable = true)
-  var startedAt: LocalDate,
+  var startedAt: LocalDateTime,
 
-  @Column(name = "finished_at", nullable = true, updatable = true)
-  var finishedAt: LocalDate? = null,
+  @Column(name = "ended_at", nullable = true, updatable = true)
+  var endedAt: LocalDateTime? = null,
 
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = true, updatable = true)
-  var updatedAt: LocalDate? = null
+  var updatedAt: LocalDateTime? = null
 ) {
   @Id
   @Column(name = "id", nullable = false, unique = true)
@@ -41,7 +41,7 @@ class WorkHistory(
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
-  lateinit var createdAt: LocalDate
+  lateinit var createdAt: LocalDateTime
 
 
 }

@@ -3,7 +3,7 @@ package br.uff.graduatesapi.model
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -37,7 +37,7 @@ class Email(
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = true, updatable = true)
-    var updatedAt: LocalDate? = null,
+    var updatedAt: LocalDateTime? = null,
 ) {
     @Id
     @Column(name = "id", nullable = false, unique = true)
@@ -45,5 +45,5 @@ class Email(
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    lateinit var createdAt: LocalDate
+    lateinit var createdAt: LocalDateTime
 }
