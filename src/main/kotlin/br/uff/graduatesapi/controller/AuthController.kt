@@ -38,7 +38,7 @@ class AuthController(
         ResponseEntity.ok(Message("Logado com sucesso!"))
       }
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-        .body(result.errorReason.responseMessage)
+        .body(Message(result.errorReason.responseMessage))
     }
   }
 

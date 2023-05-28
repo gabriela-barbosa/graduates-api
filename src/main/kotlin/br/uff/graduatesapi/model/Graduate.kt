@@ -39,7 +39,7 @@ class Graduate(
   val currentCNPQScholarships: List<CNPQScholarship> = emptyList()
 
   @ManyToOne
-  @JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id ORDER BY w.ended_at DESC, started_at DESC, created_at DESC limit 1)")
+  @JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id ORDER BY w.ended_at DESC, w.started_at DESC, w.created_at DESC limit 1)")
   val lastWorkHistory: WorkHistory? = null
 
   @Column(name = "finished_doctorate_on_uff", nullable = true)

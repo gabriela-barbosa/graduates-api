@@ -15,10 +15,9 @@ class AuthService(
 ) {
     fun login(loginDTO: LoginDTO): ResponseResult<Cookie?> {
 
-        val user: PlatformUser
 
-        when (val resultUser = this.userService.findByEmail(loginDTO.email)) {
-            is ResponseResult.Success -> user = resultUser.data!!
+        val user = when (val resultUser = this.userService.findByEmail(loginDTO.email)) {
+            is ResponseResult.Success -> resultUser.data!!
             is ResponseResult.Error -> return ResponseResult.Error(Errors.UNAUTHORIZED)
         }
 

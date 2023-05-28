@@ -20,8 +20,8 @@ class UserService(
     private val jwtUtil: JWTUtil,
 ) {
     fun findByEmail(email: String): ResponseResult<PlatformUser> {
-        val result = this.userRepository.findByEmail(email) ?: return ResponseResult.Error(Errors.USER_NOT_FOUND)
-        return ResponseResult.Success(result)
+        val user = this.userRepository.findByEmail(email) ?: return ResponseResult.Error(Errors.USER_NOT_FOUND)
+        return ResponseResult.Success(user)
     }
 
     fun updateUser(id: UUID, userDTO: RegisterDTO): ResponseResult<PlatformUser> {
