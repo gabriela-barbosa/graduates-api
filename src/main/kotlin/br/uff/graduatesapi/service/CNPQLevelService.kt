@@ -1,6 +1,8 @@
 package br.uff.graduatesapi.service
 
 import br.uff.graduatesapi.dto.CNPQLevelDTO
+import br.uff.graduatesapi.dto.GetCNPQLevelsDTO
+import br.uff.graduatesapi.dto.toGetCNPQLevelsDTO
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.CNPQLevel
@@ -18,10 +20,10 @@ class CNPQLevelService(
         return ResponseResult.Success(result)
     }
 
-    fun findCNPQLevels(): ResponseResult<List<CNPQLevel>> {
+    fun findCNPQLevels(): ResponseResult<List<GetCNPQLevelsDTO>> {
         return try {
             val result = cnpqLevelRepository.findAllActives()
-            ResponseResult.Success(result)
+            ResponseResult.Success(result.map { it.toGetCNPQLevelsDTO() })
         } catch (err: Error) {
             ResponseResult.Error(Errors.CANT_RETRIEVE_CNPQ_LEVELS)
         }

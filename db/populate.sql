@@ -1,57 +1,57 @@
-insert into platform_user (id, email, name, password, created_at)
+insert into platform_user (id, email, name, password, created_at, actual_role)
 values ('e668b740-5499-4caf-a5a2-0431ef0a5444', 'gabriela@gmail.com', 'Gabriela',
-        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE'),
        ('374570af-f7e5-4585-9815-942c20746f06', 'davi@gmail.com', 'Davi',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now()),
+        now(), 'GRADUATE'),
        ('cf4dedca-1f1b-43dd-af71-3b0f25cb9b9c', 'victor@gmail.com', 'Victor',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now()),
+        now(), 'GRADUATE'),
        ('bee99937-97bb-4d0d-8219-5ac586c6c712', 'arthur@gmail.com', 'Arthur',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now()),
+        now(), 'GRADUATE'),
        ('e69e3415-b1fa-4430-bdca-886fe5bc9af4', 'luiza@gmail.com', 'Luiza',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now()),
+        now(), 'GRADUATE'),
        ('59d8c94f-e5b5-4259-b0d3-2d26758e7eaa', 'vanessa@gmail.com', 'Vanessa',
-        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE'),
        ('b9306ad8-9713-4b9c-ad87-39570e4e8b85', 'gabriel@gmail.com', 'Gabriel',
-        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'PROFESSOR'),
        ('9b6faf8f-c187-4198-82f4-93236fc26446', 'anselmo@gmail.com', 'Anselmo',
-        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE'),
        ('2d5da6fc-9fb4-45a1-9e52-5e20a04a3c43', 'leonardo@gmail.com', 'Leonardo',
-        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE'),
        ('d79b4d52-00ba-4fc9-985d-f00642c131a9', 'plastino@gmail.com', 'Plastino',
-        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE' ),
        ('39d1393f-6b0c-479f-8e54-be5785c7db36', 'troy@gmail.com', 'Troy',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now()),
+        now(), 'GRADUATE'),
        ('d852e774-8199-4824-8cdb-bf092a00e96c', 'aline@gmail.com', 'Aline',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now())
+        now(), 'PROFESSOR')
 ;
 
 
-insert into platform_user (id, email, name, password, created_at)
+insert into platform_user (id, email, name, password, created_at, actual_role)
 values ('3ea29a7d-15de-40b0-b79c-fc440d5f85e4', 'gab@gmail.com', 'Gabrielly',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now()),
+        now(), 'PROFESSOR'),
        ('5f1545bc-7435-4468-a365-e8a625a02fab', 'davidson@gmail.com', 'Davidson',
-        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE'),
        ('fdcb1d4d-636e-429c-b7ba-ecc7af3ef05e', 'viktor@gmail.com', 'Viktor',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now()),
+        now(), 'GRADUATE'),
        ('041f4fab-89c4-4198-87c9-7fd1504eeb6d', 'artu@gmail.com', 'Artu',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now()),
+        now(), 'GRADUATE'),
        ('e405ae18-b349-4d2b-8156-154091b20ec4', 'louise@gmail.com', 'Louise',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now()),
+        now(), 'PROFESSOR'),
        ('1ba0bd22-062a-4397-abdd-226ca952d67e', 'valeria@gmail.com', 'Valéria',
-        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now()),
+        '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'PROFESSOR'),
        ('add37e0a-2748-4fcb-bb24-149c2eac825e', 'alice@gmail.com', 'Alice',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
-        now())
+        now(), 'PROFESSOR')
 ;
 
 insert into platform_user_role(platform_user_id, role)

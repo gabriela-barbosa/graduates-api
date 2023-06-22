@@ -1,6 +1,5 @@
 package br.uff.graduatesapi.model
 
-import br.uff.graduatesapi.enum.WorkHistoryStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
@@ -28,11 +27,14 @@ class Graduate(
   @OneToMany(mappedBy = "graduate")
   var courses: List<Course> = emptyList()
 
-  @ManyToOne(optional = true)
-  var postDoctorate: Institution? = null
+  @OneToOne(mappedBy = "graduate", optional = true)
+  var postDoctorate:  PostDoctorate? = null
 
   @OneToMany(mappedBy = "graduate")
   var workHistories: List<WorkHistory> = emptyList()
+
+  @OneToMany(mappedBy = "graduate")
+  var historyStatus: List<HistoryStatus> = emptyList()
 
   @ManyToMany
   @JoinFormula("(SELECT c.id FROM CNPQScholarship c WHERE c.graduate_id = id AND c.ended_at is null ORDER BY w.started_at DESC)")
@@ -41,6 +43,10 @@ class Graduate(
   @ManyToOne
   @JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id ORDER BY w.ended_at DESC, w.started_at DESC, w.created_at DESC limit 1)")
   val lastWorkHistory: WorkHistory? = null
+
+  @ManyToOne
+  @JoinFormula("(SELECT h.id FROM history_status h WHERE h.graduate_id = id AND extract(year from h.created_at) = extract(year from now())  ORDER BY h.created_at DESC limit 1)")
+  val currentHistoryStatus: HistoryStatus? = null
 
   @Column(name = "finished_doctorate_on_uff", nullable = true)
   var hasFinishedDoctorateOnUFF: Boolean? = null
@@ -58,14 +64,4 @@ class Graduate(
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = true, updatable = true)
   var updatedAt: LocalDateTime? = null
-
-  fun getWorkHistoryStatus(): WorkHistoryStatus {
-    val isPending = this.lastWorkHistory == null || this.lastWorkHistory.updatedAt == null|| this.lastWorkHistory.updatedAt!!.year < LocalDateTime.now().year
-    if (isPending) return WorkHistoryStatus.PENDING
-
-    val wasUpdatedPartiallyWorkHistories = this.lastWorkHistory?.position == null
-    if (wasUpdatedPartiallyWorkHistories || this.hasFinishedDoctorateOnUFF == null || this.hasFinishedMasterDegreeOnUFF == null) return WorkHistoryStatus.UPDATED_PARTIALLY
-
-    return WorkHistoryStatus.UPDATED
-  }
 }

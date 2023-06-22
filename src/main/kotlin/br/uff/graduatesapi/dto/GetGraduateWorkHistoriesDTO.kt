@@ -1,42 +1,65 @@
 package br.uff.graduatesapi.dto
 
 import br.uff.graduatesapi.model.Graduate
+import br.uff.graduatesapi.model.PostDoctorate
 import br.uff.graduatesapi.model.WorkHistory
-import java.time.LocalDateTime
 import java.util.*
 
 data class WorkHistoryDTO(
-  var institution: InstitutionDTO,
-  var startedAt: LocalDateTime,
-  var endedAt: LocalDateTime? = null,
-  var position: String? = null,
+  val id: UUID,
+  val institution: InstitutionDTO,
+  val startedAt: String,
+  val endedAt: String? = null,
+  val position: String? = null,
 )
+
+data class PostDoctorateDTO(
+  val id: UUID,
+  val name: String,
+  val institution: InstitutionDTO,
+  val startedAt: String,
+  val endedAt: String? = null,
+)
+
+fun PostDoctorate.toDTO() = PostDoctorateDTO(
+  id = id,
+  name = name,
+  institution = institution.toDTO(),
+  startedAt = startedAt.toString(),
+  endedAt = endedAt.toString(),
+)
+
 
 data class GraduateWorkHistoriesDTO(
   val graduateId: UUID,
+  val graduateName: String,
   val email: String,
-  var postDoctorate: InstitutionDTO? = null,
-  var hasFinishedDoctorateOnUFF: Boolean? = null,
-  var hasFinishedMasterDegreeOnUFF: Boolean? = null,
-  var successCase: String? = null,
-  val cnpqLevels: List<CNPQScholarshipDTO>,
-  val workHistories: List<WorkHistoryDTO>
+  val postDoctorate: PostDoctorateDTO?,
+  val hasFinishedDoctorateOnUFF: Boolean? = null,
+  val hasFinishedMasterDegreeOnUFF: Boolean? = null,
+  val successCase: String? = null,
+  val cnpqScholarships: List<CNPQScholarshipDTO>,
+  val workHistories: List<WorkHistoryDTO>,
+  val pendingFields: List<String>,
 )
 
-fun Graduate.toGraduateWorkHistoriesDTO(workHistoriesDTO: List<WorkHistoryDTO>) = GraduateWorkHistoriesDTO(
+fun Graduate.toGraduateWorkHistoriesDTO(workHistories: List<WorkHistory>) = GraduateWorkHistoriesDTO(
   graduateId = id,
+  graduateName = user.name,
   email = user.email,
   postDoctorate = postDoctorate?.toDTO(),
   hasFinishedDoctorateOnUFF = hasFinishedDoctorateOnUFF,
   hasFinishedMasterDegreeOnUFF = hasFinishedMasterDegreeOnUFF,
   successCase = successCase,
-  cnpqLevels = cnpqScholarships.map { it.toCNPQScholarshipDTO() },
-  workHistories = workHistoriesDTO
+  cnpqScholarships = cnpqScholarships.map { it.toCNPQScholarshipDTO() },
+  workHistories = workHistories.map { it.toWorkHistoryDTO() },
+  pendingFields = currentHistoryStatus?.pendingFields?.split(",") ?: emptyList()
 )
 
 fun WorkHistory.toWorkHistoryDTO() = WorkHistoryDTO(
+  id = id,
   position = position,
-  startedAt = startedAt,
-  endedAt = endedAt,
+  startedAt = startedAt.toString(),
+  endedAt = endedAt.toString(),
   institution = institution.toDTO()
 )

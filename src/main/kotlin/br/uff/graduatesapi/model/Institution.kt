@@ -8,24 +8,24 @@ import javax.persistence.*
 
 @Entity
 class Institution(
-    @Column(name = "name", nullable = false)
-    var name: String,
+  @Column(name = "name", nullable = false)
+  var name: String,
 
-    @ManyToOne(optional = false)
-    var type: InstitutionType,
+  @ManyToOne(optional = false)
+  var type: InstitutionType,
 ) {
-    @Id
-    @Column(name = "id", nullable = false, unique = true)
-    var id: UUID = UUID.randomUUID()
+  @Id
+  @Column(name = "id", nullable = false, unique = true)
+  var id: UUID = UUID.randomUUID()
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "postDoctorate")
-    var graduate: List<Graduate> = emptyList()
+  @JsonIgnore
+  @OneToMany(mappedBy = "institution")
+  var postDoctorates: List<PostDoctorate> = emptyList()
 
-    @OneToMany(mappedBy = "institution")
-    var workHistory: List<WorkHistory> = emptyList()
+  @OneToMany(mappedBy = "institution")
+  var workHistories: List<WorkHistory> = emptyList()
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    lateinit var createdAt: LocalDateTime
+  @CreationTimestamp
+  @Column(name = "created_at", nullable = false, updatable = false)
+  lateinit var createdAt: LocalDateTime
 }

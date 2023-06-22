@@ -5,10 +5,12 @@ import br.uff.graduatesapi.dto.toDTO
 import br.uff.graduatesapi.entity.GraduateFilters
 import br.uff.graduatesapi.enum.Role
 import br.uff.graduatesapi.error.ResponseResult
+import br.uff.graduatesapi.security.UserDetailsImpl
 import br.uff.graduatesapi.service.GraduateService
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -19,11 +21,10 @@ class GraduateController(private val graduateService: GraduateService) {
   @PreAuthorize("isAuthenticated()")
   @GetMapping("graduates")
   fun getGraduatesByAdvisor(
-    @CookieValue("jwt") jwt: String,
+    @AuthenticationPrincipal user: UserDetailsImpl,
     @RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
     @RequestParam(value = "pageSize", required = false, defaultValue = "10") pageSize: Int,
     @RequestParam(value = "name", required = false) name: String?,
-    @RequestParam(value = "currentRole", required = true) currentRole: Role,
     @RequestParam(value = "institutionType", required = false) institutionType: UUID?,
     @RequestParam(value = "institutionName", required = false) institutionName: String?,
   ): ResponseEntity<Any>? {
@@ -35,7 +36,15 @@ class GraduateController(private val graduateService: GraduateService) {
     )
 
     val pageSetting = Utils.convertPagination(page, pageSize)
-    return when (val result = graduateService.getGraduatesByAdvisor(jwt, currentRole, pageSetting, filters)) {
+
+    val role = user.authorities[0].authority
+    return when (val result =
+      graduateService.getGraduatesByAdvisor(
+        UUID.fromString(user.username),
+        Role.valueOf(role),
+        pageSetting,
+        filters
+      )) {
       is ResponseResult.Success -> ResponseEntity.ok(result.data)
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
@@ -63,6 +72,7 @@ class GraduateController(private val graduateService: GraduateService) {
       is ResponseResult.Success -> {
         ResponseEntity.ok(result.data!!.toDTO())
       }
+
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }

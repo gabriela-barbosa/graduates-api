@@ -14,7 +14,7 @@ class JWTAuthorizationFilter(
     private val userDetailsService: UserDetailsService,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        val cookie = WebUtils.getCookie(req, "jwt")
+        val cookie = WebUtils.getCookie(req, "user.token")
 
         if (cookie != null) {
             try {

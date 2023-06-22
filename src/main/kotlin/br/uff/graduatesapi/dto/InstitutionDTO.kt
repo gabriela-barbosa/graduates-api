@@ -5,13 +5,13 @@ import java.util.*
 
 
 data class InstitutionDTO(
-  val id: UUID?,
-  val type: UUID,
+  val typeId: UUID,
+  val typeName: String,
   val name: String,
 )
 
 fun Institution.toDTO() = InstitutionDTO(
-  id = id,
-  type = type.id,
+  typeId = type.id,
+  typeName = type.name,
   name = name,
 )

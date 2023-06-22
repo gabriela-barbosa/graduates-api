@@ -14,6 +14,11 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     "Erro ao atualizar email. Tente novamente.",
     HttpStatus.INTERNAL_SERVER_ERROR
   ),
+  UNABLE_TO_UPDATE_CURRENT_ROLE(
+    "Error updating current role",
+    "Erro ao atualizar papel atual. Tente novamente.",
+    HttpStatus.UNPROCESSABLE_ENTITY
+  ),
   EMAIL_IN_USE("Email already in use", "Email em uso.", HttpStatus.UNPROCESSABLE_ENTITY),
 
   USER_NOT_FOUND("User not found", "Usuário não encontrado.", HttpStatus.NOT_FOUND),
@@ -96,6 +101,7 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     HttpStatus.INTERNAL_SERVER_ERROR
   ),
 
+
   CANT_RETRIEVE_CNPQ_LEVELS(
     "Cant retrieve CNPQ levels",
     "Erro ao retornar níveis CNPQ.",
@@ -143,6 +149,8 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     HttpStatus.INTERNAL_SERVER_ERROR
   ),
 
+  UNABLE_TO_INSERT_UPDATE_HISTORY_STATUS("Unable to update or insert history status", "Não foi possível atualizar o status do histórico. Tente novamente.", HttpStatus.INTERNAL_SERVER_ERROR),
+
   CANT_RETRIEVE_EMAILS("Cant retrieve emails", "Erro ao recuperar emails.", HttpStatus.INTERNAL_SERVER_ERROR),
   CANT_DELETE_EMAIL("Cant delete email", "Erro ao deletar email.", HttpStatus.INTERNAL_SERVER_ERROR),
   EMAIL_NOT_FOUND("Email not found", "Email não encontrado.", HttpStatus.NOT_FOUND),
@@ -155,4 +163,8 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
   CANT_DEACTIVATE_EMAILS("Error deactivating emails", "Erro ao desativar emails.", HttpStatus.INTERNAL_SERVER_ERROR),
 
   INVALID_DATA("Invalid data", "Dados inválidos.", HttpStatus.UNPROCESSABLE_ENTITY),
+
+
+  POST_DOCTORATE_NOT_FOUND("Post Doctorate not found", "Pós-doutorado não encontrado.", HttpStatus.NOT_FOUND),
+
 }

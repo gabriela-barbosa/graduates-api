@@ -10,9 +10,9 @@ import java.util.*
 
 @RestController
 @RequestMapping("api/v1")
-class CNPQLevelController(private val cnpqLevelService: CNPQLevelService) {
+class CNPQController(private val cnpqLevelService: CNPQLevelService) {
   @PreAuthorize("isAuthenticated()")
-  @GetMapping("cnpqlevels")
+  @GetMapping("cnpq_levels")
   fun getCNPQLevels(): ResponseEntity<Any> =
     when (val result = this.cnpqLevelService.findCNPQLevels()) {
       is ResponseResult.Success -> ResponseEntity.ok(result.data)
@@ -21,7 +21,7 @@ class CNPQLevelController(private val cnpqLevelService: CNPQLevelService) {
     }
 
   @PreAuthorize("isAuthenticated()")
-  @DeleteMapping("cnpqlevel/{id}")
+  @DeleteMapping("cnpq_level/{id}")
   fun deleteCIPrograms(@PathVariable id: UUID): ResponseEntity<Any> =
     when (val result = this.cnpqLevelService.deleteCNPQLevel(id)) {
       is ResponseResult.Success -> ResponseEntity.noContent().build()
@@ -30,7 +30,7 @@ class CNPQLevelController(private val cnpqLevelService: CNPQLevelService) {
     }
 
   @PreAuthorize("isAuthenticated()")
-  @PostMapping("cnpqlevel")
+  @PostMapping("cnpq_level")
   fun createCIProgram(@RequestBody levelDTO: CNPQLevelDTO): ResponseEntity<Any> =
     when (val result = this.cnpqLevelService.createLevel(levelDTO)) {
       is ResponseResult.Success -> ResponseEntity.ok("Programa criado com sucesso")
@@ -39,7 +39,7 @@ class CNPQLevelController(private val cnpqLevelService: CNPQLevelService) {
     }
 
   @PreAuthorize("isAuthenticated()")
-  @PutMapping("cnpqlevel/{id}")
+  @PutMapping("cnpq_level/{id}")
   fun editCIProgram(@RequestBody levelDTO: CNPQLevelDTO, @PathVariable id: UUID): ResponseEntity<Any> =
     when (val result = this.cnpqLevelService.editLevel(levelDTO, id)) {
       is ResponseResult.Success -> ResponseEntity.noContent().build()

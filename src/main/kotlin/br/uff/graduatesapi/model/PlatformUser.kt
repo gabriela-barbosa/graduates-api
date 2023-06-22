@@ -23,7 +23,7 @@ class PlatformUser(
 
     @ElementCollection(targetClass = Role::class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name="platform_user_role", )
+    @CollectionTable(name="platform_user_role")
     @Column(name="role")
     var roles: List<Role> = mutableListOf(),
 
@@ -33,7 +33,11 @@ class PlatformUser(
     @OneToOne(mappedBy = "user")
     var graduate: Graduate? = null,
 
-) {
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true, name="actual_role")
+    var currentRole: Role? = null,
+
+    ) {
     @Id
     @Column(name = "id", nullable = false, unique = true)
     var id: UUID = UUID.randomUUID()

@@ -19,16 +19,21 @@ class JWTUtil {
 
     fun parseJwtToBody(jwt: String): Claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt).body
 
-    fun generateJWTCookie(issuer: String): Cookie {
+    fun generateJWT(issuer: String): String {
         val exp = expiration.toLong()
 
-        val jwt = Jwts.builder()
+        return Jwts.builder()
             .setIssuer(issuer)
             .setExpiration(Date(System.currentTimeMillis() + exp))
             .signWith(SignatureAlgorithm.HS512, secret).compact()
+    }
 
-        val cookie = Cookie("jwt", jwt)
+    fun generateJWTCookie(issuer: String): Cookie {
+        val jwt = generateJWT(issuer)
+
+        val cookie = Cookie("user.token", jwt)
         cookie.isHttpOnly = true
+        cookie.path="/"
         return cookie
     }
 }

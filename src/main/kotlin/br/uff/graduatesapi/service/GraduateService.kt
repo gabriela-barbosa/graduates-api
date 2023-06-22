@@ -1,6 +1,6 @@
 package br.uff.graduatesapi.service
 
-import br.uff.graduatesapi.dto.InstitutionDTO
+import br.uff.graduatesapi.dto.CreatePostDoctorateDTO
 import br.uff.graduatesapi.dto.ListGraduatesDTO
 import br.uff.graduatesapi.dto.MetaDTO
 import br.uff.graduatesapi.dto.toGraduateItemDTO
@@ -29,6 +29,7 @@ class GraduateService(
   private val userService: UserService,
   private val graduateRepository: GraduateRepository,
   private val institutionService: InstitutionService,
+  private val postDoctorateService: PostDoctorateService,
   private val queryFactory: SpringDataQueryFactory,
 ) {
   fun getTotal(filters: GraduateFilters, pageSettings: OffsetLimit): Long {
@@ -36,8 +37,8 @@ class GraduateService(
       select(count(column(Graduate::id)))
       from(entity(Graduate::class))
       join(Graduate::user)
-      join(Graduate::lastWorkHistory, JoinType.LEFT)
       join(Graduate::courses, JoinType.LEFT)
+      join(Graduate::workHistories, JoinType.LEFT)
       join(Course::advisor, JoinType.LEFT)
       join(WorkHistory::institution, JoinType.LEFT)
       join(Institution::type, JoinType.LEFT)
@@ -57,8 +58,8 @@ class GraduateService(
       select(entity(Graduate::class))
       from(entity(Graduate::class))
       join(Graduate::user)
-      join(Graduate::lastWorkHistory, JoinType.LEFT)
       join(Graduate::courses, JoinType.LEFT)
+      join(Graduate::workHistories, JoinType.LEFT)
       join(Course::advisor, JoinType.LEFT)
       join(WorkHistory::institution, JoinType.LEFT)
       join(Institution::type, JoinType.LEFT)
@@ -101,15 +102,15 @@ class GraduateService(
 
 
   fun getGraduatesByAdvisor(
-    jwt: String,
+    id: UUID,
     currentRole: Role,
     page: OffsetLimit,
     filters: GraduateFilters
   ): ResponseResult<ListGraduatesDTO> {
-    val user: PlatformUser
 
-    when (val result = userService.getUserByJwt(jwt)) {
-      is ResponseResult.Success -> user = result.data!!
+
+    val user: PlatformUser = when (val result = userService.getById(id)) {
+      is ResponseResult.Success -> result.data!!
       is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
     }
 
@@ -156,32 +157,18 @@ class GraduateService(
     }
   }
 
-  fun updatePostDoctorate(postDoctorate: InstitutionDTO, graduate: Graduate): ResponseResult<Graduate> {
-
-    graduate.postDoctorate = when (val result = institutionService.createInstitutionByInstitutionDTO(postDoctorate)) {
-      is ResponseResult.Success -> result.data!!
-      is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
-    }
-
-    return when (val result = this.save(graduate)) {
-      is ResponseResult.Success -> result
-      is ResponseResult.Error -> ResponseResult.Error(result.errorReason)
-    }
-  }
-
-
   fun updateGraduateInfo(
     graduate: Graduate,
-    institutionPostDoctorateDTO: InstitutionDTO?,
+    postDoctorateDTO: CreatePostDoctorateDTO?,
     hasFinishedDoctorateOnUFF: Boolean?,
     hasFinishedMasterDegreeOnUFF: Boolean?,
     successCase: String?,
   ): ResponseResult<Graduate> {
-    if (institutionPostDoctorateDTO != null) {
-      val result = this.updatePostDoctorate(institutionPostDoctorateDTO, graduate)
-      if (result is ResponseResult.Error)
-        return ResponseResult.Error(result.errorReason)
-      graduate.postDoctorate = result.data!!.postDoctorate
+    if (postDoctorateDTO?.id != null) {
+      when (val result = this.postDoctorateService.updatePostDoctorate(postDoctorateDTO.id!!, postDoctorateDTO)) {
+        is ResponseResult.Success -> result.data!!
+        is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
+      }
     }
     if (hasFinishedDoctorateOnUFF != null) {
       graduate.hasFinishedDoctorateOnUFF = hasFinishedDoctorateOnUFF
