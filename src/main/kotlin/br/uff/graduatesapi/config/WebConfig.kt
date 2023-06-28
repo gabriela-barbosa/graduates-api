@@ -9,12 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 @EnableWebMvc
 class WebConfig : WebMvcConfigurer {
-    @Value("\${front-host}")
-    private lateinit var frontHost: String
-    override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/**")
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT")
-            .allowedOrigins(frontHost)
-            .allowCredentials(true)
-    }
+  @Value("\${cors.originPatterns:default}")
+  private val corsOriginPatterns: String = ""
+
+  override fun addCorsMappings(registry: CorsRegistry) {
+    val allowedOrigins = corsOriginPatterns.split(",").toTypedArray()
+    registry.addMapping("/**")
+      .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT")
+      .allowedOrigins(*allowedOrigins)
+      .allowCredentials(true)
+  }
 }
