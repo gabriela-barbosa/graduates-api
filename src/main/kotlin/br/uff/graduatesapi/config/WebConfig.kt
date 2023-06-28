@@ -16,7 +16,7 @@ class WebConfig : WebMvcConfigurer {
     val allowedOrigins = corsOriginPatterns.split(",").toTypedArray()
     registry.addMapping("/**")
       .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT")
-      .allowedOrigins(*allowedOrigins)
+      .allowedOrigins("http://localhost:3000", "https://graduates-system-front.vercel.app")
       .allowCredentials(true)
   }
 }
