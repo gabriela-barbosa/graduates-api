@@ -38,3 +38,5 @@ jwt:
 
 token:
   expiration: ${TOKEN_EXPIRATION}
+
+front-host: ${FRONT_HOST}
