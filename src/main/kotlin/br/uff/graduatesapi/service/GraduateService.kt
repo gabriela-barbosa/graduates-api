@@ -38,7 +38,7 @@ class GraduateService(
       from(entity(Graduate::class))
       join(Graduate::user)
       join(Graduate::courses, JoinType.LEFT)
-      join(Graduate::workHistories, JoinType.LEFT)
+      join(Graduate::lastWorkHistory, JoinType.LEFT)
       join(Course::advisor, JoinType.LEFT)
       join(WorkHistory::institution, JoinType.LEFT)
       join(Institution::type, JoinType.LEFT)
@@ -59,7 +59,8 @@ class GraduateService(
       from(entity(Graduate::class))
       join(Graduate::user)
       join(Graduate::courses, JoinType.LEFT)
-      join(Graduate::workHistories, JoinType.LEFT)
+      join(Graduate::lastWorkHistory, JoinType.LEFT)
+      join(Graduate::currentHistoryStatus, JoinType.LEFT)
       join(Course::advisor, JoinType.LEFT)
       join(WorkHistory::institution, JoinType.LEFT)
       join(Institution::type, JoinType.LEFT)
@@ -71,6 +72,7 @@ class GraduateService(
           filters.advisor?.run { column(Advisor::id).equal(this.id) },
         )
       )
+      orderBy(column(HistoryStatus::status).desc())
       limit(
         pageSettings.offset,
         pageSettings.limit,
@@ -164,20 +166,31 @@ class GraduateService(
     hasFinishedMasterDegreeOnUFF: Boolean?,
     successCase: String?,
   ): ResponseResult<Graduate> {
-    if (postDoctorateDTO?.id != null) {
-      when (val result = this.postDoctorateService.updatePostDoctorate(postDoctorateDTO.id!!, postDoctorateDTO)) {
-        is ResponseResult.Success -> result.data!!
-        is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
+
+    val postDoctorate = postDoctorateDTO?.let {
+      if (it.id != null)
+        when (val result = this.postDoctorateService.updatePostDoctorate(it.id, postDoctorateDTO)) {
+          is ResponseResult.Success -> result.data!!
+          is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
+        }
+      else
+        when (val result = this.postDoctorateService.createPostDoctorate(graduate, postDoctorateDTO)) {
+          is ResponseResult.Success -> result.data!!
+          is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
+        }
+    }
+
+      postDoctorate?.let { graduate.postDoctorate = it }
+
+      hasFinishedDoctorateOnUFF?.let { graduate.hasFinishedDoctorateOnUFF = it }
+
+      hasFinishedMasterDegreeOnUFF?.let {
+        graduate.hasFinishedMasterDegreeOnUFF = it
       }
+      graduate.updatedAt = LocalDateTime.now()
+
+      successCase?.let { graduate.successCase = it }
+
+      return this.save(graduate)
     }
-    if (hasFinishedDoctorateOnUFF != null) {
-      graduate.hasFinishedDoctorateOnUFF = hasFinishedDoctorateOnUFF
-    }
-    if (hasFinishedMasterDegreeOnUFF != null) {
-      graduate.hasFinishedMasterDegreeOnUFF = hasFinishedMasterDegreeOnUFF
-    }
-    graduate.updatedAt = LocalDateTime.now()
-    graduate.successCase = successCase
-    return this.save(graduate)
   }
-}

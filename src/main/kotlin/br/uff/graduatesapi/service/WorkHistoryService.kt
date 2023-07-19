@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.service
 
+import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.*
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
@@ -93,10 +94,9 @@ class WorkHistoryService(
         }
     }
     if (position != null) oldWorkHistory.position = position
-    oldWorkHistory.startedAt = LocalDateTime.parse(startedAt)
+    oldWorkHistory.startedAt = Utils.parseUTCToLocalDateTime(startedAt)
     oldWorkHistory.updatedAt = LocalDateTime.now()
-    if (endedAt != null) oldWorkHistory.endedAt = LocalDateTime.parse(endedAt)
-
+    endedAt?.let { oldWorkHistory.endedAt = Utils.parseUTCToLocalDateTime(it) }
     return save(oldWorkHistory)
   }
 
@@ -112,12 +112,16 @@ class WorkHistoryService(
       is ResponseResult.Success -> result.data!!
       is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
     }
+
+    val newStartedAt = Utils.parseUTCToLocalDateTime(startedAt)
+    val newEndedAt = endedAt?.let { Utils.parseUTCToLocalDateTime(it) }
+
     val hw = WorkHistory(
       position = position,
       graduate = graduate,
       institution = institution,
-      startedAt = LocalDateTime.parse(startedAt),
-      endedAt = LocalDateTime.parse(endedAt),
+      startedAt = newStartedAt,
+      endedAt = newEndedAt,
       updatedAt = null
     )
 
@@ -194,20 +198,20 @@ class WorkHistoryService(
       }
     }
 
-    val workHistories = if (worksDTO.workHistories != null) {
+    if (worksDTO.workHistories != null) {
       when (val result = createWorkHistories(graduate, worksDTO.workHistories)) {
         is ResponseResult.Success -> result.data!!
         is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
       }
-    } else null
+    }
 
 
-    val cnpqScholarships = if (worksDTO.cnpqLevels != null) {
-      when (val result = cnpqScholarshipService.createCNPQScholarships(graduate, worksDTO.cnpqLevels)) {
+    if (worksDTO.cnpqScholarships != null) {
+      when (val result = cnpqScholarshipService.createCNPQScholarships(graduate, worksDTO.cnpqScholarships)) {
         is ResponseResult.Success -> result.data!!
         is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
       }
-    } else null
+    }
 
     val graduateUpdated = when (val result = graduateService.updateGraduateInfo(
       graduate,
@@ -220,10 +224,10 @@ class WorkHistoryService(
       is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
     }
     historyStatusService.upsertHistoryStatusByGraduate(
-      graduateUpdated,
-      workHistories,
-      cnpqScholarships,
-      worksDTO.isPostDoctorateKnown
+      graduate = graduateUpdated,
+      hasCurrentWorkHistory = worksDTO.hasCurrentWorkHistory,
+      hasCurrentCNPQScholarship = worksDTO.hasCurrentCNPQScholarship,
+      hasPostDoctorate = worksDTO.hasPostDoctorate,
     )
 
     return ResponseResult.Success(graduate.id)

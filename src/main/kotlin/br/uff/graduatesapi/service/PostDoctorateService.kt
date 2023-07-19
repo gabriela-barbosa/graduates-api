@@ -1,8 +1,10 @@
 package br.uff.graduatesapi.service
 
+import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.CreatePostDoctorateDTO
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
+import br.uff.graduatesapi.model.Graduate
 import br.uff.graduatesapi.model.PostDoctorate
 import br.uff.graduatesapi.repository.PostDoctorateRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -37,14 +39,39 @@ class PostDoctorateService(
         is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
       }
 
-    oldPostDoctorate.name = postDoctorateDTO.name
     oldPostDoctorate.institution = institution
     oldPostDoctorate.updatedAt = LocalDateTime.now()
-    oldPostDoctorate.startedAt = LocalDateTime.parse(postDoctorateDTO.startedAt)
-    oldPostDoctorate.endedAt = LocalDateTime.parse(postDoctorateDTO.endedAt)
+    oldPostDoctorate.startedAt = Utils.parseUTCToLocalDateTime(postDoctorateDTO.startedAt)
+    oldPostDoctorate.endedAt = postDoctorateDTO.endedAt?.let { Utils.parseUTCToLocalDateTime(it) }
 
     return try {
       ResponseResult.Success(postDoctorateRepository.save(oldPostDoctorate))
+    } catch (ex: Exception) {
+      ResponseResult.Error(Errors.INVALID_DATA)
+    }
+  }
+
+  fun createPostDoctorate(
+    graduate: Graduate,
+    postDoctorateDTO: CreatePostDoctorateDTO,
+  ): ResponseResult<PostDoctorate> {
+
+    val institution =
+      when (val result = institutionService.createInstitutionByInstitutionDTO(postDoctorateDTO.institution)) {
+        is ResponseResult.Success -> result.data!!
+        is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
+      }
+
+    val postDoctorate = PostDoctorate(
+      graduate = graduate,
+      institution = institution,
+      startedAt = Utils.parseUTCToLocalDateTime(postDoctorateDTO.startedAt),
+      endedAt = postDoctorateDTO.endedAt?.let { Utils.parseUTCToLocalDateTime(it) },
+      updatedAt = LocalDateTime.now(),
+    )
+
+    return try {
+      ResponseResult.Success(postDoctorateRepository.save(postDoctorate))
     } catch (ex: Exception) {
       ResponseResult.Error(Errors.INVALID_DATA)
     }

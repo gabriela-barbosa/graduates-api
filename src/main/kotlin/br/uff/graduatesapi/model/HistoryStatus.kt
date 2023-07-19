@@ -18,6 +18,9 @@ class HistoryStatus(
   @Column(nullable = true)
   var pendingFields: String? = null,
 
+  @Column(nullable = true)
+  var emptyFields: String? = null,
+
   @ManyToOne(optional = false)
   var graduate: Graduate
 ) {

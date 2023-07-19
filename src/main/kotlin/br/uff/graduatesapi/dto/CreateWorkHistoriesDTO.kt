@@ -9,19 +9,18 @@ data class CreateInstitutionDTO(
 )
 
 data class CreateWorkHistoryDTO(
-  var id: UUID?,
-  var institution: CreateInstitutionDTO,
-  var startedAt: String,
-  var endedAt: String? = null,
-  var position: String? = null,
+  val id: UUID?,
+  val institution: CreateInstitutionDTO,
+  val startedAt: String,
+  val endedAt: String? = null,
+  val position: String? = null,
 )
 
 data class CreatePostDoctorateDTO(
-  var id: UUID?,
-  var name: String,
-  var institution: CreateInstitutionDTO,
-  var startedAt: String,
-  var endedAt: String? = null,
+  val id: UUID?,
+  val institution: CreateInstitutionDTO,
+  val startedAt: String,
+  val endedAt: String? = null,
 )
 
 data class CreatePosDoctorateDTO(
@@ -32,15 +31,15 @@ data class CreatePosDoctorateDTO(
 data class CreateWorkHistoriesDTO(
   val graduateName: String,
   val email: String,
+  val successCase: String? = null,
   val workHistories: List<CreateWorkHistoryDTO>? = null,
-  val cnpqLevels: List<CNPQScholarshipDTO>? = null,
-  val isPostDoctorateKnown: Boolean,
+  val cnpqScholarships: List<CNPQScholarshipDTO>? = null,
   val postDoctorate: CreatePostDoctorateDTO? = null,
-//  val isHasFinishedDoctorateOnUFF: Boolean,
-//  val isHasFinishedMasterDegreeOnUFF: Boolean,
+  val hasCurrentCNPQScholarship: Boolean? = null,
+  val hasPostDoctorate: Boolean? = null,
+  val hasCurrentWorkHistory: Boolean? = null,
   val hasFinishedDoctorateOnUFF: Boolean? = null,
   val hasFinishedMasterDegreeOnUFF: Boolean? = null,
-  val successCase: String? = null
 )
 
 fun Institution.toCreateWorkHistoriesInstitutionDTO() = CreateInstitutionDTO(

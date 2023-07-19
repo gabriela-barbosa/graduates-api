@@ -13,9 +13,6 @@ class PostDoctorate(
   @OneToOne(optional = false)
   var graduate: Graduate,
 
-  @Column(nullable = false)
-  var name: String,
-
   @ManyToOne(optional = false)
   var institution: Institution,
 

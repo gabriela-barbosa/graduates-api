@@ -15,7 +15,6 @@ data class WorkHistoryDTO(
 
 data class PostDoctorateDTO(
   val id: UUID,
-  val name: String,
   val institution: InstitutionDTO,
   val startedAt: String,
   val endedAt: String? = null,
@@ -23,7 +22,6 @@ data class PostDoctorateDTO(
 
 fun PostDoctorate.toDTO() = PostDoctorateDTO(
   id = id,
-  name = name,
   institution = institution.toDTO(),
   startedAt = startedAt.toString(),
   endedAt = endedAt.toString(),
@@ -38,9 +36,10 @@ data class GraduateWorkHistoriesDTO(
   val hasFinishedDoctorateOnUFF: Boolean? = null,
   val hasFinishedMasterDegreeOnUFF: Boolean? = null,
   val successCase: String? = null,
-  val cnpqScholarships: List<CNPQScholarshipDTO>,
+  val cnpqScholarships: List<GetCNPQScholarshipDTO>,
   val workHistories: List<WorkHistoryDTO>,
   val pendingFields: List<String>,
+  val emptyFields: List<String>,
 )
 
 fun Graduate.toGraduateWorkHistoriesDTO(workHistories: List<WorkHistory>) = GraduateWorkHistoriesDTO(
@@ -51,9 +50,10 @@ fun Graduate.toGraduateWorkHistoriesDTO(workHistories: List<WorkHistory>) = Grad
   hasFinishedDoctorateOnUFF = hasFinishedDoctorateOnUFF,
   hasFinishedMasterDegreeOnUFF = hasFinishedMasterDegreeOnUFF,
   successCase = successCase,
-  cnpqScholarships = cnpqScholarships.map { it.toCNPQScholarshipDTO() },
+  cnpqScholarships = cnpqScholarships.map { it.toGetCNPQScholarshipDTO() },
   workHistories = workHistories.map { it.toWorkHistoryDTO() },
-  pendingFields = currentHistoryStatus?.pendingFields?.split(",") ?: emptyList()
+  pendingFields = currentHistoryStatus?.pendingFields?.split(",") ?: emptyList(),
+  emptyFields = currentHistoryStatus?.emptyFields?.split(",") ?: emptyList(),
 )
 
 fun WorkHistory.toWorkHistoryDTO() = WorkHistoryDTO(
