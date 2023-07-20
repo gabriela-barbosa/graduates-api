@@ -46,6 +46,11 @@ class InstitutionService(
 
   fun createInstitutionByInstitutionDTO(newInstitution: CreateInstitutionDTO): ResponseResult<Institution> {
 
+    val institutionFound =
+      findByNameAndType(newInstitution.name, newInstitution.typeId).takeIf { it is ResponseResult.Success }
+
+    if (institutionFound != null) return ResponseResult.Success(institutionFound.data!!)
+
     val institutionType = when (val resultLevel = institutionTypeService.findById(newInstitution.typeId)) {
       is ResponseResult.Success -> resultLevel.data!!
       is ResponseResult.Error -> return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND)

@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.security
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -22,6 +23,8 @@ class SecurityConfig(
     private val userDetailsService: UserDetailsService,
 ) : WebSecurityConfigurerAdapter() {
 
+    @Value("\${cors.originPatterns:default}")
+    private val corsOriginPatterns: String = ""
     override fun configure(http: HttpSecurity) {
         http.csrf().disable().authorizeRequests()
             .antMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
@@ -40,8 +43,10 @@ class SecurityConfig(
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
+
+        val allowedOrigins = corsOriginPatterns.split(",").toTypedArray()
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:3000")
+        configuration.allowedOrigins = listOf(*allowedOrigins)
         configuration.allowedMethods = listOf("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH")
         configuration.allowCredentials = true
         configuration.allowedHeaders = listOf("Authorization", "Cache-Control", "Content-Type")

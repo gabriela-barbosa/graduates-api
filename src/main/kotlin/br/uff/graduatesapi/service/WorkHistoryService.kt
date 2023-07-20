@@ -136,7 +136,7 @@ class WorkHistoryService(
     val workHistories = workHistoriesDTO.map {
       when (val result =
         if (it.id != null)
-          this.updateWorkHistory(it.id!!, it.institution, it.position, it.startedAt, it.endedAt)
+          this.updateWorkHistory(it.id, it.institution, it.position, it.startedAt, it.endedAt)
         else
           this.createWorkHistory(graduate, it.position, it.institution, it.startedAt, it.endedAt)) {
         is ResponseResult.Success -> result.data!!

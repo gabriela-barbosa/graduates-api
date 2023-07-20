@@ -26,13 +26,23 @@ class HistoryStatusService(
       hasPostDoctorate = hasPostDoctorate
     )
 
+
+    val pendingFieldsStringified = pendingFields.joinToString(",")
+    val emptyFieldsStringified = emptyFields.joinToString(",")
+
     val historyStatus =
-      graduate.currentHistoryStatus ?: HistoryStatus(
-        status = status,
-        pendingFields = pendingFields.joinToString(","),
-        emptyFields = emptyFields.joinToString(","),
-        graduate = graduate
-      )
+      if (graduate.currentHistoryStatus != null) {
+        graduate.currentHistoryStatus.status = status
+        graduate.currentHistoryStatus.pendingFields = pendingFieldsStringified
+        graduate.currentHistoryStatus.emptyFields = emptyFieldsStringified
+        graduate.currentHistoryStatus
+      } else
+        HistoryStatus(
+          status = status,
+          pendingFields = pendingFieldsStringified,
+          emptyFields = emptyFieldsStringified,
+          graduate = graduate
+        )
 
     return try {
       ResponseResult.Success(historyStatusRepository.save(historyStatus))

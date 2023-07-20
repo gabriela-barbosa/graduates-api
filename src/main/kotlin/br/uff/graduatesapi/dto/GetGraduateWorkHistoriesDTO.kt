@@ -24,7 +24,7 @@ fun PostDoctorate.toDTO() = PostDoctorateDTO(
   id = id,
   institution = institution.toDTO(),
   startedAt = startedAt.toString(),
-  endedAt = endedAt.toString(),
+  endedAt = endedAt?.toString(),
 )
 
 

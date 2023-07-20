@@ -28,7 +28,6 @@ import javax.persistence.criteria.JoinType
 class GraduateService(
   private val userService: UserService,
   private val graduateRepository: GraduateRepository,
-  private val institutionService: InstitutionService,
   private val postDoctorateService: PostDoctorateService,
   private val queryFactory: SpringDataQueryFactory,
 ) {
@@ -180,17 +179,17 @@ class GraduateService(
         }
     }
 
-      postDoctorate?.let { graduate.postDoctorate = it }
+    postDoctorate?.let { graduate.postDoctorate = it }
 
-      hasFinishedDoctorateOnUFF?.let { graduate.hasFinishedDoctorateOnUFF = it }
+    hasFinishedDoctorateOnUFF?.let { graduate.hasFinishedDoctorateOnUFF = it }
 
-      hasFinishedMasterDegreeOnUFF?.let {
-        graduate.hasFinishedMasterDegreeOnUFF = it
-      }
-      graduate.updatedAt = LocalDateTime.now()
-
-      successCase?.let { graduate.successCase = it }
-
-      return this.save(graduate)
+    hasFinishedMasterDegreeOnUFF?.let {
+      graduate.hasFinishedMasterDegreeOnUFF = it
     }
+    graduate.updatedAt = LocalDateTime.now()
+
+    successCase?.let { graduate.successCase = it }
+
+    return this.save(graduate)
   }
+}

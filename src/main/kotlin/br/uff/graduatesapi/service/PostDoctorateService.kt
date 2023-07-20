@@ -41,8 +41,10 @@ class PostDoctorateService(
 
     oldPostDoctorate.institution = institution
     oldPostDoctorate.updatedAt = LocalDateTime.now()
-    oldPostDoctorate.startedAt = Utils.parseUTCToLocalDateTime(postDoctorateDTO.startedAt)
-    oldPostDoctorate.endedAt = postDoctorateDTO.endedAt?.let { Utils.parseUTCToLocalDateTime(it) }
+    if (oldPostDoctorate.startedAt.toString() != postDoctorateDTO.startedAt)
+      oldPostDoctorate.startedAt = Utils.parseUTCToLocalDateTime(postDoctorateDTO.startedAt)
+    if (oldPostDoctorate.endedAt?.toString() != postDoctorateDTO.endedAt)
+      oldPostDoctorate.endedAt = postDoctorateDTO.endedAt?.let { Utils.parseUTCToLocalDateTime(it) }
 
     return try {
       ResponseResult.Success(postDoctorateRepository.save(oldPostDoctorate))
