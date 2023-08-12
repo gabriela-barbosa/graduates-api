@@ -39,7 +39,7 @@ class CNPQLevelService(
     }
 
     fun createLevel(levelDTO: CNPQLevelDTO): ResponseResult<Nothing?> {
-        val level = CNPQLevel(name = levelDTO.level)
+        val level = CNPQLevel(name = levelDTO.name)
         return try {
             cnpqLevelRepository.save(level)
             ResponseResult.Success(null)
@@ -54,7 +54,7 @@ class CNPQLevelService(
                 is ResponseResult.Success -> result.data!!
                 is ResponseResult.Error -> return ResponseResult.Error(Errors.INVALID_DATA)
             }
-            level.name = levelDTO.level
+            level.name = levelDTO.name
             cnpqLevelRepository.save(level)
             ResponseResult.Success(null)
         } catch (err: Error) {
