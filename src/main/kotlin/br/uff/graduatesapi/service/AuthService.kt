@@ -7,13 +7,15 @@ import br.uff.graduatesapi.dto.toGetUserDTO
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.security.JWTUtil
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class AuthService(
   private val userService: UserService,
   private val jwtUtil: JWTUtil,
-) {
+  private val passwordEncoder: BCryptPasswordEncoder,
+  ) {
   fun login(loginDTO: LoginDTO): ResponseResult<GetAuthenticatedUser> {
 
 
