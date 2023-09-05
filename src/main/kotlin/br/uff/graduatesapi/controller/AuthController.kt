@@ -76,7 +76,7 @@ class AuthController(
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("user")
-  fun getUserByJwt(@CookieValue("user.token") jwt: String): ResponseEntity<Any> =
+  fun getUserByJwt(@RequestHeader(name="Authorization") jwt: String): ResponseEntity<Any> =
     when (val result = this.userService.getUserByJwt(jwt)) {
       is ResponseResult.Success -> {
         ResponseEntity.ok(result.data)

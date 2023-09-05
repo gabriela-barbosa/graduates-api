@@ -4,7 +4,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.web.filter.OncePerRequestFilter
-import org.springframework.web.util.WebUtils
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -14,11 +13,12 @@ class JWTAuthorizationFilter(
     private val userDetailsService: UserDetailsService,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        val cookie = WebUtils.getCookie(req, "user.token")
+        val token = req.getHeader("Authorization")
 
-        if (cookie != null) {
+
+        if (token != null) {
             try {
-                val authorized = getAuthentication(cookie.value)
+                val authorized = getAuthentication(token)
                 if (authorized != null)
                     SecurityContextHolder.getContext().authentication = authorized
                 else
@@ -32,9 +32,9 @@ class JWTAuthorizationFilter(
         chain.doFilter(req, resp)
     }
 
-    private fun getAuthentication(cookie: String): UsernamePasswordAuthenticationToken? {
+    private fun getAuthentication(token: String): UsernamePasswordAuthenticationToken? {
         return try {
-            val body = jwtUtil.parseJwtToBody(cookie)
+            val body = jwtUtil.parseJwtToBody(token)
             val id = body.issuer.toString()
             val user = userDetailsService.loadUserByUsername(id)
             UsernamePasswordAuthenticationToken(user, null, user.authorities)
