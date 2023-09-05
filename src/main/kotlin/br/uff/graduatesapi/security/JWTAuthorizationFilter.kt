@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.security
 
+import br.uff.graduatesapi.Utils
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -13,11 +14,11 @@ class JWTAuthorizationFilter(
     private val userDetailsService: UserDetailsService,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        val token = req.getHeader("Authorization")
+        val bearer = req.getHeader("Authorization")
 
-
-        if (token != null) {
+        if (bearer != null) {
             try {
+                val token = Utils.getBearerToken(bearer)
                 val authorized = getAuthentication(token)
                 if (authorized != null)
                     SecurityContextHolder.getContext().authentication = authorized

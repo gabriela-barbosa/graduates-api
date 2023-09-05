@@ -1,5 +1,6 @@
 package br.uff.graduatesapi.controller
 
+import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.LoginDTO
 import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.dto.RegisterDTO
@@ -76,8 +77,9 @@ class AuthController(
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("user")
-  fun getUserByJwt(@RequestHeader(name="Authorization") jwt: String): ResponseEntity<Any> =
-    when (val result = this.userService.getUserByJwt(jwt)) {
+  fun getUserByJwt(@RequestHeader(name="Authorization") bearer: String): ResponseEntity<Any> {
+    val jwt = Utils.getBearerToken(bearer)
+    return when (val result = this.userService.getUserByJwt(jwt)) {
       is ResponseResult.Success -> {
         ResponseEntity.ok(result.data)
       }
@@ -85,7 +87,7 @@ class AuthController(
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }
-
+  }
   @PreAuthorize("isAuthenticated()")
   @GetMapping("users")
   fun getUsers(

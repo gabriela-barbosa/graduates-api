@@ -10,6 +10,8 @@ import java.time.ZoneOffset
 
 class Utils {
   companion object {
+
+    fun getBearerToken(bearer: String) = bearer.replace("Bearer", "")
     fun convertPagination(page: Int?, pageSize: Int?): OffsetLimit {
       if (page != null && pageSize != null) {
         val offset = page * pageSize
