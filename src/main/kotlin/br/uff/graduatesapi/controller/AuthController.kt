@@ -29,7 +29,7 @@ class AuthController(
   @PostMapping("register")
   fun register(@RequestBody body: RegisterDTO): ResponseEntity<Any> =
     when (val result = this.userService.createUpdateUser(body)) {
-      is ResponseResult.Success -> ResponseEntity.ok(result.data)
+      is ResponseResult.Success -> ResponseEntity.ok().body(result.data!!)
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }
@@ -68,7 +68,7 @@ class AuthController(
   fun getUserById(@PathVariable id: UUID): ResponseEntity<Any> =
     when (val result = this.userService.getById(id)) {
       is ResponseResult.Success -> {
-        ResponseEntity.ok(result.data)
+        ResponseEntity.ok().body(result.data!!)
       }
 
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
@@ -81,7 +81,7 @@ class AuthController(
     val jwt = Utils.getBearerToken(bearer)
     return when (val result = this.userService.getUserByJwt(jwt)) {
       is ResponseResult.Success -> {
-        ResponseEntity.ok(result.data)
+        ResponseEntity.ok().body(result.data!!)
       }
 
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
@@ -98,7 +98,7 @@ class AuthController(
     val pageable: Pageable = PageRequest.of(page, pageSize)
     return when (val result = this.userService.getUsers(pageable)) {
       is ResponseResult.Success -> {
-        ResponseEntity.ok(result.data)
+        ResponseEntity.ok().body(result.data!!)
       }
 
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)

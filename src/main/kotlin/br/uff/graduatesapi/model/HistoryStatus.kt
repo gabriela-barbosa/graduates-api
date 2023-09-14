@@ -1,6 +1,7 @@
 package br.uff.graduatesapi.model
 
 import br.uff.graduatesapi.enum.HistoryStatusEnum
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
@@ -21,6 +22,7 @@ class HistoryStatus(
   @Column(nullable = true)
   var emptyFields: String? = null,
 
+  @JsonIgnore
   @ManyToOne(optional = false)
   var graduate: Graduate
 ) {
