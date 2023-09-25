@@ -6,10 +6,12 @@ import br.uff.graduatesapi.dto.MetaDTO
 import br.uff.graduatesapi.dto.toGraduateItemDTO
 import br.uff.graduatesapi.entity.GraduateFilters
 import br.uff.graduatesapi.entity.OffsetLimit
+import br.uff.graduatesapi.enum.HistoryStatusEnum
 import br.uff.graduatesapi.enum.Role
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.*
+import br.uff.graduatesapi.repository.BaseRepository
 import br.uff.graduatesapi.repository.GraduateRepository
 import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.querydsl.from.join
@@ -22,7 +24,10 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
+import javax.persistence.criteria.Join
 import javax.persistence.criteria.JoinType
+import javax.persistence.criteria.Predicate
+
 
 @Service
 class GraduateService(
@@ -30,7 +35,10 @@ class GraduateService(
   private val graduateRepository: GraduateRepository,
   private val postDoctorateService: PostDoctorateService,
   private val queryFactory: SpringDataQueryFactory,
-) {
+): BaseRepository<Graduate>() {
+
+  override val resourceClass: Class<Graduate> get() = Graduate::class.java
+
   fun getTotal(filters: GraduateFilters, pageSettings: OffsetLimit): Long {
     return queryFactory.singleQuery {
       select(count(column(Graduate::id)))
@@ -79,6 +87,46 @@ class GraduateService(
     }
   }
 
+  fun getGraduatesCriteria(filters: GraduateFilters, pageSettings: OffsetLimit): List<Graduate> {
+    val typedQuery = criteria { query, entity ->
+
+
+      val where = mutableListOf<Predicate>()
+
+      val user: Join<Graduate, PlatformUser> = entity.join("user")
+      val course: Join<Graduate, Course> = entity.join("courses", JoinType.LEFT)
+      val lastWorkHistory: Join<Graduate, WorkHistory> = entity.join("lastWorkHistory", JoinType.LEFT)
+      val currentHistoryStatus: Join<Graduate, HistoryStatus> = entity.join("currentHistoryStatus", JoinType.LEFT)
+      val advisor: Join<Course, Advisor> = course.join("advisor", JoinType.LEFT)
+      val institution: Join<WorkHistory, Institution> = entity.join("institution", JoinType.LEFT)
+      val institutionType: Join<Institution, InstitutionType> = entity.join("type", JoinType.LEFT)
+
+
+      filters.name?.run {
+        where.add(like(this@criteria.upper(user.get("name")), "%${this.uppercase()}%"))
+      }
+      filters.institutionType?.run {
+        where.add(equal(institutionType.get<String>("id"), this))
+      }
+      filters.institutionName?.run {
+        where.add(like(this@criteria.upper(institution.get("name")), "%${this.uppercase()}%"))
+      }
+      filters.advisor?.run {
+        where.add(equal(advisor.get<String>("id"), this))
+      }
+
+      query
+        .select(entity)
+        .where(*where.toTypedArray())
+        .orderBy(this.desc(currentHistoryStatus.get<HistoryStatusEnum>("status")))
+    }
+
+    typedQuery.setFirstResult(pageSettings.offset)
+    typedQuery.setMaxResults(pageSettings.pageSize)
+
+    return typedQuery.resultList
+  }
+
   fun getGraduateById(id: UUID): ResponseResult<Graduate> {
     val result = graduateRepository.findByIdOrNull(id) ?: return ResponseResult.Error(Errors.GRADUATE_NOT_FOUND)
     return ResponseResult.Success(result)
@@ -94,7 +142,7 @@ class GraduateService(
   fun getGraduatePaged(filters: GraduateFilters, page: OffsetLimit) =
     try {
       val total = getTotal(filters, page)
-      val grad = getGraduates(filters, page)
+      val grad = getGraduatesCriteria(filters, page)
       val metaList = MetaDTO(page.page, grad.count(), total)
       ResponseResult.Success(Pair(grad, metaList))
     } catch (ex: Exception) {
