@@ -24,9 +24,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
-import javax.persistence.criteria.Join
-import javax.persistence.criteria.JoinType
-import javax.persistence.criteria.Predicate
+import javax.persistence.criteria.*
 
 
 @Service
@@ -35,7 +33,7 @@ class GraduateService(
   private val graduateRepository: GraduateRepository,
   private val postDoctorateService: PostDoctorateService,
   private val queryFactory: SpringDataQueryFactory,
-): BaseRepository<Graduate>() {
+) : BaseRepository<Graduate>() {
 
   override val resourceClass: Class<Graduate> get() = Graduate::class.java
 
@@ -87,44 +85,67 @@ class GraduateService(
     }
   }
 
-  fun getGraduatesCriteria(filters: GraduateFilters, pageSettings: OffsetLimit): List<Graduate> {
-    val typedQuery = criteria { query, entity ->
+  private fun addFiltersAndJoinsGetGraduatesCriteria(entity: Root<Graduate>, filters: GraduateFilters, builder: CriteriaBuilder): Pair<MutableList<Predicate>, Join<Graduate, HistoryStatus>> {
+    val where = mutableListOf<Predicate>()
+
+    val user: Join<Graduate, PlatformUser> = entity.join("user", JoinType.INNER)
+    val course: Join<Graduate, Course> = entity.join("courses", JoinType.LEFT)
+    val lastWorkHistory: Join<Graduate, WorkHistory> = entity.join("lastWorkHistory", JoinType.LEFT)
+    val currentHistoryStatus: Join<Graduate, HistoryStatus> = entity.join("currentHistoryStatus", JoinType.LEFT)
+    val advisor: Join<Course, Advisor> = course.join("advisor", JoinType.LEFT)
+    val institution: Join<WorkHistory, Institution> = lastWorkHistory.join("institution", JoinType.LEFT)
+    val institutionType: Join<Institution, InstitutionType> = institution.join("type", JoinType.LEFT)
 
 
-      val where = mutableListOf<Predicate>()
-
-      val user: Join<Graduate, PlatformUser> = entity.join("user")
-      val course: Join<Graduate, Course> = entity.join("courses", JoinType.LEFT)
-      val lastWorkHistory: Join<Graduate, WorkHistory> = entity.join("lastWorkHistory", JoinType.LEFT)
-      val currentHistoryStatus: Join<Graduate, HistoryStatus> = entity.join("currentHistoryStatus", JoinType.LEFT)
-      val advisor: Join<Course, Advisor> = course.join("advisor", JoinType.LEFT)
-      val institution: Join<WorkHistory, Institution> = entity.join("institution", JoinType.LEFT)
-      val institutionType: Join<Institution, InstitutionType> = entity.join("type", JoinType.LEFT)
-
-
-      filters.name?.run {
-        where.add(like(this@criteria.upper(user.get("name")), "%${this.uppercase()}%"))
-      }
-      filters.institutionType?.run {
-        where.add(equal(institutionType.get<String>("id"), this))
-      }
-      filters.institutionName?.run {
-        where.add(like(this@criteria.upper(institution.get("name")), "%${this.uppercase()}%"))
-      }
-      filters.advisor?.run {
-        where.add(equal(advisor.get<String>("id"), this))
-      }
-
-      query
-        .select(entity)
-        .where(*where.toTypedArray())
-        .orderBy(this.desc(currentHistoryStatus.get<HistoryStatusEnum>("status")))
+    filters.name?.run {
+      where.add(builder.like(builder.upper(user.get("name")), "%${this.uppercase()}%"))
     }
+    filters.institutionType?.run {
+      where.add(builder.equal(institutionType.get<String>("id"), this))
+    }
+    filters.institutionName?.run {
+      where.add(builder.like(builder.upper(institution.get("name")), "%${this.uppercase()}%"))
+    }
+    filters.advisor?.run {
+      where.add(builder.equal(advisor.get<String>("id"), this))
+    }
+    return Pair(where, currentHistoryStatus)
 
-    typedQuery.setFirstResult(pageSettings.offset)
-    typedQuery.setMaxResults(pageSettings.pageSize)
+  }
 
-    return typedQuery.resultList
+  fun getGraduatesCriteria(filters: GraduateFilters, pageSettings: OffsetLimit): Pair<List<Graduate>,MetaDTO > {
+
+    val builder: CriteriaBuilder = entityManager.criteriaBuilder
+    val query: CriteriaQuery<Graduate> = builder.createQuery(Graduate::class.java)
+    val entity: Root<Graduate> = query.from(Graduate::class.java)
+
+    val countQuery = builder
+      .createQuery(Long::class.java)
+
+    val entityCount = countQuery.from(Graduate::class.java)
+
+    val (whereCount, ) = addFiltersAndJoinsGetGraduatesCriteria(entityCount, filters, builder)
+
+    countQuery
+      .select(builder.count(entityCount))
+      .where(*whereCount.toTypedArray())
+
+    val count: Long = entityManager.createQuery(countQuery).singleResult
+
+    val (whereGraduates, currentHS) = addFiltersAndJoinsGetGraduatesCriteria(entity, filters, builder)
+
+    query
+      .select(entity)
+      .where(*whereGraduates.toTypedArray())
+      .orderBy(builder.desc(currentHS.get<HistoryStatusEnum>("status")))
+
+    val queryResult = entityManager.createQuery(query)
+
+
+    queryResult.setFirstResult(pageSettings.offset)
+    queryResult.setMaxResults(pageSettings.pageSize)
+
+    return Pair(queryResult.resultList, MetaDTO(pageSettings.page, pageSettings.pageSize, count))
   }
 
   fun getGraduateById(id: UUID): ResponseResult<Graduate> {
@@ -139,22 +160,16 @@ class GraduateService(
     ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
   }
 
-  fun getGraduatePaged(filters: GraduateFilters, page: OffsetLimit) =
-    try {
-      val total = getTotal(filters, page)
-      val grad = getGraduatesCriteria(filters, page)
-      val metaList = MetaDTO(page.page, grad.count(), total)
-      ResponseResult.Success(Pair(grad, metaList))
-    } catch (ex: Exception) {
-      ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
-    }
+  fun getGraduatePaged(filters: GraduateFilters, page: OffsetLimit) = try {
+    val result = getGraduatesCriteria(filters, page)
+    ResponseResult.Success(result)
+  } catch (ex: Exception) {
+    ResponseResult.Error(Errors.CANT_RETRIEVE_GRADUATES)
+  }
 
 
   fun getGraduatesByAdvisor(
-    id: UUID,
-    currentRole: Role,
-    page: OffsetLimit,
-    filters: GraduateFilters
+    id: UUID, currentRole: Role, page: OffsetLimit, filters: GraduateFilters
   ): ResponseResult<ListGraduatesDTO> {
 
 
@@ -215,16 +230,14 @@ class GraduateService(
   ): ResponseResult<Graduate> {
 
     val postDoctorate = postDoctorateDTO?.let {
-      if (it.id != null)
-        when (val result = this.postDoctorateService.updatePostDoctorate(it.id, postDoctorateDTO)) {
-          is ResponseResult.Success -> result.data!!
-          is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
-        }
-      else
-        when (val result = this.postDoctorateService.createPostDoctorate(graduate, postDoctorateDTO)) {
-          is ResponseResult.Success -> result.data!!
-          is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
-        }
+      if (it.id != null) when (val result = this.postDoctorateService.updatePostDoctorate(it.id, postDoctorateDTO)) {
+        is ResponseResult.Success -> result.data!!
+        is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
+      }
+      else when (val result = this.postDoctorateService.createPostDoctorate(graduate, postDoctorateDTO)) {
+        is ResponseResult.Success -> result.data!!
+        is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
+      }
     }
 
     postDoctorate?.let { graduate.postDoctorate = it }

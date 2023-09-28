@@ -14,7 +14,7 @@ abstract class BaseRepository<T> {
     protected lateinit var entityManager: EntityManager
     abstract val resourceClass: Class<T>
 
-    protected fun <V> criteria(
+    private fun <V> criteria(
         clazz: Class<V>,
         build: CriteriaQueryBuilder<V, T> = null
     ): TypedQuery<V> {
