@@ -101,13 +101,13 @@ class GraduateService(
       where.add(builder.like(builder.upper(user.get("name")), "%${this.uppercase()}%"))
     }
     filters.institutionType?.run {
-      where.add(builder.equal(institutionType.get<String>("id"), this))
+      where.add(builder.equal(institutionType.get<UUID>("id"), this))
     }
     filters.institutionName?.run {
       where.add(builder.like(builder.upper(institution.get("name")), "%${this.uppercase()}%"))
     }
     filters.advisor?.run {
-      where.add(builder.equal(advisor.get<String>("id"), this))
+      where.add(builder.equal(advisor.get<UUID>("id"), this.id))
     }
     return Pair(where, currentHistoryStatus)
 
