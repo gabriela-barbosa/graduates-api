@@ -85,7 +85,11 @@ class GraduateService(
     }
   }
 
-  private fun addFiltersAndJoinsGetGraduatesCriteria(entity: Root<Graduate>, filters: GraduateFilters, builder: CriteriaBuilder): Pair<MutableList<Predicate>, Join<Graduate, HistoryStatus>> {
+  private fun addFiltersAndJoinsGetGraduatesCriteria(
+    entity: Root<Graduate>,
+    filters: GraduateFilters,
+    builder: CriteriaBuilder
+  ): Triple<MutableList<Predicate>, Join<Graduate, HistoryStatus>, Join<Graduate, PlatformUser>> {
     val where = mutableListOf<Predicate>()
 
     val user: Join<Graduate, PlatformUser> = entity.join("user", JoinType.INNER)
@@ -109,11 +113,11 @@ class GraduateService(
     filters.advisor?.run {
       where.add(builder.equal(advisor.get<UUID>("id"), this.id))
     }
-    return Pair(where, currentHistoryStatus)
+    return Triple(where, currentHistoryStatus, user)
 
   }
 
-  fun getGraduatesCriteria(filters: GraduateFilters, pageSettings: OffsetLimit): Pair<List<Graduate>,MetaDTO > {
+  fun getGraduatesCriteria(filters: GraduateFilters, pageSettings: OffsetLimit): Pair<List<Graduate>, MetaDTO> {
 
     val builder: CriteriaBuilder = entityManager.criteriaBuilder
     val query: CriteriaQuery<Graduate> = builder.createQuery(Graduate::class.java)
@@ -124,7 +128,7 @@ class GraduateService(
 
     val entityCount = countQuery.from(Graduate::class.java)
 
-    val (whereCount, ) = addFiltersAndJoinsGetGraduatesCriteria(entityCount, filters, builder)
+    val (whereCount) = addFiltersAndJoinsGetGraduatesCriteria(entityCount, filters, builder)
 
     countQuery
       .select(builder.count(entityCount))
@@ -132,13 +136,16 @@ class GraduateService(
 
     val count: Long = entityManager.createQuery(countQuery).singleResult
 
-    val (whereGraduates, currentHS) = addFiltersAndJoinsGetGraduatesCriteria(entity, filters, builder)
+    val (whereGraduates, currentHS, user) = addFiltersAndJoinsGetGraduatesCriteria(entity, filters, builder)
 
 
     query
       .select(entity)
       .where(*whereGraduates.toTypedArray())
-      .orderBy(builder.asc(builder.coalesce(currentHS.get("status"), HistoryStatusEnum.PENDING.ordinal)))
+      .orderBy(
+        builder.asc(builder.coalesce(currentHS.get("status"), HistoryStatusEnum.PENDING.ordinal)),
+        builder.asc(user.get<String>("name"))
+      )
 
 
     val queryResult = entityManager.createQuery(query)
