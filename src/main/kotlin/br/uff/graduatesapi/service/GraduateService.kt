@@ -134,10 +134,12 @@ class GraduateService(
 
     val (whereGraduates, currentHS) = addFiltersAndJoinsGetGraduatesCriteria(entity, filters, builder)
 
+
     query
       .select(entity)
       .where(*whereGraduates.toTypedArray())
-      .orderBy(builder.desc(currentHS.get<HistoryStatusEnum>("status")))
+      .orderBy(builder.asc(builder.coalesce(currentHS.get("status"), HistoryStatusEnum.PENDING.ordinal)))
+
 
     val queryResult = entityManager.createQuery(query)
 
