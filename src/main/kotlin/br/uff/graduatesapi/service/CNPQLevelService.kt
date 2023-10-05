@@ -50,12 +50,10 @@ class CNPQLevelService(
 
     fun editLevel(levelDTO: CNPQLevelDTO, id: UUID): ResponseResult<Nothing?> {
         return try {
-            val level = when (val result = this.findById(id)) {
-                is ResponseResult.Success -> result.data!!
-                is ResponseResult.Error -> return ResponseResult.Error(Errors.INVALID_DATA)
+            if (this.findById(id) is ResponseResult.Error) {
+                return ResponseResult.Error(Errors.INVALID_DATA)
             }
-            level.name = levelDTO.name
-            cnpqLevelRepository.save(level)
+            cnpqLevelRepository.updateName(levelDTO.name, id)
             ResponseResult.Success(null)
         } catch (err: Error) {
             ResponseResult.Error(Errors.CANT_UPDATE_CNPQ_LEVEL)
