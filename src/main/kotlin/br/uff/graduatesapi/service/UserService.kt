@@ -115,7 +115,7 @@ class UserService(
 
   fun getUsers(pageable: Pageable): ResponseResult<GetUsersDTO> {
     return try {
-      ResponseResult.Success(this.userRepository.findAllUsers(pageable)!!)
+      ResponseResult.Success(this.userRepository.findAllCriteria(pageable)!!)
     } catch (ex: Exception) {
       ResponseResult.Error(Errors.CANT_RETRIEVE_USERS)
     }

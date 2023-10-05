@@ -118,7 +118,6 @@ class GraduateService(
   }
 
   fun getGraduatesCriteria(filters: GraduateFilters, pageSettings: OffsetLimit): Pair<List<Graduate>, MetaDTO> {
-
     val builder: CriteriaBuilder = entityManager.criteriaBuilder
     val query: CriteriaQuery<Graduate> = builder.createQuery(Graduate::class.java)
     val entity: Root<Graduate> = query.from(Graduate::class.java)

@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository
 interface UserRepositoryCustom {
 
     fun findAllUsers(pageable: Pageable): GetUsersDTO?
+    fun findAllCriteria(pageable: Pageable): GetUsersDTO?
 
 }
