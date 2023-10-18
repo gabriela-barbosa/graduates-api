@@ -93,24 +93,23 @@ class GraduateService(
     val where = mutableListOf<Predicate>()
 
     val user: Join<Graduate, PlatformUser> = entity.join("user", JoinType.INNER)
-    val course: Join<Graduate, Course> = entity.join("courses", JoinType.LEFT)
     val lastWorkHistory: Join<Graduate, WorkHistory> = entity.join("lastWorkHistory", JoinType.LEFT)
     val currentHistoryStatus: Join<Graduate, HistoryStatus> = entity.join("currentHistoryStatus", JoinType.LEFT)
-    val advisor: Join<Course, Advisor> = course.join("advisor", JoinType.LEFT)
     val institution: Join<WorkHistory, Institution> = lastWorkHistory.join("institution", JoinType.LEFT)
-    val institutionType: Join<Institution, InstitutionType> = institution.join("type", JoinType.LEFT)
-
 
     filters.name?.run {
       where.add(builder.like(builder.upper(user.get("name")), "%${this.uppercase()}%"))
     }
     filters.institutionType?.run {
+      val institutionType: Join<Institution, InstitutionType> = institution.join("type", JoinType.LEFT)
       where.add(builder.equal(institutionType.get<UUID>("id"), this))
     }
     filters.institutionName?.run {
       where.add(builder.like(builder.upper(institution.get("name")), "%${this.uppercase()}%"))
     }
     filters.advisor?.run {
+      val course: Join<Graduate, Course> = entity.join("courses", JoinType.INNER)
+      val advisor: Join<Course, Advisor> = course.join("advisor", JoinType.INNER)
       where.add(builder.equal(advisor.get<UUID>("id"), this.id))
     }
     return Triple(where, currentHistoryStatus, user)

@@ -1,55 +1,55 @@
 insert into platform_user (id, email, name, password, created_at, actual_role)
-values ('e668b740-5499-4caf-a5a2-0431ef0a5444', 'gabriela@gmail.com', 'Gabriela',
+values ('e668b740-5499-4caf-a5a2-0431ef0a5444', 'gabriela@gmail.com', 'Joelma Marli Gomes Gonçalves de Munhoz',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE'),
-       ('374570af-f7e5-4585-9815-942c20746f06', 'davi@gmail.com', 'Davi',
+       ('374570af-f7e5-4585-9815-942c20746f06', 'davi@gmail.com', 'Magali Rebeca de Marin',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'GRADUATE'),
-       ('cf4dedca-1f1b-43dd-af71-3b0f25cb9b9c', 'victor@gmail.com', 'Victor',
+       ('cf4dedca-1f1b-43dd-af71-3b0f25cb9b9c', 'victor@gmail.com', 'Mel Aguiar Delgado',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'GRADUATE'),
-       ('bee99937-97bb-4d0d-8219-5ac586c6c712', 'arthur@gmail.com', 'Arthur',
+       ('bee99937-97bb-4d0d-8219-5ac586c6c712', 'arthur@gmail.com', 'Filipe Kim Franco Garcia Guerra',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'GRADUATE'),
-       ('e69e3415-b1fa-4430-bdca-886fe5bc9af4', 'luiza@gmail.com', 'Luiza',
+       ('e69e3415-b1fa-4430-bdca-886fe5bc9af4', 'luiza@gmail.com', 'Jack Jackson Leal Guerra',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'GRADUATE'),
-       ('59d8c94f-e5b5-4259-b0d3-2d26758e7eaa', 'vanessa@gmail.com', 'Vanessa',
+       ('59d8c94f-e5b5-4259-b0d3-2d26758e7eaa', 'vanessa@gmail.com', 'Fabiana Delvalle Fernandes',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE'),
-       ('b9306ad8-9713-4b9c-ad87-39570e4e8b85', 'gabriel@gmail.com', 'Gabriel',
+       ('b9306ad8-9713-4b9c-ad87-39570e4e8b85', 'gabriel@gmail.com', 'Natal João Beltrão Neto',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'PROFESSOR'),
-       ('9b6faf8f-c187-4198-82f4-93236fc26446', 'anselmo@gmail.com', 'Anselmo',
+       ('9b6faf8f-c187-4198-82f4-93236fc26446', 'anselmo@gmail.com', 'Camilo Abreu',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE'),
-       ('2d5da6fc-9fb4-45a1-9e52-5e20a04a3c43', 'leonardo@gmail.com', 'Leonardo',
+       ('2d5da6fc-9fb4-45a1-9e52-5e20a04a3c43', 'leonardo@gmail.com', 'Sabrina Lívia Leal',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE'),
-       ('d79b4d52-00ba-4fc9-985d-f00642c131a9', 'plastino@gmail.com', 'Plastino',
+       ('d79b4d52-00ba-4fc9-985d-f00642c131a9', 'plastino@gmail.com', 'Salomé Rafaela de Carrara',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE' ),
-       ('39d1393f-6b0c-479f-8e54-be5785c7db36', 'troy@gmail.com', 'Troy',
+       ('39d1393f-6b0c-479f-8e54-be5785c7db36', 'troy@gmail.com', 'Gabrielle Burgos de Alvarenga',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'GRADUATE'),
-       ('d852e774-8199-4824-8cdb-bf092a00e96c', 'aline@gmail.com', 'Aline',
+       ('d852e774-8199-4824-8cdb-bf092a00e96c', 'aline@gmail.com', 'Cléber Martines de Figueiredo',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'PROFESSOR')
 ;
 
 
 insert into platform_user (id, email, name, password, created_at, actual_role)
-values ('3ea29a7d-15de-40b0-b79c-fc440d5f85e4', 'gab@gmail.com', 'Gabrielly',
+values ('3ea29a7d-15de-40b0-b79c-fc440d5f85e4', 'gab@gmail.com', 'Ricardo Marin de Munhoz',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'PROFESSOR'),
-       ('5f1545bc-7435-4468-a365-e8a625a02fab', 'davidson@gmail.com', 'Davidson',
+       ('5f1545bc-7435-4468-a365-e8a625a02fab', 'davidson@gmail.com', 'Henrique Grego Jr.',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'GRADUATE'),
-       ('fdcb1d4d-636e-429c-b7ba-ecc7af3ef05e', 'viktor@gmail.com', 'Viktor',
+       ('fdcb1d4d-636e-429c-b7ba-ecc7af3ef05e', 'viktor@gmail.com', 'Moacyr Casanova',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'GRADUATE'),
-       ('041f4fab-89c4-4198-87c9-7fd1504eeb6d', 'artu@gmail.com', 'Artu',
+       ('041f4fab-89c4-4198-87c9-7fd1504eeb6d', 'artu@gmail.com', 'Luciano Hilton de Barros',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'GRADUATE'),
-       ('e405ae18-b349-4d2b-8156-154091b20ec4', 'louise@gmail.com', 'Louise',
+       ('e405ae18-b349-4d2b-8156-154091b20ec4', 'louise@gmail.com', 'Daniel Batista do Espírito Santo',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'PROFESSOR'),
-       ('1ba0bd22-062a-4397-abdd-226ca952d67e', 'valeria@gmail.com', 'Valéria',
+       ('1ba0bd22-062a-4397-abdd-226ca952d67e', 'valeria@gmail.com', 'Demian Campos',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u', now(), 'PROFESSOR'),
-       ('add37e0a-2748-4fcb-bb24-149c2eac825e', 'alice@gmail.com', 'Alice',
+       ('add37e0a-2748-4fcb-bb24-149c2eac825e', 'alice@gmail.com', 'Marcielle Rebeca Chaves',
         '$2a$10$j4fJVllmbSalkl1.M0bDE.Fm2sqjRj8r50pykWQVd35TIqFwlPX0u',
         now(), 'PROFESSOR')
 ;
@@ -172,8 +172,24 @@ values ('5a54864d-3e27-446f-ba98-b69dfdd419b0', now(), 1, 'abe12190-7e1a-420b-82
        ('80482917-c71b-49df-b603-3228c68a3bd0', now(), 5, '05ca544c-f3f5-44c3-8a64-41cb8e3b2125', 'e588ac1f-cc7c-47f8-8698-22f73d0e056a',
         'bf23c759-306d-4c40-9238-f3b8769c2f99'),
        ('e97e03b8-b925-4d77-89b7-35c1c90df393', now(), 6, '05ca544c-f3f5-44c3-8a64-41cb8e3b2125', '7bb4e8d9-6678-4b28-bcd4-b4973da16de4',
-        '157c4d9f-ac1b-47fd-9195-574d25e5d310')
+        '157c4d9f-ac1b-47fd-9195-574d25e5d310'),
+       ('e02c0e61-4c2e-4192-9636-5a6e5a22f4c8', now(), 646546, 'abe12190-7e1a-420b-82ca-1485804361b6', '3235fe8b-24de-4ad6-9aad-5f0af4dfbdcb', '9342a6d5-9c24-437e-a44a-cfbb85f74134'),
+       ('99aa64a1-4388-4d27-9098-672dc48029c9', now(), 64646447, 'abe12190-7e1a-420b-82ca-1485804361b6', '7d4020dd-aab5-4722-b919-17bb44298c70', '03a2255f-9236-427f-8ecd-5a89e4140bbe'),
+       ('c36b1a85-3528-4058-885a-dad8aad2b755', now(), 681456, 'abe12190-7e1a-420b-82ca-1485804361b6', 'c31f794e-a715-414d-8b8e-71307e026a6b', '4150a939-f66a-4777-a7aa-ef31c239619a'),
+       ('a6ab6d5c-c159-44aa-b4dc-969ddd16e2e2', now(), 64715156, 'abe12190-7e1a-420b-82ca-1485804361b6', 'e588ac1f-cc7c-47f8-8698-22f73d0e056a', '55c51a44-c9af-40be-bacb-5791a5dae769'),
+       ('3f409629-fcdc-4a55-ab5c-2841d921e207', now(), 4455116,'05ca544c-f3f5-44c3-8a64-41cb8e3b2125',  '7bb4e8d9-6678-4b28-bcd4-b4973da16de4', '97e93d90-fc9e-4df4-9f0b-05854b58f1f2'),
+       ('de97147f-26ba-4fa1-82be-a36b7d7d009d', now(), 6485151, '05ca544c-f3f5-44c3-8a64-41cb8e3b2125',  '6dfc1412-f9ca-46d3-9c0e-adc3d3a46d61', '0a9c91e3-3094-4d29-a7fd-d203c09fd070'),
+       ('60a2faf3-7534-4d99-8b79-86c3bb264aa7', now(), 487416466, '05ca544c-f3f5-44c3-8a64-41cb8e3b2125', '3235fe8b-24de-4ad6-9aad-5f0af4dfbdcb', '650bb04e-7c8d-47b0-ae30-203a9a6b1c6a' ),
+       ('f101bf3b-abdf-461d-b749-05b02836cb05', now(), 515646, '05ca544c-f3f5-44c3-8a64-41cb8e3b2125', '7d4020dd-aab5-4722-b919-17bb44298c70', '29c63e7b-f80f-47d5-86d7-41ad5e1627aa')
+
 ;
+
+insert into course (id, created_at, minute_defense, program_id, advisor_id, graduate_id)
+values
+    (gen_random_uuid(), now(), 857, 'abe12190-7e1a-420b-82ca-1485804361b6', '693e47f8-936a-49a9-b283-822008c105ad','9342a6d5-9c24-437e-a44a-cfbb85f74134'),
+    (gen_random_uuid(), now(), 753, '05ca544c-f3f5-44c3-8a64-41cb8e3b2125', '693e47f8-936a-49a9-b283-822008c105ad','0a9c91e3-3094-4d29-a7fd-d203c09fd070'),
+    (gen_random_uuid(), now(), 951, '05ca544c-f3f5-44c3-8a64-41cb8e3b2125', '693e47f8-936a-49a9-b283-822008c105ad','650bb04e-7c8d-47b0-ae30-203a9a6b1c6a');
+
 
 insert into email (id, title, name, content, button_text, button_url, is_graduate_email, active, created_at)
 values ('b8d031a9-ac66-4945-a958-45bce51448b8', 'Primeiro Email', 'Primeiro nome', 'Esse é o conteúdo do primeiro email', 'Clique Aqui',

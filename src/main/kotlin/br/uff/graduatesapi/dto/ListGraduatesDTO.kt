@@ -10,6 +10,7 @@ data class GraduateItemDTO(
   val name: String,
   val email: String,
   val status: HistoryStatusEnum,
+  val advisors: List<String>,
   var workPlace: WorkHistoryInfoDTO?,
   var position: String?,
 )
@@ -21,7 +22,8 @@ fun Graduate.toGraduateItemDTO() = GraduateItemDTO(
   email = user.email,
   status = currentHistoryStatus?.status ?: HistoryStatusEnum.PENDING,
   workPlace = lastWorkHistory?.toWorkHistoryInfoDTO(),
-  position = lastWorkHistory?.position
+  position = lastWorkHistory?.position,
+  advisors = courses.map { it.advisor.user.name }
 )
 
 data class ListGraduatesDTO(
