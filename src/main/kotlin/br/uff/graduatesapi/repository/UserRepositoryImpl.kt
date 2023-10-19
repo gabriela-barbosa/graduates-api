@@ -33,7 +33,7 @@ class UserRepositoryImpl(
     }
   }
 
-  override fun findAllCriteria(pageable: Pageable): GetUsersDTO {
+  override fun findAllCriteria(pageable: Pageable, name: String?): GetUsersDTO {
     val builder: CriteriaBuilder = entityManager.criteriaBuilder
     val query: CriteriaQuery<PlatformUser> = builder.createQuery(PlatformUser::class.java)
     val entity: Root<PlatformUser> = query.from(PlatformUser::class.java)
@@ -42,12 +42,6 @@ class UserRepositoryImpl(
       .select(entity)
       .orderBy(builder.asc(entity.get<String>("name")))
 
-    val queryResult = entityManager.createQuery(query)
-    queryResult.setFirstResult(pageable.offset.toInt())
-    queryResult.setMaxResults(pageable.pageSize)
-
-    queryResult.resultList
-
     val countQuery = builder
       .createQuery(Long::class.java)
 
@@ -55,6 +49,18 @@ class UserRepositoryImpl(
 
     countQuery
       .select(builder.count(entityCount))
+
+    if (!name.isNullOrEmpty()) {
+      query.where(builder.like(builder.upper(entity.get("name")), "%${name.uppercase()}%"))
+      countQuery.where(builder.like(builder.upper(entity.get("name")), "%${name.uppercase()}%"))
+    }
+
+    val queryResult = entityManager.createQuery(query)
+    queryResult.setFirstResult(pageable.offset.toInt())
+    queryResult.setMaxResults(pageable.pageSize)
+
+    queryResult.resultList
+
 
     val count: Long = entityManager.createQuery(countQuery).singleResult
 

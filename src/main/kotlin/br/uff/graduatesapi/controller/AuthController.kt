@@ -93,10 +93,11 @@ class AuthController(
   fun getUsers(
     @RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
     @RequestParam(value = "pageSize", required = false, defaultValue = "10") pageSize: Int,
-  ): ResponseEntity<Any> {
+    @RequestParam(value = "name", required = false) name: String?,
+    ): ResponseEntity<Any> {
 
     val pageable: Pageable = PageRequest.of(page, pageSize)
-    return when (val result = this.userService.getUsers(pageable)) {
+    return when (val result = this.userService.getUsers(pageable, name)) {
       is ResponseResult.Success -> {
         ResponseEntity.ok().body(result.data!!)
       }
