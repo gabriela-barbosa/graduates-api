@@ -52,7 +52,7 @@ class GraduateService(
           filters.name?.run { column(PlatformUser::name).like("%${this}%") },
           filters.institutionType?.run { column(InstitutionType::id).equal(this) },
           filters.institutionName?.run { column(Institution::name).like("%${this}%") },
-          filters.advisor?.run { column(Advisor::id).equal(this.id) },
+          filters.advisorId?.run { column(Advisor::id).equal(this) },
         )
       )
     }
@@ -74,7 +74,7 @@ class GraduateService(
           filters.name?.run { column(PlatformUser::name).like("%${this}%") },
           filters.institutionType?.run { column(InstitutionType::id).equal(this) },
           filters.institutionName?.run { column(Institution::name).like("%${this}%") },
-          filters.advisor?.run { column(Advisor::id).equal(this.id) },
+          filters.advisorId?.run { column(Advisor::id).equal(this) },
         )
       )
       orderBy(column(HistoryStatus::status).desc())
@@ -107,11 +107,20 @@ class GraduateService(
     filters.institutionName?.run {
       where.add(builder.like(builder.upper(institution.get("name")), "%${this.uppercase()}%"))
     }
-    filters.advisor?.run {
+
+    if (filters.advisorId != null || !filters.advisorName.isNullOrEmpty()) {
       val course: Join<Graduate, Course> = entity.join("courses", JoinType.INNER)
       val advisor: Join<Course, Advisor> = course.join("advisor", JoinType.INNER)
-      where.add(builder.equal(advisor.get<UUID>("id"), this.id))
+      filters.advisorId?.run {
+        where.add(builder.equal(advisor.get<UUID>("id"), this))
+      }
+      filters.advisorName?.run {
+        val advisorUser: Join<Advisor, PlatformUser> = advisor.join("user", JoinType.INNER)
+        where.add(builder.like(builder.upper(advisorUser.get("name")), "%${this.uppercase()}%"))
+      }
     }
+
+
     return Triple(where, currentHistoryStatus, user)
 
   }
@@ -188,7 +197,7 @@ class GraduateService(
     val role = user.roles.find { it == currentRole }
 
     if (role == Role.GRADUATE) return ResponseResult.Error(Errors.USER_NOT_ALLOWED)
-    if (role == Role.PROFESSOR) filters.advisor = user.advisor
+    if (role == Role.PROFESSOR) filters.advisorId = user.advisor?.id
 
     val metaList: MetaDTO
     val graduates: List<Graduate>

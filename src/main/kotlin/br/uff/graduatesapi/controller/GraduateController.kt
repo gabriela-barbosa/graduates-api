@@ -27,12 +27,13 @@ class GraduateController(private val graduateService: GraduateService) {
     @RequestParam(value = "name", required = false) name: String?,
     @RequestParam(value = "institutionType", required = false) institutionType: UUID?,
     @RequestParam(value = "institutionName", required = false) institutionName: String?,
+    @RequestParam(value = "advisorName", required = false) advisorName: String?,
   ): ResponseEntity<Any>? {
-//    val pageSetting = PageRequest.of(page, pageSize)
     val filters = GraduateFilters(
       name = name,
       institutionName = institutionName,
       institutionType = institutionType,
+      advisorName = advisorName,
     )
 
     val pageSetting = Utils.convertPagination(page, pageSize)
