@@ -107,6 +107,9 @@ class GraduateService(
     filters.institutionName?.run {
       where.add(builder.like(builder.upper(institution.get("name")), "%${this.uppercase()}%"))
     }
+    filters.position?.run {
+      where.add(builder.like(builder.upper(lastWorkHistory.get("position")), "%${this.uppercase()}%"))
+    }
 
     if (filters.advisorId != null || !filters.advisorName.isNullOrEmpty()) {
       val course: Join<Graduate, Course> = entity.join("courses", JoinType.INNER)
