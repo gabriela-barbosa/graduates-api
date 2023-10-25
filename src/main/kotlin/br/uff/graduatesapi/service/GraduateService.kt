@@ -110,6 +110,11 @@ class GraduateService(
     filters.position?.run {
       where.add(builder.like(builder.upper(lastWorkHistory.get("position")), "%${this.uppercase()}%"))
     }
+    filters.cnpqLevel?.run {
+      val cnpqScholarships: Join<Graduate, CNPQScholarship> = entity.join("cnpqScholarships", JoinType.INNER)
+      val cnpqLevel: Join<CNPQScholarship, CNPQLevel> = cnpqScholarships.join("level", JoinType.INNER)
+      where.add(builder.equal(cnpqLevel.get<UUID>("id"), this))
+    }
 
     if (filters.advisorId != null || !filters.advisorName.isNullOrEmpty()) {
       val course: Join<Graduate, Course> = entity.join("courses", JoinType.INNER)

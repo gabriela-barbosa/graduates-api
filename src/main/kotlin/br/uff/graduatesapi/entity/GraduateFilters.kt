@@ -10,4 +10,5 @@ data class GraduateFilters(
     var advisorId: UUID? = null,
     val advisorName: String? = null,
     val position: String? = null,
+    val cnpqLevel: UUID? = null
 )

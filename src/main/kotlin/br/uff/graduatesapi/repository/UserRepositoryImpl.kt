@@ -2,6 +2,7 @@ package br.uff.graduatesapi.repository
 
 import br.uff.graduatesapi.dto.GetUsersDTO
 import br.uff.graduatesapi.dto.MetaDTO
+import br.uff.graduatesapi.entity.UserFilters
 import br.uff.graduatesapi.model.PlatformUser
 import com.linecorp.kotlinjdsl.spring.data.SpringDataQueryFactory
 import com.linecorp.kotlinjdsl.spring.data.pageQuery
@@ -33,7 +34,7 @@ class UserRepositoryImpl(
     }
   }
 
-  override fun findAllCriteria(pageable: Pageable, name: String?): GetUsersDTO {
+  override fun findAllCriteria(pageable: Pageable, filters: UserFilters): GetUsersDTO {
     val builder: CriteriaBuilder = entityManager.criteriaBuilder
     val query: CriteriaQuery<PlatformUser> = builder.createQuery(PlatformUser::class.java)
     val entity: Root<PlatformUser> = query.from(PlatformUser::class.java)
@@ -50,9 +51,14 @@ class UserRepositoryImpl(
     countQuery
       .select(builder.count(entityCount))
 
-    if (!name.isNullOrEmpty()) {
-      query.where(builder.like(builder.upper(entity.get("name")), "%${name.uppercase()}%"))
-      countQuery.where(builder.like(builder.upper(entity.get("name")), "%${name.uppercase()}%"))
+    filters.name?.run {
+      query.where(builder.like(builder.upper(entity.get("name")), "%${this.uppercase()}%"))
+      countQuery.where(builder.like(builder.upper(entity.get("name")), "%${this.uppercase()}%"))
+    }
+
+    filters.email?.run {
+      query.where(builder.like(builder.upper(entity.get("email")), "%${this.uppercase()}%"))
+      countQuery.where(builder.like(builder.upper(entity.get("email")), "%${this.uppercase()}%"))
     }
 
     val queryResult = entityManager.createQuery(query)

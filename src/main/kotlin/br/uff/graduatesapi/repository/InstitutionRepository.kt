@@ -6,4 +6,5 @@ import java.util.*
 
 interface InstitutionRepository : JpaRepository<Institution, UUID> {
     fun findByNameAndTypeId(name: String, id: UUID) : Institution?
+    fun findAllByNameLikeOrderByName(name: String?) : List<Institution>
 }

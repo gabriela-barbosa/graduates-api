@@ -11,58 +11,67 @@ import java.util.*
 
 @Service
 class InstitutionService(
-  private val institutionRepository: InstitutionRepository,
-  private val institutionTypeService: InstitutionTypeService,
+	private val institutionRepository: InstitutionRepository,
+	private val institutionTypeService: InstitutionTypeService,
 ) {
-  fun findById(id: UUID): Institution? {
-    return institutionRepository.findByIdOrNull(id)
-  }
+	fun findById(id: UUID): Institution? {
+		return institutionRepository.findByIdOrNull(id)
+	}
 
-  fun deleteInstitution(id: UUID): ResponseResult<Nothing?> {
-    return try {
-      institutionRepository.deleteById(id)
-      return ResponseResult.Success(null)
-    } catch (ex: Exception) {
-      ResponseResult.Error(Errors.INVALID_DATA)
-    }
-  }
+	fun deleteInstitution(id: UUID): ResponseResult<Nothing?> {
+		return try {
+			institutionRepository.deleteById(id)
+			return ResponseResult.Success(null)
+		} catch (ex: Exception) {
+			ResponseResult.Error(Errors.INVALID_DATA)
+		}
+	}
 
-  fun findByNameAndType(name: String, type: UUID): ResponseResult<Institution> {
-    val resultInstitution = institutionRepository.findByNameAndTypeId(name, type)
-      ?: return ResponseResult.Error(Errors.INSTITUTION_NOT_FOUND)
-    return ResponseResult.Success(resultInstitution)
-  }
+	fun findAllByName(name: String?): ResponseResult<List<Institution>> {
+		return try {
+			val resultInstitution = institutionRepository.findAllByNameLikeOrderByName(name)
+			ResponseResult.Success(resultInstitution)
+		} catch (ex: Exception) {
+			ResponseResult.Error(Errors.INVALID_DATA)
+		}
+	}
 
-  fun createInstitution(institution: Institution): ResponseResult<Institution> {
-    val resultInstitution = findByNameAndType(institution.name, institution.type.id)
-    if (resultInstitution is ResponseResult.Success) return resultInstitution
-    return try {
-      val respInstitution = institutionRepository.save(institution)
-      ResponseResult.Success(respInstitution)
-    } catch (err: Exception) {
-      ResponseResult.Error(Errors.CANT_CREATE_INSTITUTION)
-    }
-  }
+	fun findByNameAndType(name: String, type: UUID): ResponseResult<Institution> {
+		val resultInstitution = institutionRepository.findByNameAndTypeId(name, type)
+			?: return ResponseResult.Error(Errors.INSTITUTION_NOT_FOUND)
+		return ResponseResult.Success(resultInstitution)
+	}
 
-  fun createInstitutionByInstitutionDTO(newInstitution: CreateInstitutionDTO): ResponseResult<Institution> {
+	fun createInstitution(institution: Institution): ResponseResult<Institution> {
+		val resultInstitution = findByNameAndType(institution.name, institution.type.id)
+		if (resultInstitution is ResponseResult.Success) return resultInstitution
+		return try {
+			val respInstitution = institutionRepository.save(institution)
+			ResponseResult.Success(respInstitution)
+		} catch (err: Exception) {
+			ResponseResult.Error(Errors.CANT_CREATE_INSTITUTION)
+		}
+	}
 
-    val institutionFound =
-      findByNameAndType(newInstitution.name, newInstitution.typeId).takeIf { it is ResponseResult.Success }
+	fun createInstitutionByInstitutionDTO(newInstitution: CreateInstitutionDTO): ResponseResult<Institution> {
 
-    if (institutionFound != null) return ResponseResult.Success(institutionFound.data!!)
+		val institutionFound =
+			findByNameAndType(newInstitution.name, newInstitution.typeId).takeIf { it is ResponseResult.Success }
 
-    val institutionType = when (val resultLevel = institutionTypeService.findById(newInstitution.typeId)) {
-      is ResponseResult.Success -> resultLevel.data!!
-      is ResponseResult.Error -> return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND)
-    }
+		if (institutionFound != null) return ResponseResult.Success(institutionFound.data!!)
 
-    val institution = Institution(
-      name = newInstitution.name,
-      type = institutionType
-    )
+		val institutionType = when (val resultLevel = institutionTypeService.findById(newInstitution.typeId)) {
+			is ResponseResult.Success -> resultLevel.data!!
+			is ResponseResult.Error -> return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND)
+		}
 
-    val institutionSaved = createInstitution(institution)
-    if (institutionSaved is ResponseResult.Error) return ResponseResult.Error(institutionSaved.errorReason)
-    return institutionSaved
-  }
+		val institution = Institution(
+			name = newInstitution.name,
+			type = institutionType
+		)
+
+		val institutionSaved = createInstitution(institution)
+		if (institutionSaved is ResponseResult.Error) return ResponseResult.Error(institutionSaved.errorReason)
+		return institutionSaved
+	}
 }

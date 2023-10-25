@@ -3,6 +3,7 @@ package br.uff.graduatesapi.service
 import br.uff.graduatesapi.Utils.Companion.getRandomString
 import br.uff.graduatesapi.dto.GetUsersDTO
 import br.uff.graduatesapi.dto.RegisterDTO
+import br.uff.graduatesapi.entity.UserFilters
 import br.uff.graduatesapi.enum.Role
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
@@ -113,9 +114,9 @@ class UserService(
     }
   }
 
-  fun getUsers(pageable: Pageable, name: String?): ResponseResult<GetUsersDTO> {
+  fun getUsers(pageable: Pageable, filters: UserFilters): ResponseResult<GetUsersDTO> {
     return try {
-      ResponseResult.Success(this.userRepository.findAllCriteria(pageable, name)!!)
+      ResponseResult.Success(this.userRepository.findAllCriteria(pageable, filters)!!)
     } catch (ex: Exception) {
       ResponseResult.Error(Errors.CANT_RETRIEVE_USERS)
     }

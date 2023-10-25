@@ -5,6 +5,7 @@ import br.uff.graduatesapi.dto.LoginDTO
 import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.dto.RegisterDTO
 import br.uff.graduatesapi.dto.UpdateCurrentRoleDTO
+import br.uff.graduatesapi.entity.UserFilters
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.security.UserDetailsImpl
 import br.uff.graduatesapi.service.AuthService
@@ -94,10 +95,16 @@ class AuthController(
     @RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
     @RequestParam(value = "pageSize", required = false, defaultValue = "10") pageSize: Int,
     @RequestParam(value = "name", required = false) name: String?,
+    @RequestParam(value = "email", required = false) email: String?,
     ): ResponseEntity<Any> {
 
+    val filters = UserFilters(
+      name = name,
+      email = email,
+    )
+
     val pageable: Pageable = PageRequest.of(page, pageSize)
-    return when (val result = this.userService.getUsers(pageable, name)) {
+    return when (val result = this.userService.getUsers(pageable, filters)) {
       is ResponseResult.Success -> {
         ResponseEntity.ok().body(result.data!!)
       }
