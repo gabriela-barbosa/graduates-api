@@ -29,7 +29,7 @@ class InstitutionService(
 
 	fun findAllByName(name: String?): ResponseResult<List<Institution>> {
 		return try {
-			val resultInstitution = institutionRepository.findAllByNameLikeOrderByName(name)
+			val resultInstitution = institutionRepository.findByNameContainingIgnoreCase(name)
 			ResponseResult.Success(resultInstitution)
 		} catch (ex: Exception) {
 			ResponseResult.Error(Errors.INVALID_DATA)
