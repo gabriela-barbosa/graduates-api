@@ -1,10 +1,12 @@
 package br.uff.graduatesapi.service
 
 import br.uff.graduatesapi.dto.CreateInstitutionDTO
+import br.uff.graduatesapi.entity.InstitutionFilters
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.Institution
 import br.uff.graduatesapi.repository.InstitutionRepository
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
@@ -27,9 +29,10 @@ class InstitutionService(
 		}
 	}
 
-	fun findAllByName(name: String?): ResponseResult<List<Institution>> {
+	fun findAllByFilters(filters: InstitutionFilters, pageable: Pageable): ResponseResult<List<Institution>> {
+		val (name, institutionType) = filters
 		return try {
-			val resultInstitution = institutionRepository.findByNameContainingIgnoreCase(name)
+			val resultInstitution = institutionRepository.findByNameContainingIgnoreCaseAndType(name, institutionType, pageable)
 			ResponseResult.Success(resultInstitution)
 		} catch (ex: Exception) {
 			ResponseResult.Error(Errors.INVALID_DATA)
