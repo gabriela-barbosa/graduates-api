@@ -48,7 +48,7 @@ class InstitutionTypeService(
     return ResponseResult.Success(result)
   }
 
-  fun editType(createInstitutionTypeDTO: CreateInstitutionTypeDTO, id: UUID): ResponseResult<Nothing?> {
+  fun updateType(createInstitutionTypeDTO: CreateInstitutionTypeDTO, id: UUID): ResponseResult<Nothing?> {
     return try {
 
       val type = when (val result = this.findById(id)) {

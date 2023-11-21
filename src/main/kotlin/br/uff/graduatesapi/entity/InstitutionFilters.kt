@@ -5,5 +5,5 @@ import java.util.*
 
 data class InstitutionFilters(
     val name: String?,
-    val institutionType: UUID?,
+    val type: UUID?,
 )

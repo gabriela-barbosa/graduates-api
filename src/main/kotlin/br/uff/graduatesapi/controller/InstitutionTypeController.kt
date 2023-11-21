@@ -42,7 +42,7 @@ class InstitutionTypeController(private val institutionTypeService: InstitutionT
     @PreAuthorize("isAuthenticated()")
     @PutMapping("institution/type/{id}")
     fun editInstitutionType(@RequestBody createInstitutionTypeDTO: CreateInstitutionTypeDTO, @PathVariable id: UUID): ResponseEntity<Any> =
-        when (val result = this.institutionTypeService.editType(createInstitutionTypeDTO, id)) {
+        when (val result = this.institutionTypeService.updateType(createInstitutionTypeDTO, id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
             is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
                 .body(result.errorReason.responseMessage)

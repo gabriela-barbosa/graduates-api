@@ -5,7 +5,6 @@ import br.uff.graduatesapi.dto.*
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.Graduate
-import br.uff.graduatesapi.model.Institution
 import br.uff.graduatesapi.model.WorkHistory
 import br.uff.graduatesapi.repository.WorkHistoryRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -79,14 +78,8 @@ class WorkHistoryService(
       oldWorkHistory.institution =
         when (val result = institutionService.findByNameAndType(institutionDTO.name, institutionDTO.typeId)) {
           is ResponseResult.Success -> result.data!!
-          is ResponseResult.Error -> {
-            val institutionType =
-              when (val resultInstitutionType = institutionTypeService.findById(institutionDTO.typeId)) {
-                is ResponseResult.Success -> resultInstitutionType.data!!
-                is ResponseResult.Error -> return ResponseResult.Error(resultInstitutionType.errorReason)
-              }
-            when (val resultCreateInstitution =
-              institutionService.createInstitution(Institution(institutionDTO.name, institutionType))) {
+          is ResponseResult.Error -> { when (val resultCreateInstitution =
+              institutionService.createInstitution(institutionDTO)) {
               is ResponseResult.Success -> resultCreateInstitution.data!!
               is ResponseResult.Error -> return ResponseResult.Error(resultCreateInstitution.errorReason)
             }
@@ -108,7 +101,7 @@ class WorkHistoryService(
     endedAt: String?
   ): ResponseResult<WorkHistory> {
 
-    val institution = when (val result = institutionService.createInstitutionByInstitutionDTO(institutionDTO)) {
+    val institution = when (val result = institutionService.createInstitution(institutionDTO)) {
       is ResponseResult.Success -> result.data!!
       is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
     }

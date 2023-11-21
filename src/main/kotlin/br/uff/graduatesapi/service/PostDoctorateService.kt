@@ -34,7 +34,7 @@ class PostDoctorateService(
     }
 
     val institution =
-      when (val result = institutionService.createInstitutionByInstitutionDTO(postDoctorateDTO.institution)) {
+      when (val result = institutionService.createInstitution(postDoctorateDTO.institution)) {
         is ResponseResult.Success -> result.data!!
         is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
       }
@@ -59,7 +59,7 @@ class PostDoctorateService(
   ): ResponseResult<PostDoctorate> {
 
     val institution =
-      when (val result = institutionService.createInstitutionByInstitutionDTO(postDoctorateDTO.institution)) {
+      when (val result = institutionService.createInstitution(postDoctorateDTO.institution)) {
         is ResponseResult.Success -> result.data!!
         is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
       }
