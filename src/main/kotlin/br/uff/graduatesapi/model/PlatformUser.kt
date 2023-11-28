@@ -42,6 +42,9 @@ class PlatformUser(
     @Column(name = "id", nullable = false, unique = true)
     var id: UUID = UUID.randomUUID()
 
+    @OneToMany(mappedBy = "user")
+    var emailDispatches: List<EmailDispatch> = emptyList()
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     lateinit var createdAt: LocalDateTime

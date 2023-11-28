@@ -13,55 +13,55 @@ import javax.persistence.*
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Graduate(
-  @JsonIgnore
-  @OneToOne(optional = false)
-  var user: PlatformUser,
+	@JsonIgnore
+	@OneToOne(optional = false)
+	var user: PlatformUser,
 ) {
-  @Id
-  @Column(name = "id", nullable = false, unique = true)
-  var id: UUID = UUID.randomUUID()
+	@Id
+	@Column(name = "id", nullable = false, unique = true)
+	var id: UUID = UUID.randomUUID()
 
-  @OneToMany(mappedBy = "graduate")
-  var cnpqScholarships: List<CNPQScholarship> = emptyList()
+	@OneToMany(mappedBy = "graduate")
+	var cnpqScholarships: List<CNPQScholarship> = emptyList()
 
-  @OneToMany(mappedBy = "graduate")
-  var courses: List<Course> = emptyList()
+	@OneToMany(mappedBy = "graduate")
+	var courses: List<Course> = emptyList()
 
-  @OneToOne(mappedBy = "graduate", optional = true)
-  var postDoctorate:  PostDoctorate? = null
+	@OneToOne(mappedBy = "graduate", optional = true)
+	var postDoctorate: PostDoctorate? = null
 
-  @OneToMany(mappedBy = "graduate")
-  var workHistories: List<WorkHistory> = emptyList()
+	@OneToMany(mappedBy = "graduate")
+	var workHistories: List<WorkHistory> = emptyList()
 
-  @OneToMany(mappedBy = "graduate")
-  var historyStatus: List<HistoryStatus> = emptyList()
+	@OneToMany(mappedBy = "graduate")
+	var historyStatus: List<HistoryStatus> = emptyList()
 
-  @ManyToMany
-  @JoinFormula("(SELECT c.id FROM CNPQScholarship c WHERE c.graduate_id = id AND c.ended_at is null ORDER BY w.started_at DESC)")
-  val currentCNPQScholarships: List<CNPQScholarship> = emptyList()
+	@ManyToMany
+	@JoinFormula("(SELECT c.id FROM CNPQScholarship c WHERE c.graduate_id = id AND c.ended_at is null ORDER BY w.started_at DESC)")
+	val currentCNPQScholarships: List<CNPQScholarship> = emptyList()
 
-  @ManyToOne
-  @JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id ORDER BY w.ended_at DESC, w.started_at DESC, w.created_at DESC limit 1)")
-  val lastWorkHistory: WorkHistory? = null
+	@ManyToOne
+	@JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id ORDER BY w.ended_at DESC, w.started_at DESC, w.created_at DESC limit 1)")
+	val lastWorkHistory: WorkHistory? = null
 
-  @ManyToOne
-  @JoinFormula("(SELECT h.id FROM history_status h WHERE h.graduate_id = id AND extract(year from h.created_at) = extract(year from now())  ORDER BY h.created_at DESC limit 1)")
-  val currentHistoryStatus: HistoryStatus? = null
+	@ManyToOne
+	@JoinFormula("(SELECT h.id FROM history_status h WHERE h.graduate_id = id AND extract(year from h.created_at) = extract(year from now())  ORDER BY h.created_at DESC limit 1)")
+	val currentHistoryStatus: HistoryStatus? = null
 
-  @Column(name = "finished_doctorate_on_uff", nullable = true)
-  var hasFinishedDoctorateOnUFF: Boolean? = null
+	@Column(name = "finished_doctorate_on_uff", nullable = true)
+	var hasFinishedDoctorateOnUFF: Boolean? = null
 
-  @Column(name = "finished_master_degree_on_uff", nullable = true)
-  var hasFinishedMasterDegreeOnUFF: Boolean? = null
+	@Column(name = "finished_master_degree_on_uff", nullable = true)
+	var hasFinishedMasterDegreeOnUFF: Boolean? = null
 
-  @Column(name = "success_case")
-  var successCase: String? = null
+	@Column(name = "success_case")
+	var successCase: String? = null
 
-  @CreationTimestamp
-  @Column(name = "created_at", nullable = false, updatable = false)
-  lateinit var createdAt: LocalDateTime
+	@CreationTimestamp
+	@Column(name = "created_at", nullable = false, updatable = false)
+	lateinit var createdAt: LocalDateTime
 
-  @UpdateTimestamp
-  @Column(name = "updated_at", nullable = true, updatable = true)
-  var updatedAt: LocalDateTime? = null
+	@UpdateTimestamp
+	@Column(name = "updated_at", nullable = true, updatable = true)
+	var updatedAt: LocalDateTime? = null
 }

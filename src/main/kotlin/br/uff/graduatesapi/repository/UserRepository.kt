@@ -13,6 +13,8 @@ import java.util.*
 interface UserRepository : JpaRepository<PlatformUser, UUID>, UserRepositoryCustom {
   fun findByEmail(email: String): PlatformUser?
 
+  fun findByIdIn(userIds: List<UUID>): List<PlatformUser>?
+
   @Query(
     "insert into platform_user_role (platform_user_id, role) VALUES (:id, :role)", nativeQuery = true
   )

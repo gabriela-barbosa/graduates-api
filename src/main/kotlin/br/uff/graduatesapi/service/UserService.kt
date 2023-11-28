@@ -28,6 +28,11 @@ class UserService(
     return ResponseResult.Success(user)
   }
 
+  fun findByIds(platformUserIds: List<UUID>): ResponseResult<List<PlatformUser>> {
+    val user = this.userRepository.findByIdIn(platformUserIds) ?: return ResponseResult.Error(Errors.USER_NOT_FOUND)
+    return ResponseResult.Success(user)
+  }
+
   fun updateUser(id: UUID, userDTO: RegisterDTO): ResponseResult<PlatformUser> {
     try {
       val user = when (val userResp = this.getById(id)) {

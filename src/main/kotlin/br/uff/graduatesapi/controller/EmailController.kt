@@ -3,6 +3,7 @@ package br.uff.graduatesapi.controller
 import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.CreateEmailDTO
 import br.uff.graduatesapi.dto.EmailSendDTO
+import br.uff.graduatesapi.dto.EmailsSendDTO
 import br.uff.graduatesapi.dto.UpdateEmailDTO
 import br.uff.graduatesapi.entity.EmailFilters
 import br.uff.graduatesapi.error.ResponseResult
@@ -34,6 +35,23 @@ class EmailController(
         targetEmail = targetEmail,
         emailContentId = emailContentId
       )
+    return ResponseEntity.noContent().build()
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @PostMapping("/emails/send")
+  fun sendEmails(
+    @RequestBody request: EmailsSendDTO
+  ): ResponseEntity<Any> {
+    val (subject, userIds, emailContentId) = request
+    if (subject == null || userIds.isEmpty()) {
+      return ResponseEntity.unprocessableEntity().build()
+    }
+    emailSenderService.sendEmailsHtmlTemplate(
+      subject = subject,
+      userIds = userIds,
+      emailContentId = emailContentId
+    )
     return ResponseEntity.noContent().build()
   }
 

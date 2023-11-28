@@ -4,6 +4,7 @@ import br.uff.graduatesapi.model.Institution
 import java.util.*
 
 data class CreateInstitutionDTO(
+  val id: UUID? = null,
   val typeId: UUID,
   val name: String,
 )

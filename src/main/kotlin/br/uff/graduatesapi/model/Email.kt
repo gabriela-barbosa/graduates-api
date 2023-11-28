@@ -5,10 +5,7 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -31,6 +28,9 @@ class Email(
 
     @Column(name = "is_graduate_email", nullable = false, updatable = true)
     val isGraduateEmail: Boolean,
+
+    @OneToMany(mappedBy = "emailContent")
+    var emailDispatches: List<EmailDispatch> = emptyList(),
 
     @Column(name = "active", nullable = false, updatable = true)
     var active: Boolean = true,
