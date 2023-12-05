@@ -1,7 +1,6 @@
 package br.uff.graduatesapi.controller
 
 import br.uff.graduatesapi.dto.CreateInstitutionDTO
-import br.uff.graduatesapi.dto.CreateInstitutionTypeDTO
 import br.uff.graduatesapi.entity.InstitutionFilters
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.service.InstitutionService
