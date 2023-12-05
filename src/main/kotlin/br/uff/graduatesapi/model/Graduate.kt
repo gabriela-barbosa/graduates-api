@@ -36,7 +36,7 @@ class Graduate(
 	@OneToMany(mappedBy = "graduate")
 	var historyStatus: List<HistoryStatus> = emptyList()
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinFormula("(SELECT c.id FROM CNPQScholarship c WHERE c.graduate_id = id AND c.ended_at is null ORDER BY w.started_at DESC)")
 	val currentCNPQScholarships: List<CNPQScholarship> = emptyList()
 

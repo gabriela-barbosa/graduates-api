@@ -79,7 +79,11 @@ class EmailSenderService(
 
 		users.data!!.forEach {
 			helper.setTo(it.email)
-			emailSender.send(message)
+			try {
+				emailSender.send(message)
+			} catch (e: Exception) {
+				println(e.message)
+			}
 		}
 
 		return ResponseResult.Success(null)

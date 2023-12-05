@@ -6,6 +6,7 @@ import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.dto.RegisterDTO
 import br.uff.graduatesapi.dto.UpdateCurrentRoleDTO
 import br.uff.graduatesapi.entity.UserFilters
+import br.uff.graduatesapi.enum.Role
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.security.UserDetailsImpl
 import br.uff.graduatesapi.service.AuthService
@@ -114,20 +115,19 @@ class AuthController(
     }
   }
 
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("users/role/{role}")
+  fun getUsersByRole(@PathVariable role: Role): ResponseEntity<Any> {
+    return when (val result = this.userService.getUsersByRole(role)) {
+      is ResponseResult.Success -> {
+        ResponseEntity.ok().body(result.data!!)
+      }
 
-//    @GetMapping("user")
-//    fun user(@CookieValue("jwt") jwt: String?): ResponseEntity<Any> {
-//        try {
-//            if (jwt == null) {
-//                return ResponseEntity.status(401).body(Message("Unauthenticated"))
-//            }
-//            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
-//
-//            return ResponseEntity.ok(this.userService.getById(body.issuer.toInt()))
-//        } catch (e: Exception) {
-//            return ResponseEntity.status(401).body(Message("Unauthenticated"))
-//        }
-//    }
+      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
+        .body(result.errorReason.responseMessage)
+    }
+  }
+
 
   @PreAuthorize("isAuthenticated()")
   @PostMapping("logout")

@@ -127,6 +127,14 @@ class UserService(
     }
   }
 
+  fun getUsersByRole(role: Role): ResponseResult<List<PlatformUser>> {
+    return try {
+      ResponseResult.Success(this.userRepository.findByRoles(role))
+    } catch (ex: Exception) {
+      ResponseResult.Error(Errors.CANT_RETRIEVE_USERS)
+    }
+  }
+
   fun getUserByJwt(jwt: String): ResponseResult<PlatformUser> =
     try {
       val body = jwtUtil.parseJwtToBody(jwt)

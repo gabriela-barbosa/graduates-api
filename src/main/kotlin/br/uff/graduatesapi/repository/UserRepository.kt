@@ -15,6 +15,8 @@ interface UserRepository : JpaRepository<PlatformUser, UUID>, UserRepositoryCust
 
   fun findByIdIn(userIds: List<UUID>): List<PlatformUser>?
 
+  fun findByRoles(role: Role): List<PlatformUser>
+
   @Query(
     "insert into platform_user_role (platform_user_id, role) VALUES (:id, :role)", nativeQuery = true
   )

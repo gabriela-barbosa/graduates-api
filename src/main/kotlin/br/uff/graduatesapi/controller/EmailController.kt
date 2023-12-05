@@ -43,28 +43,17 @@ class EmailController(
   fun sendEmails(
     @RequestBody request: EmailsSendDTO
   ): ResponseEntity<Any> {
-    val (subject, userIds, emailContentId) = request
-    if (subject == null || userIds.isEmpty()) {
+    val (subject, usersId, emailContentId) = request
+    if (subject == null || usersId.isEmpty()) {
       return ResponseEntity.unprocessableEntity().build()
     }
     emailSenderService.sendEmailsHtmlTemplate(
       subject = subject,
-      userIds = userIds,
+      userIds = usersId,
       emailContentId = emailContentId
     )
     return ResponseEntity.noContent().build()
   }
-
-//  @PostMapping("/email/template")
-//  fun sendSimpleTemplateEmail(
-//    @RequestBody request: EmailSendDTO
-//  ): ResponseEntity<Any> {
-//    emailSenderService.sendEmailUsingTemplate(
-//      name = request.name!!,
-//      targetEmail = request.targetEmail!!
-//    )
-//    return ResponseEntity.noContent().build()
-//  }
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("emails")

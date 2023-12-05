@@ -4,6 +4,6 @@ import java.util.*
 
 data class EmailsSendDTO(
     val subject: String?,
-    val userIds: List<UUID>,
+    val usersId: List<UUID>,
     val emailContentId: UUID,
 )
