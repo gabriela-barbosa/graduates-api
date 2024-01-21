@@ -8,6 +8,7 @@ import br.uff.graduatesapi.model.InstitutionType
 import br.uff.graduatesapi.repository.InstitutionTypeRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class InstitutionTypeService(
@@ -22,7 +23,7 @@ class InstitutionTypeService(
     }
   }
 
-  fun deleteType(id: Int): ResponseResult<Nothing?> {
+  fun deleteType(id: UUID): ResponseResult<Nothing?> {
     return try {
       institutionTypeRepository.deleteById(id)
       ResponseResult.Success(null)
@@ -41,18 +42,19 @@ class InstitutionTypeService(
     }
   }
 
-  fun findById(id: Int): ResponseResult<InstitutionType> {
+  fun findById(id: UUID): ResponseResult<InstitutionType> {
     val result =
       institutionTypeRepository.findByIdOrNull(id) ?: return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND)
     return ResponseResult.Success(result)
   }
 
-  fun editType(createInstitutionTypeDTO: CreateInstitutionTypeDTO, id: Int): ResponseResult<Nothing?> {
+  fun updateType(createInstitutionTypeDTO: CreateInstitutionTypeDTO, id: UUID): ResponseResult<Nothing?> {
     return try {
-      val result = this.findById(id)
-      if (result is ResponseResult.Error)
-        return ResponseResult.Error(Errors.INVALID_DATA)
-      val type = result.data!!
+
+      val type = when (val result = this.findById(id)) {
+        is ResponseResult.Success -> result.data!!
+        is ResponseResult.Error -> return ResponseResult.Error(Errors.INVALID_DATA)
+      }
       type.name = createInstitutionTypeDTO.name
       institutionTypeRepository.save(type)
       ResponseResult.Success(null)

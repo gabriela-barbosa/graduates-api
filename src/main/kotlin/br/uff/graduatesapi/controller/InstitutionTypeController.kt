@@ -6,6 +6,7 @@ import br.uff.graduatesapi.service.InstitutionTypeService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("api/v1")
@@ -21,7 +22,7 @@ class InstitutionTypeController(private val institutionTypeService: InstitutionT
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("institution/type/{id}")
-    fun deleteInstitutionType(@PathVariable id: Int): ResponseEntity<Any> =
+    fun deleteInstitutionType(@PathVariable id: UUID): ResponseEntity<Any> =
         when (val result = this.institutionTypeService.deleteType(id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
             is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
@@ -40,8 +41,8 @@ class InstitutionTypeController(private val institutionTypeService: InstitutionT
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("institution/type/{id}")
-    fun editInstitutionType(@RequestBody createInstitutionTypeDTO: CreateInstitutionTypeDTO, @PathVariable id: Int): ResponseEntity<Any> =
-        when (val result = this.institutionTypeService.editType(createInstitutionTypeDTO, id)) {
+    fun editInstitutionType(@RequestBody createInstitutionTypeDTO: CreateInstitutionTypeDTO, @PathVariable id: UUID): ResponseEntity<Any> =
+        when (val result = this.institutionTypeService.updateType(createInstitutionTypeDTO, id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
             is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
                 .body(result.errorReason.responseMessage)

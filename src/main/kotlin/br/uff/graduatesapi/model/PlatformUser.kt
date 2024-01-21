@@ -1,31 +1,31 @@
 package br.uff.graduatesapi.model
 
-import br.uff.graduatesapi.enums.Role
-import br.uff.graduatesapi.enums.WorkHistoryStatus
+import br.uff.graduatesapi.enum.Role
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
 import javax.persistence.*
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class PlatformUser(
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Int? = null,
-
     @Column(nullable = false)
     var name: String,
 
     @Column(unique = true, nullable = false)
     var email: String,
 
-    @Column(name = "role", nullable = true)
-    var role: Role? = Role.GRADUATE,
+    @ElementCollection(targetClass = Role::class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name="platform_user_role")
+    @Column(name="role")
+    var roles: List<Role> = mutableListOf(),
 
     @OneToOne(mappedBy = "user")
     var advisor: Advisor? = null,
@@ -33,10 +33,26 @@ class PlatformUser(
     @OneToOne(mappedBy = "user")
     var graduate: Graduate? = null,
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true, name="actual_role")
+    var currentRole: Role? = null,
+
+    ) {
+    @Id
+    @Column(name = "id", nullable = false, unique = true)
+    var id: UUID = UUID.randomUUID()
+
+    @OneToMany(mappedBy = "user")
+    var emailDispatches: List<EmailDispatch> = emptyList()
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: LocalDate? = null
-) {
+    lateinit var createdAt: LocalDateTime
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = true, updatable = true)
+    var updatedAt: LocalDateTime? = null
+
     @Column(nullable = false)
     var password = ""
         @JsonIgnore

@@ -1,38 +1,47 @@
 package br.uff.graduatesapi.model
 
-import br.uff.graduatesapi.enums.WorkHistoryStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
-import java.time.LocalDate
-import javax.persistence.*
+import java.time.LocalDateTime
+import java.util.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.ManyToOne
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "work_history")
 class WorkHistory(
-    @Column(name = "position", nullable = true)
-    var position: String? = null,
+  @JsonIgnore
+  @ManyToOne(optional = false)
+  var graduate: Graduate,
 
-    @JsonIgnore
-    @ManyToOne(optional = true)
-    var institution: Institution? = null,
+  @Column(name = "position", nullable = true)
+  var position: String? = null,
 
-    @JsonIgnore
-    @ManyToOne(optional = false)
-    var graduate: Graduate,
+  @JsonIgnore
+  @ManyToOne(optional = false)
+  var institution: Institution,
 
-    @Column(name = "status", nullable = false)
-    var status: WorkHistoryStatus = WorkHistoryStatus.PENDING
+  @Column(name = "started_at", nullable = false, updatable = true)
+  var startedAt: LocalDateTime,
+
+  @Column(name = "ended_at", nullable = true, updatable = true)
+  var endedAt: LocalDateTime? = null,
+
+  @UpdateTimestamp
+  @Column(name = "updated_at", nullable = true, updatable = true)
+  var updatedAt: LocalDateTime? = null
 ) {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    var id: Int? = null
+  @Id
+  @Column(name = "id", nullable = false, unique = true)
+  var id: UUID = UUID.randomUUID()
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: LocalDate? = null
+  @CreationTimestamp
+  @Column(name = "created_at", nullable = false, updatable = false)
+  lateinit var createdAt: LocalDateTime
 
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = true, updatable = true)
-    var updatedAt: LocalDate? = null
+
 }

@@ -6,6 +6,7 @@ import br.uff.graduatesapi.service.CIProgramService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("api/v1")
@@ -21,7 +22,7 @@ class CIProgramController(private val ciProgramService: CIProgramService) {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("ciprogram/{id}")
-    fun deleteCIPrograms(@PathVariable id: Int): ResponseEntity<Any> =
+    fun deleteCIPrograms(@PathVariable id: UUID): ResponseEntity<Any> =
         when (val result = this.ciProgramService.deleteProgram(id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
             is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
@@ -39,7 +40,7 @@ class CIProgramController(private val ciProgramService: CIProgramService) {
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("ciprogram/{id}")
-    fun editCIProgram(@RequestBody ciProgramDTO: CIProgramDTO, @PathVariable id: Int): ResponseEntity<Any> =
+    fun editCIProgram(@RequestBody ciProgramDTO: CIProgramDTO, @PathVariable id: UUID): ResponseEntity<Any> =
         when (val result = this.ciProgramService.editProgram(ciProgramDTO, id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
             is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)

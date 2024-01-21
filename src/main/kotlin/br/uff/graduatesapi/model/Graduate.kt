@@ -4,47 +4,64 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.JoinFormula
-import java.time.LocalDate
+import org.hibernate.annotations.UpdateTimestamp
+import java.time.LocalDateTime
+import java.util.*
 import javax.persistence.*
 
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Graduate(
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  val id: Int,
-
-  @OneToOne(optional = true)
-  var historyStatus: HistoryStatus? = null,
-
-  @JsonIgnore
-  @OneToOne(optional = false)
-  var user: PlatformUser,
+	@JsonIgnore
+	@OneToOne(optional = false)
+	var user: PlatformUser,
 ) {
-  @OneToMany(mappedBy = "graduate")
-  var cnpqScholarship: List<CNPQScholarship>? = null
+	@Id
+	@Column(name = "id", nullable = false, unique = true)
+	var id: UUID = UUID.randomUUID()
 
-  @OneToMany(mappedBy = "graduate")
-  var courses: List<Course>? = null
+	@OneToMany(mappedBy = "graduate")
+	var cnpqScholarships: List<CNPQScholarship> = emptyList()
 
-  @ManyToOne(optional = true)
-  var postDoctorate: Institution? = null
+	@OneToMany(mappedBy = "graduate")
+	var courses: List<Course> = emptyList()
 
-  @OneToMany(mappedBy = "graduate")
-  var workHistories: List<WorkHistory>? = null
+	@OneToOne(mappedBy = "graduate", optional = true)
+	var postDoctorate: PostDoctorate? = null
 
-  @ManyToOne
-  @JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id and EXTRACT(YEAR FROM w.created_at) = EXTRACT(YEAR FROM CURRENT_DATE) ORDER BY w.created_at DESC LIMIT 1)")
-  val currentWorkHistory: WorkHistory? = null
+	@OneToMany(mappedBy = "graduate")
+	var workHistories: List<WorkHistory> = emptyList()
 
-  @Column(name = "finished_doctorate_on_uff")
-  var hasFinishedDoctorateOnUFF: Boolean? = false
+	@OneToMany(mappedBy = "graduate")
+	var historyStatus: List<HistoryStatus> = emptyList()
 
-  @Column(name = "finished_master_degree_on_uff")
-  var hasFinishedMasterDegreeOnUFF: Boolean? = false
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinFormula("(SELECT c.id FROM CNPQScholarship c WHERE c.graduate_id = id AND c.ended_at is null ORDER BY w.started_at DESC)")
+	val currentCNPQScholarships: List<CNPQScholarship> = emptyList()
 
-  @CreationTimestamp
-  @Column(name = "created_at", nullable = false, updatable = false)
-  var createdAt: LocalDate? = null
+	@ManyToOne
+	@JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id ORDER BY w.ended_at DESC, w.started_at DESC, w.created_at DESC limit 1)")
+	val lastWorkHistory: WorkHistory? = null
+
+	@ManyToOne
+	@JoinFormula("(SELECT h.id FROM history_status h WHERE h.graduate_id = id AND extract(year from h.created_at) = extract(year from now())  ORDER BY h.created_at DESC limit 1)")
+	val currentHistoryStatus: HistoryStatus? = null
+
+	@Column(name = "finished_doctorate_on_uff", nullable = true)
+	var hasFinishedDoctorateOnUFF: Boolean? = null
+
+	@Column(name = "finished_master_degree_on_uff", nullable = true)
+	var hasFinishedMasterDegreeOnUFF: Boolean? = null
+
+	@Column(name = "success_case")
+	var successCase: String? = null
+
+	@CreationTimestamp
+	@Column(name = "created_at", nullable = false, updatable = false)
+	lateinit var createdAt: LocalDateTime
+
+	@UpdateTimestamp
+	@Column(name = "updated_at", nullable = true, updatable = true)
+	var updatedAt: LocalDateTime? = null
 }

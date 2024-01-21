@@ -1,30 +1,40 @@
 package br.uff.graduatesapi.model
 
-import br.uff.graduatesapi.enums.WorkHistoryStatus
+import br.uff.graduatesapi.enum.HistoryStatusEnum
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
-import java.time.LocalDate
+import org.hibernate.annotations.UpdateTimestamp
+import java.time.LocalDateTime
 import java.util.*
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.ManyToOne
 
 @Entity
 class HistoryStatus(
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    var id: Int? = null,
+  @Column(nullable = false)
+  var status: HistoryStatusEnum = HistoryStatusEnum.PENDING,
 
-    @Column(name = "known_workplace", nullable = true)
-    var knownWorkplace: Boolean?,
+  @Column(nullable = true)
+  var pendingFields: String? = null,
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "historyStatus", optional = false)
-    var graduate: Graduate,
+  @Column(nullable = true)
+  var emptyFields: String? = null,
 
-    @Column(name = "status", nullable = false)
-    var status: WorkHistoryStatus = WorkHistoryStatus.PENDING,
+  @JsonIgnore
+  @ManyToOne(optional = false)
+  var graduate: Graduate
+) {
+  @Id
+  @Column(name = "id", nullable = false, unique = true)
+  var id: UUID = UUID.randomUUID()
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    var createdAt: LocalDate? = null
-)
+  @CreationTimestamp
+  @Column(name = "created_at", nullable = false, updatable = false)
+  lateinit var createdAt: LocalDateTime
+
+  @UpdateTimestamp
+  @Column(name = "updated_at", nullable = true, updatable = true)
+  var updatedAt: LocalDateTime? = null
+}
