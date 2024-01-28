@@ -1,7 +1,7 @@
 package br.uff.graduatesapi.dto
 
-import br.uff.graduatesapi.enum.Role
+import br.uff.graduatesapi.enum.RoleEnum
 
 data class UpdateCurrentRoleDTO(
-  val currentRole: Role,
+    val currentRoleEnum: RoleEnum,
 )

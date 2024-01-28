@@ -4,7 +4,7 @@ import br.uff.graduatesapi.Utils.Companion.getRandomString
 import br.uff.graduatesapi.dto.GetUsersDTO
 import br.uff.graduatesapi.dto.RegisterDTO
 import br.uff.graduatesapi.entity.UserFilters
-import br.uff.graduatesapi.enum.Role
+import br.uff.graduatesapi.enum.RoleEnum
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.model.PlatformUser
@@ -46,7 +46,7 @@ class UserService(
 
       user.email = userDTO.email
       user.name = userDTO.name
-      user.roles = userDTO.roles
+      user.roleEnums = userDTO.roleEnums
 
       if (userDTO.password != null)
         user.password = passwordEncoder.encode(userDTO.password)
@@ -65,7 +65,7 @@ class UserService(
       val user = PlatformUser(
         name = userDTO.name,
         email = userDTO.email,
-        roles = userDTO.roles,
+        roleEnums = userDTO.roleEnums,
 //                currentRole = userDTO.roles[0]
       )
       user.password = passwordEncoder.encode(getRandomString(10))
@@ -91,10 +91,10 @@ class UserService(
     return ResponseResult.Success(userUpdated)
   }
 
-  fun updateCurrentRole(user: UserDetailsImpl, currentRole: Role): ResponseResult<Any> {
+  fun updateCurrentRole(user: UserDetailsImpl, currentRoleEnum: RoleEnum): ResponseResult<Any> {
     val platformUser = userRepository.findByIdOrNull(UUID.fromString(user.username))
-    if (platformUser != null && platformUser.roles.contains(currentRole)) {
-      platformUser.currentRole = currentRole
+    if (platformUser != null && platformUser.roleEnums.contains(currentRoleEnum)) {
+      platformUser.currentRoleEnum = currentRoleEnum
       userRepository.save(platformUser)
       return ResponseResult.Success(platformUser)
     }
@@ -127,9 +127,9 @@ class UserService(
     }
   }
 
-  fun getUsersByRole(role: Role): ResponseResult<List<PlatformUser>> {
+  fun getUsersByRole(roleEnum: RoleEnum): ResponseResult<List<PlatformUser>> {
     return try {
-      ResponseResult.Success(this.userRepository.findByRoles(role))
+      ResponseResult.Success(this.userRepository.findByRoles(roleEnum))
     } catch (ex: Exception) {
       ResponseResult.Error(Errors.CANT_RETRIEVE_USERS)
     }

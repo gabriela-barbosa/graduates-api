@@ -6,7 +6,7 @@ import br.uff.graduatesapi.dto.Message
 import br.uff.graduatesapi.dto.RegisterDTO
 import br.uff.graduatesapi.dto.UpdateCurrentRoleDTO
 import br.uff.graduatesapi.entity.UserFilters
-import br.uff.graduatesapi.enum.Role
+import br.uff.graduatesapi.enum.RoleEnum
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.security.UserDetailsImpl
 import br.uff.graduatesapi.service.AuthService
@@ -55,7 +55,7 @@ class AuthController(
     @RequestBody body: UpdateCurrentRoleDTO,
     response: HttpServletResponse
   ): ResponseEntity<Any> {
-    return when (val result = userService.updateCurrentRole(user, body.currentRole)) {
+    return when (val result = userService.updateCurrentRole(user, body.currentRoleEnum)) {
       is ResponseResult.Success -> {
         ResponseEntity.ok().body(result.data!!)
       }
@@ -116,9 +116,9 @@ class AuthController(
   }
 
   @PreAuthorize("isAuthenticated()")
-  @GetMapping("users/role/{role}")
-  fun getUsersByRole(@PathVariable role: Role): ResponseEntity<Any> {
-    return when (val result = this.userService.getUsersByRole(role)) {
+  @GetMapping("users/role/{roleEnum}")
+  fun getUsersByRole(@PathVariable roleEnum: RoleEnum): ResponseEntity<Any> {
+    return when (val result = this.userService.getUsersByRole(roleEnum)) {
       is ResponseResult.Success -> {
         ResponseEntity.ok().body(result.data!!)
       }

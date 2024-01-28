@@ -10,4 +10,6 @@ import java.util.*
 @Repository
 interface InstitutionRepository : JpaRepository<Institution, UUID>, InstitutionRepositoryCustom {
     fun findByNameAndTypeId(name: String, id: UUID): Institution?
+
+    fun findByNameAndTypeName(name: String, typeName: String): Institution?
 }

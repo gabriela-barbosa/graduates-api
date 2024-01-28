@@ -27,6 +27,11 @@ class CIProgramService(
         return ResponseResult.Success(result)
     }
 
+    fun findProgramByInitials(initials: String): ResponseResult<CIProgram> {
+        val result = programRepository.findCIProgramByInitials(initials) ?: return ResponseResult.Error(Errors.CI_PROGRAM_NOT_FOUND)
+        return ResponseResult.Success(result)
+    }
+
     fun deleteProgram(id: UUID): ResponseResult<Nothing?> = try {
         programRepository.deleteById(id)
         ResponseResult.Success(null)

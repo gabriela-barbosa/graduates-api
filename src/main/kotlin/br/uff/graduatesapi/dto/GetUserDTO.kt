@@ -1,6 +1,6 @@
 package br.uff.graduatesapi.dto
 
-import br.uff.graduatesapi.enum.Role
+import br.uff.graduatesapi.enum.RoleEnum
 import br.uff.graduatesapi.model.*
 import java.util.*
 
@@ -29,14 +29,14 @@ data class GetUserDTO(
   var id: UUID,
   var name: String,
   var email: String,
-  var roles: List<Role>,
-  var currentRole: Role,
+  var roleEnums: List<RoleEnum>,
+  var currentRoleEnum: RoleEnum,
 )
 
-fun PlatformUser.toGetUserDTO(currentRole: Role) = GetUserDTO(
+fun PlatformUser.toGetUserDTO(currentRoleEnum: RoleEnum) = GetUserDTO(
   id = id,
   name = name,
   email = email,
-  roles = roles,
-  currentRole = currentRole
+  roleEnums = roleEnums,
+  currentRoleEnum = currentRoleEnum
 )

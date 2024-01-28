@@ -1,6 +1,6 @@
 package br.uff.graduatesapi.repository
 
-import br.uff.graduatesapi.enum.Role
+import br.uff.graduatesapi.enum.RoleEnum
 import br.uff.graduatesapi.model.PlatformUser
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -15,12 +15,12 @@ interface UserRepository : JpaRepository<PlatformUser, UUID>, UserRepositoryCust
 
   fun findByIdIn(userIds: List<UUID>): List<PlatformUser>?
 
-  fun findByRoles(role: Role): List<PlatformUser>
+  fun findByRoles(roleEnum: RoleEnum): List<PlatformUser>
 
   @Query(
     "insert into platform_user_role (platform_user_id, role) VALUES (:id, :role)", nativeQuery = true
   )
-  fun insertRole(@Param("id") id: UUID, @Param("role") role: Role): PlatformUser?
+  fun insertRole(@Param("id") id: UUID, @Param("role") roleEnum: RoleEnum): PlatformUser?
 
   @Modifying
   @Query("update PlatformUser user set user.email=?2, user.updatedAt=now() where user.id=?1")

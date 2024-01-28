@@ -1,6 +1,6 @@
 package br.uff.graduatesapi.enum
 
-enum class Role {
+enum class RoleEnum {
     ADMIN,
     GRADUATE,
     PROFESSOR,

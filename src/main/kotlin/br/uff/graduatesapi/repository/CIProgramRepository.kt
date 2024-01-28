@@ -20,4 +20,6 @@ interface CIProgramRepository : JpaRepository<CIProgram, UUID> {
     @Modifying
     @Query("select program from CIProgram program where program.active=true")
     fun findAllActives(): List<CIProgram>
+
+    fun findCIProgramByInitials(initials: String): CIProgram?
 }

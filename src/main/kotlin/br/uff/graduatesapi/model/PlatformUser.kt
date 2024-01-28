@@ -1,6 +1,6 @@
 package br.uff.graduatesapi.model
 
-import br.uff.graduatesapi.enum.Role
+import br.uff.graduatesapi.enum.RoleEnum
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -21,11 +21,11 @@ class PlatformUser(
     @Column(unique = true, nullable = false)
     var email: String,
 
-    @ElementCollection(targetClass = Role::class)
+    @ElementCollection(targetClass = RoleEnum::class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name="platform_user_role")
     @Column(name="role")
-    var roles: List<Role> = mutableListOf(),
+    var roleEnums: List<RoleEnum> = mutableListOf(),
 
     @OneToOne(mappedBy = "user")
     var advisor: Advisor? = null,
@@ -35,7 +35,7 @@ class PlatformUser(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = true, name="actual_role")
-    var currentRole: Role? = null,
+    var currentRoleEnum: RoleEnum? = null,
 
     ) {
     @Id

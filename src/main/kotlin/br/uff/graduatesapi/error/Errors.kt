@@ -167,4 +167,8 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
 
   POST_DOCTORATE_NOT_FOUND("Post Doctorate not found", "Pós-doutorado não encontrado.", HttpStatus.NOT_FOUND),
 
+  FILE_EMPTY("File is empty", "Arquivo está vazio.", HttpStatus.BAD_REQUEST),
+
+  ADVISOR_NOT_FOUND("Advisor not found", "Orientador não encontrado.", HttpStatus.NOT_FOUND),
+  USER_ALREADY_EXISTS("User already exists", "Usuário já existe.", HttpStatus.UNPROCESSABLE_ENTITY),
 }

@@ -46,6 +46,12 @@ class InstitutionService(
 		return ResponseResult.Success(resultInstitution)
 	}
 
+	fun findByName(name: String): ResponseResult<Institution> {
+		val resultInstitution = institutionRepository.findByNameAndTypeName(name, typeName)
+			?: return ResponseResult.Error(Errors.INSTITUTION_NOT_FOUND)
+		return ResponseResult.Success(resultInstitution)
+	}
+
 	fun createInstitution(institutionDTO: CreateInstitutionDTO): ResponseResult<Institution> {
 
 		val institutionFound = if (institutionDTO.id != null) {

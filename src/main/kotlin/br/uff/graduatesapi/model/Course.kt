@@ -23,14 +23,17 @@ class Course(
     @ManyToOne(optional = false)
     var graduate: Graduate,
 
-    @Column(name = "minute_defense", nullable = false)
-    var minuteDefense: Int,
+    @Column(nullable = false, unique = true)
+    var minuteDefense: String,
+
+    @Column(nullable = false, columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP")
+    var titleDate: LocalDateTime,
 ) {
     @Id
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     var id: UUID = UUID.randomUUID()
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     lateinit var createdAt: LocalDateTime
 }

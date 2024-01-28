@@ -3,7 +3,7 @@ package br.uff.graduatesapi.controller
 import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.toDTO
 import br.uff.graduatesapi.entity.GraduateFilters
-import br.uff.graduatesapi.enum.Role
+import br.uff.graduatesapi.enum.RoleEnum
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.security.UserDetailsImpl
 import br.uff.graduatesapi.service.GraduateService
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 
@@ -46,7 +47,7 @@ class GraduateController(private val graduateService: GraduateService) {
     return when (val result =
       graduateService.getGraduatesByAdvisor(
         UUID.fromString(user.username),
-        Role.valueOf(role),
+        RoleEnum.valueOf(role),
         pageSetting,
         filters
       )) {
@@ -81,5 +82,13 @@ class GraduateController(private val graduateService: GraduateService) {
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }
+  }
+
+  @PostMapping
+  fun createGraduatesByCSV(
+    @RequestParam("file") file: MultipartFile
+  ): ResponseEntity<Any>? {
+    val importedEntries = graduateService.createGraduateByCSV(file)
+    return ResponseEntity.ok(importedEntries)
   }
 }

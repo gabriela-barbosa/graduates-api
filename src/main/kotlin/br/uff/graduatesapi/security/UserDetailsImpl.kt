@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class UserDetailsImpl(private val user: PlatformUser) : UserDetails {
-  override fun getAuthorities() = listOf(GrantedAuthority { user.currentRole.toString() })
+  override fun getAuthorities() = listOf(GrantedAuthority { user.currentRoleEnum.toString() })
 
   override fun isEnabled() = true
 
@@ -19,6 +19,6 @@ class UserDetailsImpl(private val user: PlatformUser) : UserDetails {
 
   override fun isAccountNonLocked() = true
 
-  fun getRoles() = user.roles
+  fun getRoles() = user.roleEnums
 
 }
