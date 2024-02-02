@@ -78,7 +78,6 @@ class GraduateController(private val graduateService: GraduateService) {
       is ResponseResult.Success -> {
         ResponseEntity.ok(result.data!!.toDTO())
       }
-
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }
@@ -86,9 +85,9 @@ class GraduateController(private val graduateService: GraduateService) {
 
   @PostMapping
   fun createGraduatesByCSV(
-    @RequestParam("file") file: MultipartFile
+    @RequestParam("file") file: MultipartFile, @RequestParam("templateId") templateId: UUID
   ): ResponseEntity<Any>? {
-    val importedEntries = graduateService.createGraduateByCSV(file)
+    val importedEntries = graduateService.createGraduateByCSV(file, templateId)
     return ResponseEntity.ok(importedEntries)
   }
 }

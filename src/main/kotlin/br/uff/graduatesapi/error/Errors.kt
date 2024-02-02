@@ -171,4 +171,6 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
 
   ADVISOR_NOT_FOUND("Advisor not found", "Orientador não encontrado.", HttpStatus.NOT_FOUND),
   USER_ALREADY_EXISTS("User already exists", "Usuário já existe.", HttpStatus.UNPROCESSABLE_ENTITY),
+    CSV_TEMPLATE_NOT_FOUND("CSV template not found", "Modelo CSV não encontrado.", HttpStatus.NOT_FOUND),
+    CSV_FIELD_NOT_FOUND("CSV field not found", "Campo CSV não encontrado.", HttpStatus.NOT_FOUND),
 }
