@@ -25,8 +25,8 @@ class WorkHistory(
   @ManyToOne(optional = false)
   var institution: Institution,
 
-  @Column(name = "started_at", nullable = false, updatable = true)
-  var startedAt: LocalDateTime,
+  @Column(name = "started_at", nullable = true, updatable = true)
+  var startedAt: LocalDateTime? = null,
 
   @Column(name = "ended_at", nullable = true, updatable = true)
   var endedAt: LocalDateTime? = null,

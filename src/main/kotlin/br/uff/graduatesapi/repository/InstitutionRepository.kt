@@ -12,4 +12,5 @@ interface InstitutionRepository : JpaRepository<Institution, UUID>, InstitutionR
     fun findByNameAndTypeId(name: String, id: UUID): Institution?
 
     fun findByNameAndTypeName(name: String, typeName: String): Institution?
+    fun findFirstByNameIgnoreCase(name: String): Institution?
 }

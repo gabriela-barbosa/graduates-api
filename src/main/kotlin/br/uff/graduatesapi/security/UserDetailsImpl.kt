@@ -19,6 +19,6 @@ class UserDetailsImpl(private val user: PlatformUser) : UserDetails {
 
   override fun isAccountNonLocked() = true
 
-  fun getRoles() = user.roleEnums
+  fun getRoles() = user.roles
 
 }

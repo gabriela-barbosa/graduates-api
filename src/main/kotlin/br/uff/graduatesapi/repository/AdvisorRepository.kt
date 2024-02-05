@@ -8,5 +8,5 @@ import java.util.*
 interface AdvisorRepository : JpaRepository<Advisor, UUID> {
     fun findAdvisorByUser(user: PlatformUser): Advisor?
 
-    fun findAdvisorByUserName(name: String): Advisor?
+    fun findAdvisorByUserNameIgnoreCase(name: String): Advisor?
 }

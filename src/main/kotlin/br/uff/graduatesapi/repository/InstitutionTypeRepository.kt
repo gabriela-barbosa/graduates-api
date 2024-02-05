@@ -15,4 +15,6 @@ interface InstitutionTypeRepository : JpaRepository<InstitutionType, UUID> {
     @Modifying
     @Query("select new br.uff.graduatesapi.dto.InstitutionTypeDTO(institutionType.id, institutionType.name, institutionType.createdAt) from InstitutionType institutionType where institutionType.active=true")
     fun findAllActives(): List<InstitutionTypeDTO>
+
+    fun findByNameContainingIgnoreCase(name: String): InstitutionType?
 }

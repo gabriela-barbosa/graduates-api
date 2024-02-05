@@ -13,25 +13,25 @@ import javax.persistence.ManyToOne
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 class CNPQScholarship(
-  @ManyToOne(optional = false)
-  var level: CNPQLevel,
+    @ManyToOne(optional = false)
+    var level: CNPQLevel,
 
-  @JsonIgnore
-  @ManyToOne(optional = false)
-  var graduate: Graduate,
+    @JsonIgnore
+    @ManyToOne(optional = false)
+    var graduate: Graduate,
 
-  @CreationTimestamp
-  @Column(name = "started_at", nullable = false, updatable = false)
-  var startedAt: LocalDateTime,
+    @CreationTimestamp
+    @Column(name = "started_at", nullable = true, updatable = true)
+    var startedAt: LocalDateTime? = null,
 
-  @Column(name = "ended_at", nullable = true, updatable = false)
-  var endedAt: LocalDateTime? = null
+    @Column(name = "ended_at", nullable = true, updatable = true)
+    var endedAt: LocalDateTime? = null
 ) {
-  @Id
-  @Column(name = "id", nullable = false, unique = true)
-  var id: UUID = UUID.randomUUID()
+    @Id
+    @Column(name = "id", nullable = false, unique = true)
+    var id: UUID = UUID.randomUUID()
 
-  @CreationTimestamp
-  @Column(name = "created_at", nullable = false, updatable = false)
-  lateinit var createdAt: LocalDateTime
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    lateinit var createdAt: LocalDateTime
 }

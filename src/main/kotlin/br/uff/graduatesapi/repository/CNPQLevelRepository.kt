@@ -10,7 +10,7 @@ import java.util.*
 interface CNPQLevelRepository : JpaRepository<CNPQLevel, UUID> {
     @Modifying
     @Query("update CNPQLevel level set level.active=false where level.id = ?1")
-    override fun deleteById (id: UUID)
+    override fun deleteById(id: UUID)
 
     @Modifying
     @Query("select level from CNPQLevel level where level.active=true")
@@ -20,4 +20,6 @@ interface CNPQLevelRepository : JpaRepository<CNPQLevel, UUID> {
     @Transactional
     @Query("update CNPQLevel level set level.name = ?1 where level.id = ?2")
     fun updateName(name: String, id: UUID)
+
+    fun findCNPQLevelByNameIgnoreCase(name: String): CNPQLevel?
 }

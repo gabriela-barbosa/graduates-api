@@ -37,6 +37,6 @@ fun PlatformUser.toGetUserDTO(currentRoleEnum: RoleEnum) = GetUserDTO(
   id = id,
   name = name,
   email = email,
-  roleEnums = roleEnums,
+  roleEnums = roles,
   currentRoleEnum = currentRoleEnum
 )

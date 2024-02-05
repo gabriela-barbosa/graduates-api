@@ -25,7 +25,7 @@ class PlatformUser(
     @Enumerated(EnumType.STRING)
     @CollectionTable(name="platform_user_role")
     @Column(name="role")
-    var roleEnums: List<RoleEnum> = mutableListOf(),
+    var roles: List<RoleEnum> = mutableListOf(),
 
     @OneToOne(mappedBy = "user")
     var advisor: Advisor? = null,

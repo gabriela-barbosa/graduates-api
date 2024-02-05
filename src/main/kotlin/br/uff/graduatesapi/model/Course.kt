@@ -2,6 +2,7 @@ package br.uff.graduatesapi.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
@@ -24,10 +25,10 @@ class Course(
     var graduate: Graduate,
 
     @Column(nullable = false, unique = true)
-    var minuteDefense: String,
+    var defenseMinute: String,
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP")
-    var titleDate: LocalDateTime,
+    var titleDate: LocalDate,
 ) {
     @Id
     @Column(nullable = false, unique = true)

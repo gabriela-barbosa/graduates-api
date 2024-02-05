@@ -59,4 +59,9 @@ class CNPQLevelService(
             ResponseResult.Error(Errors.CANT_UPDATE_CNPQ_LEVEL)
         }
     }
+
+    fun findLevelByName(name: String): ResponseResult<CNPQLevel> {
+        val result = cnpqLevelRepository.findCNPQLevelByNameIgnoreCase(name) ?: return ResponseResult.Error(Errors.CNPQ_LEVEL_NOT_FOUND)
+        return ResponseResult.Success(result)
+    }
 }

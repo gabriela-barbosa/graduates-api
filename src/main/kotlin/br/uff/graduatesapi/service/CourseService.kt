@@ -18,4 +18,11 @@ class CourseService(
             ResponseResult.Error(Errors.CANT_RETRIEVE_COURSES)
         }
 
+    fun createCourse(course: Course): ResponseResult<Course?> =
+        try {
+            val result = courseService.save(course)
+            ResponseResult.Success(result)
+        } catch (err: Error) {
+            ResponseResult.Error(Errors.CANT_CREATE_COURSE)
+        }
 }

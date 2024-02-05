@@ -16,7 +16,7 @@ class PostDoctorate(
   @ManyToOne(optional = false)
   var institution: Institution,
 
-  @Column(name = "started_at", nullable = false, updatable = true)
+  @Column(name = "started_at", nullable = true, updatable = true)
   var startedAt: LocalDateTime,
 
   @Column(name = "ended_at", nullable = true, updatable = true)

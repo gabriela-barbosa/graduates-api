@@ -42,7 +42,7 @@ class PostDoctorateService(
     oldPostDoctorate.institution = institution
     oldPostDoctorate.updatedAt = LocalDateTime.now()
     if (oldPostDoctorate.startedAt.toString() != postDoctorateDTO.startedAt)
-      oldPostDoctorate.startedAt = Utils.parseUTCToLocalDateTime(postDoctorateDTO.startedAt)
+      oldPostDoctorate.startedAt = Utils.parseUTCToLocalDateTime(postDoctorateDTO.startedAt!!)
     if (oldPostDoctorate.endedAt?.toString() != postDoctorateDTO.endedAt)
       oldPostDoctorate.endedAt = postDoctorateDTO.endedAt?.let { Utils.parseUTCToLocalDateTime(it) }
 
@@ -67,7 +67,7 @@ class PostDoctorateService(
     val postDoctorate = PostDoctorate(
       graduate = graduate,
       institution = institution,
-      startedAt = Utils.parseUTCToLocalDateTime(postDoctorateDTO.startedAt),
+      startedAt = Utils.parseUTCToLocalDateTime(postDoctorateDTO.startedAt!!),
       endedAt = postDoctorateDTO.endedAt?.let { Utils.parseUTCToLocalDateTime(it) },
       updatedAt = LocalDateTime.now(),
     )

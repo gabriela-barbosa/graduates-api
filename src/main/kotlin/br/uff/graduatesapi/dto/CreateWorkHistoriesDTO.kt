@@ -10,17 +10,17 @@ data class CreateInstitutionDTO(
 )
 
 data class CreateWorkHistoryDTO(
-  val id: UUID?,
+  val id: UUID? = null,
   val institution: CreateInstitutionDTO,
-  val startedAt: String,
+  val startedAt: String? = null,
   val endedAt: String? = null,
   val position: String? = null,
 )
 
 data class CreatePostDoctorateDTO(
-  val id: UUID?,
+  val id: UUID? = null,
   val institution: CreateInstitutionDTO,
-  val startedAt: String,
+  val startedAt: String? = null,
   val endedAt: String? = null,
 )
 
@@ -43,7 +43,7 @@ data class CreateWorkHistoriesDTO(
   val hasFinishedMasterDegreeOnUFF: Boolean? = null,
 )
 
-fun Institution.toCreateWorkHistoriesInstitutionDTO() = CreateInstitutionDTO(
+fun Institution.toCreateInstitutionDTO() = CreateInstitutionDTO(
   typeId = type.id,
   name = name,
 )

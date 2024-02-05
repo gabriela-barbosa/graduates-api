@@ -46,7 +46,7 @@ class UserService(
 
       user.email = userDTO.email
       user.name = userDTO.name
-      user.roleEnums = userDTO.roleEnums
+      user.roles = userDTO.roleEnums
 
       if (userDTO.password != null)
         user.password = passwordEncoder.encode(userDTO.password)
@@ -65,7 +65,7 @@ class UserService(
       val user = PlatformUser(
         name = userDTO.name,
         email = userDTO.email,
-        roleEnums = userDTO.roleEnums,
+        roles = userDTO.roleEnums,
 //                currentRole = userDTO.roles[0]
       )
       user.password = passwordEncoder.encode(getRandomString(10))
@@ -93,7 +93,7 @@ class UserService(
 
   fun updateCurrentRole(user: UserDetailsImpl, currentRoleEnum: RoleEnum): ResponseResult<Any> {
     val platformUser = userRepository.findByIdOrNull(UUID.fromString(user.username))
-    if (platformUser != null && platformUser.roleEnums.contains(currentRoleEnum)) {
+    if (platformUser != null && platformUser.roles.contains(currentRoleEnum)) {
       platformUser.currentRoleEnum = currentRoleEnum
       userRepository.save(platformUser)
       return ResponseResult.Success(platformUser)
