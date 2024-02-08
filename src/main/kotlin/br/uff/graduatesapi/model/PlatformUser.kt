@@ -35,7 +35,7 @@ class PlatformUser(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = true, name="actual_role")
-    var currentRoleEnum: RoleEnum? = null,
+    var currentRole: RoleEnum? = null,
 
     ) {
     @Id

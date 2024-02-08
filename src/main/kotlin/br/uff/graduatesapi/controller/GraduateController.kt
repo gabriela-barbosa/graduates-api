@@ -86,9 +86,9 @@ class GraduateController(private val graduateService: GraduateService) {
 
     @PostMapping("/graduates/csv")
     fun createGraduatesByCSV(
-        @RequestParam("file") file: MultipartFile, @RequestParam("isDoctorateGraduate") isDoctorateGraduate: Boolean
+        @RequestParam("file") file: MultipartFile, @RequestParam("isDoctorateGraduates") isDoctorateGraduates: Boolean
     ): ResponseEntity<Any>? {
-        return when (val result = graduateService.createGraduateByCSV(file, isDoctorateGraduate)) {
+        return when (val result = graduateService.createGraduateByCSV(file, isDoctorateGraduates)) {
             is ResponseResult.Success -> ResponseEntity.ok().build()
             is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
                 .body(result.errorReason.responseMessage)

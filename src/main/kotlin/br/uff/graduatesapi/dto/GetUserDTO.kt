@@ -29,14 +29,14 @@ data class GetUserDTO(
   var id: UUID,
   var name: String,
   var email: String,
-  var roleEnums: List<RoleEnum>,
-  var currentRoleEnum: RoleEnum,
+  var roles: List<RoleEnum>,
+  var currentRole: RoleEnum,
 )
 
 fun PlatformUser.toGetUserDTO(currentRoleEnum: RoleEnum) = GetUserDTO(
   id = id,
   name = name,
   email = email,
-  roleEnums = roles,
-  currentRoleEnum = currentRoleEnum
+  roles = roles,
+  currentRole = currentRoleEnum
 )

@@ -300,7 +300,7 @@ class GraduateService(
                 val userDTO = RegisterDTO(
                     name = fields.name,
                     email = fields.email,
-                    roleEnums = listOf(RoleEnum.GRADUATE)
+                    roles = listOf(RoleEnum.GRADUATE)
                 )
 
                 val createdUser = when (val resultCreatedUser = userService.createUser(userDTO)) {
@@ -433,11 +433,11 @@ class GraduateService(
 
 
     private fun extractGraduateInfoFromCSV(
-        isDoctorateGraduate: Boolean,
+        isDoctorateGraduates: Boolean,
         lines: List<String>,
         headers: List<String>
     ): ResponseResult<Nothing?> {
-        val csvFields = lines.toCSVFieldsDTO(isDoctorateGraduate, headers)
+        val csvFields = lines.toCSVFieldsDTO(isDoctorateGraduates, headers)
 
 
         val graduate = when (val result = handleGraduateFromCSV(csvFields)) {
@@ -470,7 +470,7 @@ class GraduateService(
 
 
     @Transactional(rollbackFor = [Exception::class])
-    fun createGraduateByCSV(file: MultipartFile, isDoctorateGraduate: Boolean): ResponseResult<Nothing?> {
+    fun createGraduateByCSV(file: MultipartFile, isDoctorateGraduates: Boolean): ResponseResult<Nothing?> {
         val result = csvService.readCSV(file)
         if (result is ResponseResult.Error) return ResponseResult.Error(result.errorReason!!)
         val (header, lines) = result.data!!
@@ -478,7 +478,7 @@ class GraduateService(
 
         for (line in lines) {
             if (extractGraduateInfoFromCSV(
-                    isDoctorateGraduate = isDoctorateGraduate, lines = line, headers = header
+                    isDoctorateGraduates = isDoctorateGraduates, lines = line, headers = header
                 ) is ResponseResult.Error
             ) return ResponseResult.Error(result.errorReason)
         }

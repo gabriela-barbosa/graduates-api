@@ -17,7 +17,7 @@ class CSVService() {
     fun readCSV(file: MultipartFile): ResponseResult<Pair<List<String>, List<List<String>>>> {
         val result = throwIfFileEmpty(file)
         if (result is ResponseResult.Error) return ResponseResult.Error(result.errorReason!!)
-        val reader = BufferedReader(file.inputStream.reader())
+        val reader = BufferedReader(file.inputStream.reader(Charsets.ISO_8859_1), )
         val header = reader.readLine().split(',')
 
         val lines = reader.lineSequence().filter { it.isNotBlank() && it.isNotEmpty() && it.first() != ',' }

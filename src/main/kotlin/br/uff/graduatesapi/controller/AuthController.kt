@@ -55,7 +55,7 @@ class AuthController(
     @RequestBody body: UpdateCurrentRoleDTO,
     response: HttpServletResponse
   ): ResponseEntity<Any> {
-    return when (val result = userService.updateCurrentRole(user, body.currentRoleEnum)) {
+    return when (val result = userService.updateCurrentRole(user, body.currentRole)) {
       is ResponseResult.Success -> {
         ResponseEntity.ok().body(result.data!!)
       }
