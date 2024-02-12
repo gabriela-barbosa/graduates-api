@@ -3,6 +3,7 @@ package br.uff.graduatesapi.error
 import org.springframework.http.HttpStatus
 
 enum class Errors(val message: String, val responseMessage: String, val errorCode: HttpStatus) {
+
     CANT_CREATE_USER(
         "Error creating user",
         "Erro ao tentar criar o usuário. Tente novamente.",
@@ -195,4 +196,9 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     CSV_FIELD_NOT_FOUND("CSV field not found", "Campo CSV não encontrado.", HttpStatus.NOT_FOUND),
     CANT_CREATE_COURSE("Error creating course", "Erro ao criar curso.", HttpStatus.UNPROCESSABLE_ENTITY),
     CANT_RETRIEVE_ADVISOR("Cant retrieve advisor", "Erro ao retornar orientador.", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    companion object {
+        private val map = Errors.values().associateBy(Errors::responseMessage)
+        fun getErrorByResponseMessage(message: String) = map[message]
+    }
 }
