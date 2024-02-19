@@ -60,7 +60,7 @@ class UserService(
 	fun createUser(userDTO: RegisterDTO): ResponseResult<PlatformUser> {
 		try {
 			if (this.findByEmail(userDTO.email) is ResponseResult.Success) {
-				return ResponseResult.Error(Errors.EMAIL_IN_USE)
+				return ResponseResult.Error(Errors.EMAIL_IN_USE, errorData = userDTO.email)
 			}
 			val user = PlatformUser(
 				name = userDTO.name,
@@ -72,7 +72,7 @@ class UserService(
 			val resp = this.userRepository.save(user)
 			return ResponseResult.Success(resp)
 		} catch (ex: Exception) {
-			return ResponseResult.Error(Errors.CANT_CREATE_USER)
+			return ResponseResult.Error(Errors.CANT_CREATE_USER, errorData = userDTO.name)
 		}
 	}
 
@@ -129,7 +129,7 @@ class UserService(
 
 	fun getUsersByRole(roleEnum: RoleEnum): ResponseResult<List<PlatformUser>> {
 		return try {
-			ResponseResult.Success(this.userRepository.findByRoles(roleEnum))
+			ResponseResult.Success(this.userRepository.findByRolesContains(roleEnum))
 		} catch (ex: Exception) {
 			ResponseResult.Error(Errors.CANT_RETRIEVE_USERS)
 		}

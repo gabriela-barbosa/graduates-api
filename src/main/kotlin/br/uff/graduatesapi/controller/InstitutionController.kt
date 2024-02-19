@@ -5,6 +5,7 @@ import br.uff.graduatesapi.entity.InstitutionFilters
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.service.InstitutionService
 import org.springframework.data.domain.PageRequest
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -40,7 +41,7 @@ class InstitutionController(private val institutionService: InstitutionService) 
     fun createInstitution(
         @RequestBody createInstitutionDTO: CreateInstitutionDTO
     ): ResponseEntity<Any> = when (val result = this.institutionService.createInstitution(createInstitutionDTO)) {
-        is ResponseResult.Success -> ResponseEntity.ok("Instituição criada com sucesso")
+        is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body("Instituição criada com sucesso")
         is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
             .body(result.errorReason.responseMessage)
     }

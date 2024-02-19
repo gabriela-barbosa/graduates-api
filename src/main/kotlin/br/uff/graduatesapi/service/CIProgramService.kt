@@ -28,8 +28,13 @@ class CIProgramService(
     }
 
     fun findProgramByInitials(initials: String): ResponseResult<CIProgram> {
-        val result = programRepository.findCIProgramByInitials(initials) ?: return ResponseResult.Error(Errors.CI_PROGRAM_NOT_FOUND)
-        return ResponseResult.Success(result)
+        try {
+            val result = programRepository.findCIProgramByInitials(initials)
+                ?: return ResponseResult.Error(Errors.CI_PROGRAM_NOT_FOUND, errorData = initials)
+            return ResponseResult.Success(result)
+        } catch (err: Error) {
+            return ResponseResult.Error(Errors.CANT_RETRIEVE_CI_PROGRAM_BY_INITIALS, errorData = initials)
+        }
     }
 
     fun deleteProgram(id: UUID): ResponseResult<Nothing?> = try {

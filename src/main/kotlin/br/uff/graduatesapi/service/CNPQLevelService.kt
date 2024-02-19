@@ -61,7 +61,12 @@ class CNPQLevelService(
     }
 
     fun findLevelByName(name: String): ResponseResult<CNPQLevel> {
-        val result = cnpqLevelRepository.findCNPQLevelByNameIgnoreCase(name) ?: return ResponseResult.Error(Errors.CNPQ_LEVEL_NOT_FOUND)
-        return ResponseResult.Success(result)
+        try {
+            val result = cnpqLevelRepository.findCNPQLevelByNameIgnoreCase(name)
+                ?: return ResponseResult.Error(Errors.CNPQ_LEVEL_NOT_FOUND, errorData = name)
+            return ResponseResult.Success(result)
+        } catch (err: Error) {
+            return ResponseResult.Error(Errors.CANT_RETRIEVE_CNPQ_LEVEL)
+        }
     }
 }

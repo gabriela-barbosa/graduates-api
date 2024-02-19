@@ -3,6 +3,7 @@ package br.uff.graduatesapi.controller
 import br.uff.graduatesapi.dto.CreateWorkHistoriesDTO
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.service.WorkHistoryService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -37,7 +38,7 @@ class WorkHistoryController(
     @RequestBody worksDTO: CreateWorkHistoriesDTO
   ): ResponseEntity<String> {
     return when (val result = workHistoryService.createGraduateHistories(worksDTO, graduateId)) {
-      is ResponseResult.Success -> ResponseEntity.status(201).build()
+      is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).build()
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }

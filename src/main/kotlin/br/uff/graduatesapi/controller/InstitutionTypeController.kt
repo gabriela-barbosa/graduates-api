@@ -3,6 +3,7 @@ package br.uff.graduatesapi.controller
 import br.uff.graduatesapi.dto.CreateInstitutionTypeDTO
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.service.InstitutionTypeService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -34,7 +35,7 @@ class InstitutionTypeController(private val institutionTypeService: InstitutionT
     fun createInstitutionType(
         @RequestBody createInstitutionTypeDTO: CreateInstitutionTypeDTO
     ): ResponseEntity<Any> = when (val result = this.institutionTypeService.createType(createInstitutionTypeDTO)) {
-        is ResponseResult.Success -> ResponseEntity.ok("Tipo de instituição criada com sucesso")
+        is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body("Tipo de instituição criada com sucesso")
         is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
             .body(result.errorReason.responseMessage)
     }

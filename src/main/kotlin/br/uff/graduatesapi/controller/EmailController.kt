@@ -9,6 +9,7 @@ import br.uff.graduatesapi.entity.EmailFilters
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.service.EmailSenderService
 import br.uff.graduatesapi.service.EmailService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -95,7 +96,7 @@ class EmailController(
   @PostMapping("email")
   fun createEmail(@RequestBody createEmailDTO: CreateEmailDTO): ResponseEntity<Any> =
     when (val result = this.emailService.createEmail(createEmailDTO)) {
-      is ResponseResult.Success -> ResponseEntity.ok("Email criado com sucesso!")
+      is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body("Email criado com sucesso!")
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }

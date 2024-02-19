@@ -22,10 +22,10 @@ class AdvisorService(
     fun findAdvisorByName(name: String): ResponseResult<Advisor> {
         return try {
             val result = advisorRepository.findAdvisorByUserNameIgnoreCase(name)
-                ?: return ResponseResult.Error(Errors.ADVISOR_NOT_FOUND)
+                ?: return ResponseResult.Error(errorReason = Errors.ADVISOR_NOT_FOUND, errorData = name)
             ResponseResult.Success(result)
         } catch (err: Error) {
-            ResponseResult.Error(Errors.CANT_RETRIEVE_ADVISOR)
+            ResponseResult.Error(Errors.CANT_RETRIEVE_ADVISOR, errorData = name)
         }
     }
 

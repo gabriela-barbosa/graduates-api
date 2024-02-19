@@ -23,7 +23,7 @@ class CNPQScholarshipService(
         try {
             ResponseResult.Success(cnpqScholarshipRepository.save(cnpqScholarship))
         } catch (err: Error) {
-            ResponseResult.Error(Errors.CANT_CREATE_CNPQSCHOLARSHIP)
+            ResponseResult.Error(Errors.CANT_CREATE_CNPQSCHOLARSHIP, errorData = cnpqScholarship.level.name)
         }
 
     fun updateScholarship(id: UUID, scholarshipDTO: CNPQScholarshipDTO): ResponseResult<CNPQScholarship> {

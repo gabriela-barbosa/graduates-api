@@ -10,6 +10,17 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
         HttpStatus.INTERNAL_SERVER_ERROR
     ),
 
+    CANT_RETRIEVE_CNPQ_LEVEL(
+        "Cant retrieve CNPQ level",
+        "Erro ao retornar nível CNPQ.",
+        HttpStatus.INTERNAL_SERVER_ERROR
+    ),
+
+    CANT_CREATE_POST_DOCTORATE(
+        "Error creating post doctorate",
+        "Erro ao tentar criar o pós-doutorado. Tente novamente.",
+        HttpStatus.INTERNAL_SERVER_ERROR
+    ),
     CANT_UPDATE_EMAIL(
         "Error updating email",
         "Erro ao atualizar email. Tente novamente.",
@@ -56,9 +67,14 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
         "Tipo da instituição não encontrado.",
         HttpStatus.NOT_FOUND
     ),
-    CANT_RETRIEVE_INSTITUTION_TYPE(
+    CANT_RETRIEVE_INSTITUTION_TYPES(
         "Cant retrieve institution types",
         "Erro ao retornar tipos de instituição.",
+        HttpStatus.INTERNAL_SERVER_ERROR
+    ),
+    CANT_RETRIEVE_INSTITUTION_TYPE(
+        "Cant retrieve institution type",
+        "Erro ao retornar tipo de instituição.",
         HttpStatus.INTERNAL_SERVER_ERROR
     ),
     CANT_DELETE_INSTITUTION_TYPE(
@@ -139,6 +155,11 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
         "Erro ao retornar programas do IC.",
         HttpStatus.INTERNAL_SERVER_ERROR
     ),
+    CANT_RETRIEVE_CI_PROGRAM_BY_INITIALS(
+        "Cant retrieve CI program by initials",
+        "Erro ao retornar programa do IC pelas iniciais.",
+        HttpStatus.INTERNAL_SERVER_ERROR
+    ),
     CI_PROGRAM_NOT_FOUND(
         "CI program was not found",
         "Programa do IC não encontrado. Tente novamente.",
@@ -195,7 +216,13 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     CSV_TEMPLATE_NOT_FOUND("CSV template not found", "Modelo CSV não encontrado.", HttpStatus.NOT_FOUND),
     CSV_FIELD_NOT_FOUND("CSV field not found", "Campo CSV não encontrado.", HttpStatus.NOT_FOUND),
     CANT_CREATE_COURSE("Error creating course", "Erro ao criar curso.", HttpStatus.UNPROCESSABLE_ENTITY),
-    CANT_RETRIEVE_ADVISOR("Cant retrieve advisor", "Erro ao retornar orientador.", HttpStatus.INTERNAL_SERVER_ERROR),
+    CANT_CREATE_POST_DOCTORATE_INSTITUTION(
+        "Error creating post doctorate institution",
+        "Erro ao criar instituição de pós-doutorado.",
+        HttpStatus.INTERNAL_SERVER_ERROR
+    ),
+    CANT_RETRIEVE_ADVISOR("Cant retrieve advisor", "Erro ao retornar orientador.", HttpStatus.INTERNAL_SERVER_ERROR);
+
 
     companion object {
         private val map = Errors.values().associateBy(Errors::responseMessage)

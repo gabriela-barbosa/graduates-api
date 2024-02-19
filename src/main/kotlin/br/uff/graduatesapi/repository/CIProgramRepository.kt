@@ -4,6 +4,7 @@ import br.uff.graduatesapi.model.CIProgram
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.lang.Nullable
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
@@ -21,5 +22,6 @@ interface CIProgramRepository : JpaRepository<CIProgram, UUID> {
     @Query("select program from CIProgram program where program.active=true")
     fun findAllActives(): List<CIProgram>
 
+    @Nullable
     fun findCIProgramByInitials(initials: String): CIProgram?
 }

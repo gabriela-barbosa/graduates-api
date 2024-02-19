@@ -3,6 +3,7 @@ package br.uff.graduatesapi.controller
 import br.uff.graduatesapi.dto.CIProgramDTO
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.service.CIProgramService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -33,7 +34,7 @@ class CIProgramController(private val ciProgramService: CIProgramService) {
     @PostMapping("ciprogram")
     fun createCIProgram(@RequestBody ciProgramDTO: CIProgramDTO): ResponseEntity<Any> =
         when (val result = this.ciProgramService.createProgram(ciProgramDTO)) {
-            is ResponseResult.Success -> ResponseEntity.ok("Programa criado com sucesso")
+            is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body("Programa criado com sucesso")
             is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
                 .body(result.errorReason.responseMessage)
         }

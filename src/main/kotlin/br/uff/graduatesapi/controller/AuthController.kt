@@ -13,6 +13,7 @@ import br.uff.graduatesapi.service.AuthService
 import br.uff.graduatesapi.service.UserService
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -31,7 +32,7 @@ class AuthController(
   @PostMapping("register")
   fun register(@RequestBody body: RegisterDTO): ResponseEntity<Any> =
     when (val result = this.userService.createUpdateUser(body)) {
-      is ResponseResult.Success -> ResponseEntity.ok().body(result.data!!)
+      is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body(result.data!!)
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }
@@ -49,7 +50,7 @@ class AuthController(
   }
 
   @PreAuthorize("isAuthenticated()")
-  @PostMapping("user/current_role")
+  @PutMapping("user/current_role")
   fun updateCurrentRole(
     @AuthenticationPrincipal user: UserDetailsImpl,
     @RequestBody body: UpdateCurrentRoleDTO,

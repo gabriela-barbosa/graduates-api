@@ -19,7 +19,7 @@ class InstitutionTypeService(
             val result = institutionTypeRepository.findAllActives()
             ResponseResult.Success(result)
         } catch (err: Error) {
-            ResponseResult.Error(Errors.CANT_RETRIEVE_INSTITUTION_TYPE)
+            ResponseResult.Error(Errors.CANT_RETRIEVE_INSTITUTION_TYPES)
         }
     }
 
@@ -65,8 +65,13 @@ class InstitutionTypeService(
     }
 
     fun findByName(name: String): ResponseResult<InstitutionType> {
-        val institutionType =
-            institutionTypeRepository.findByNameContainingIgnoreCase(name) ?: return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND)
-        return ResponseResult.Success(institutionType)
+        try {
+            val institutionType =
+                institutionTypeRepository.findByNameContainingIgnoreCase(name)
+                    ?: return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND, errorData = name)
+            return ResponseResult.Success(institutionType)
+        } catch (err: Error) {
+            return ResponseResult.Error(Errors.CANT_RETRIEVE_INSTITUTION_TYPE)
+        }
     }
 }

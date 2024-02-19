@@ -5,9 +5,11 @@ import br.uff.graduatesapi.dto.toDTO
 import br.uff.graduatesapi.entity.GraduateFilters
 import br.uff.graduatesapi.enum.RoleEnum
 import br.uff.graduatesapi.error.ResponseResult
+import br.uff.graduatesapi.error.toResponseEntity
 import br.uff.graduatesapi.security.UserDetailsImpl
 import br.uff.graduatesapi.service.GraduateService
 import org.springframework.data.domain.PageRequest
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -89,9 +91,12 @@ class GraduateController(private val graduateService: GraduateService) {
         @RequestParam("file") file: MultipartFile, @RequestParam("isDoctorateGraduates") isDoctorateGraduates: Boolean
     ): ResponseEntity<Any>? {
         return when (val result = graduateService.createGraduateByCSV(file, isDoctorateGraduates)) {
-            is ResponseResult.Success -> ResponseEntity.ok().build()
-            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-                .body(result.errorReason.responseMessage)
+            is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).build()
+            is ResponseResult.Error -> {
+                val errorDataMessage =
+                    if (result.errorData != null) "Verifique as informações relacionadas ao campo de valor \"${result.errorData}\"." else ""
+                result.toResponseEntity("${result.errorReason?.responseMessage} $errorDataMessage")
+            }
         }
     }
 }

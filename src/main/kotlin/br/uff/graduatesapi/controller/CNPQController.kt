@@ -3,6 +3,7 @@ package br.uff.graduatesapi.controller
 import br.uff.graduatesapi.dto.CNPQLevelDTO
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.service.CNPQLevelService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -33,7 +34,7 @@ class CNPQController(private val cnpqLevelService: CNPQLevelService) {
   @PostMapping("cnpq_level")
   fun createCIProgram(@RequestBody levelDTO: CNPQLevelDTO): ResponseEntity<Any> =
     when (val result = this.cnpqLevelService.createLevel(levelDTO)) {
-      is ResponseResult.Success -> ResponseEntity.ok("Programa criado com sucesso")
+      is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body("Programa criado com sucesso")
       is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
         .body(result.errorReason.responseMessage)
     }

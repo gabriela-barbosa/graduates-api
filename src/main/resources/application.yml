@@ -9,6 +9,8 @@ spring:
   jpa:
     generate-ddl: true
     show-sql: true
+    hibernate:
+      ddl-auto: update
   mail:
     host: ${MAIL_SENDER_HOST}
     port: ${MAIL_SENDER_PORT}

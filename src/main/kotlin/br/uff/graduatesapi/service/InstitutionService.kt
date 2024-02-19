@@ -9,6 +9,7 @@ import br.uff.graduatesapi.model.Institution
 import br.uff.graduatesapi.repository.InstitutionRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -65,7 +66,7 @@ class InstitutionService(
         return try {
             val institutionType = when (val resultLevel = institutionTypeService.findById(institutionDTO.typeId)) {
                 is ResponseResult.Success -> resultLevel.data!!
-                is ResponseResult.Error -> return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND)
+                is ResponseResult.Error -> return ResponseResult.Error(Errors.INSTITUTION_TYPE_NOT_FOUND, errorCode = HttpStatus.UNPROCESSABLE_ENTITY )
             }
             val institution = Institution(
                 name = institutionDTO.name,
@@ -74,7 +75,7 @@ class InstitutionService(
             val respInstitution = institutionRepository.save(institution)
             ResponseResult.Success(respInstitution)
         } catch (err: Exception) {
-            ResponseResult.Error(Errors.CANT_CREATE_INSTITUTION)
+            ResponseResult.Error(Errors.CANT_CREATE_INSTITUTION, errorData = institutionDTO.name)
         }
     }
 

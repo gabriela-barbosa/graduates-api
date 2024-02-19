@@ -4,10 +4,12 @@ import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.dto.*
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
+import br.uff.graduatesapi.error.passError
 import br.uff.graduatesapi.model.Graduate
 import br.uff.graduatesapi.model.WorkHistory
 import br.uff.graduatesapi.repository.WorkHistoryRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
@@ -30,7 +32,7 @@ class WorkHistoryService(
             val respWH = workHistoryRepository.save(workHistory)
             ResponseResult.Success(respWH)
         } catch (err: Error) {
-            ResponseResult.Error(Errors.CANT_CREATE_WORK_HISTORY)
+            ResponseResult.Error(Errors.CANT_CREATE_WORK_HISTORY, errorData = workHistory.institution.name)
         }
     }
 
@@ -104,7 +106,14 @@ class WorkHistoryService(
 
         val institution = when (val result = institutionService.createInstitution(institutionDTO)) {
             is ResponseResult.Success -> result.data!!
-            is ResponseResult.Error -> return ResponseResult.Error(result.errorReason)
+            is ResponseResult.Error -> {
+                val code =
+                    if (result.errorReason!!.errorCode == HttpStatus.INTERNAL_SERVER_ERROR)
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                    else
+                        HttpStatus.UNPROCESSABLE_ENTITY
+                return result.passError(code)
+            }
         }
 
         val newStartedAt = startedAt?.let { Utils.parseUTCToLocalDateTime(it) }
