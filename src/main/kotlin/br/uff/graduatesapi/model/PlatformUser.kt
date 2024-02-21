@@ -61,4 +61,8 @@ class PlatformUser(
     fun comparePassword(password: String): Boolean {
         return BCryptPasswordEncoder().matches(password, this.password)
     }
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    val resetPasswordCode: ResetPasswordCode? = null
 }

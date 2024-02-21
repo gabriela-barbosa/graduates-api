@@ -10,6 +10,12 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
         HttpStatus.INTERNAL_SERVER_ERROR
     ),
 
+    CANT_CREATE_PASSWORD_CODE(
+        "Error creating password code",
+        "Erro ao criar código de recuperação de senha.",
+        HttpStatus.INTERNAL_SERVER_ERROR
+    ),
+
     CANT_RETRIEVE_CNPQ_LEVEL(
         "Cant retrieve CNPQ level",
         "Erro ao retornar nível CNPQ.",
@@ -33,6 +39,11 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
     ),
     EMAIL_IN_USE("Email already in use", "Email em uso.", HttpStatus.UNPROCESSABLE_ENTITY),
 
+    CANT_DELETE_PASSWORD_CODE(
+        "Error deleting password code",
+        "Erro ao deletar código de recuperação de senha.",
+        HttpStatus.INTERNAL_SERVER_ERROR
+    ),
     USER_NOT_FOUND("User not found", "Usuário não encontrado.", HttpStatus.NOT_FOUND),
     CANT_RETRIEVE_USERS(
         "Cant retrieve users",

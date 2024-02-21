@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.util.*
 import javax.servlet.http.Cookie
 
 @Component
@@ -22,12 +23,19 @@ class JWTUtil {
             .signWith(SignatureAlgorithm.HS512, secret).compact()
     }
 
+    fun generateJWTWithExpiration(issuer: String, expiration: Long) =
+        Jwts.builder()
+            .setIssuer(issuer)
+            .setExpiration(Date(System.currentTimeMillis() + expiration))
+            .signWith(SignatureAlgorithm.HS512, secret).compact()
+
+
     fun generateJWTCookie(issuer: String): Cookie {
         val jwt = generateJWT(issuer)
 
         val cookie = Cookie("user.token", jwt)
         cookie.isHttpOnly = true
-        cookie.path="/"
+        cookie.path = "/"
         return cookie
     }
 }
