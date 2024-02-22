@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus
 
 enum class Errors(val message: String, val responseMessage: String, val errorCode: HttpStatus) {
 
+    EMAIL_NOT_SENT("Email not sent", "Erro ao enviar email.", HttpStatus.INTERNAL_SERVER_ERROR),
+
     CANT_CREATE_USER(
         "Error creating user",
         "Erro ao tentar criar o usuário. Tente novamente.",

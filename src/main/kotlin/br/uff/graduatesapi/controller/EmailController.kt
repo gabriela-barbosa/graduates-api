@@ -19,7 +19,6 @@ class EmailController(
     private val emailService: EmailService,
     private val emailSenderService: EmailSenderService,
 ) {
-
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/email/send")
     fun sendSimpleEmail(
@@ -103,8 +102,8 @@ class EmailController(
             is ResponseResult.Error -> result.toResponseEntity()
         }
 
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/email/send-reset-password")
+//    @PreAuthorize("isAuthenticated()")
+    @PostMapping("email/send-reset-password")
     fun sendResetPassword(
         @RequestBody request: SendResetPasswordEmailDTO
     ): ResponseEntity<Any> {

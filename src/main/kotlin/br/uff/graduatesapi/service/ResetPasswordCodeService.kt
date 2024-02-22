@@ -32,7 +32,7 @@ class ResetPasswordCodeService(
 
     fun deletePasswordCodeByUserEmail(email: String): ResponseResult<Long> =
         try {
-            val deleted = resetPasswordCodeRepository.deleteByUser_Email(email)
+            val deleted = resetPasswordCodeRepository.deleteByUserEmail(email)
             ResponseResult.Success(deleted)
         } catch (ex: Exception) {
             ResponseResult.Error(Errors.CANT_DELETE_PASSWORD_CODE)
@@ -40,9 +40,8 @@ class ResetPasswordCodeService(
 
     fun createPasswordCode(user: PlatformUser): ResponseResult<ResetPasswordCode> =
         try {
-            val code = Utils.getRandomString(5)
-            val codeJWT = jwtUtil.generateJWTWithExpiration(code, 5 * 60 * 1000)
-            val resetPasswordCode = ResetPasswordCode(user, codeJWT)
+            val code = Utils.getRandomString(8)
+            val resetPasswordCode = ResetPasswordCode(user, code)
             val created = resetPasswordCodeRepository.save(resetPasswordCode)
             ResponseResult.Success(created)
         } catch (ex: Exception) {
@@ -56,9 +55,14 @@ class ResetPasswordCodeService(
         }
 
         val codeDeleted = deletePasswordCodeByUserEmail(email)
+        val updatedUser = when (val result = userService.findByEmail(email)) {
+            is ResponseResult.Success -> result.data!!
+            is ResponseResult.Error -> return result.passError(HttpStatus.UNPROCESSABLE_ENTITY)
+        }
+
         if (codeDeleted is ResponseResult.Error) return codeDeleted.passError()
 
-        val codeCreated = when (val result = createPasswordCode(user)) {
+        val codeCreated = when (val result = createPasswordCode(updatedUser)) {
             is ResponseResult.Success -> result.data!!
             is ResponseResult.Error -> return result.passError()
         }
@@ -66,7 +70,6 @@ class ResetPasswordCodeService(
         return ResponseResult.Success(codeCreated)
     }
 
-    @Transactional(rollbackFor = [Exception::class])
     fun createPasswordCode(email: String): ResponseResult<ResetPasswordCode> {
         val result = createPasswordCodeByEmail(email)
         if (result is ResponseResult.Error) {

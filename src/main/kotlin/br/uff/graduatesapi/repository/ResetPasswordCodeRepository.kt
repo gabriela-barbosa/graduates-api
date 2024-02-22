@@ -14,5 +14,7 @@ interface ResetPasswordCodeRepository : JpaRepository<ResetPasswordCode, UUID> {
     @Nullable
     fun findByUserEmail(email: String): ResetPasswordCode?
 
-    fun deleteByUser_Email(email: String): Long
+    @Transactional
+
+    fun deleteByUserEmail(email: String): Long
 }

@@ -10,7 +10,7 @@ import javax.persistence.*
 @Entity
 @Table
 class ResetPasswordCode(
-    @OneToOne(mappedBy = "resetPasswordCode")
+    @OneToOne(optional = false, cascade = [CascadeType.PERSIST])
     var user: PlatformUser,
 
     @Column(name = "code", nullable = false, updatable = false, unique = false)

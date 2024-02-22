@@ -43,3 +43,7 @@ token:
 
 cors:
   originPatterns: ${CORS_ORIGINS}
+
+frontend:
+  url: ${FRONTEND_URL}
+

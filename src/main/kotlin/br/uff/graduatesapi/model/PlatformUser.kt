@@ -23,8 +23,8 @@ class PlatformUser(
 
     @ElementCollection(targetClass = RoleEnum::class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name="platform_user_role")
-    @Column(name="role")
+    @CollectionTable(name = "platform_user_role")
+    @Column(name = "role")
     var roles: List<RoleEnum> = mutableListOf(),
 
     @OneToOne(mappedBy = "user")
@@ -34,7 +34,7 @@ class PlatformUser(
     var graduate: Graduate? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = true, name="actual_role")
+    @Column(nullable = true, name = "actual_role")
     var currentRole: RoleEnum? = null,
 
     ) {
