@@ -4,7 +4,6 @@ import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
 import br.uff.graduatesapi.error.passError
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
@@ -114,7 +113,7 @@ class EmailSenderService(
             is ResponseResult.Error -> return result.passError()
         }
 
-        val text = "Acesse o link para redefinir sua senha: $frontendUrl/reset-password/${passwordCode.code}. Esse link expira em 24 horas."
+        val text = "Acesse o link para redefinir sua senha: $frontendUrl/reset-password/${passwordCode.id}. Esse link expira em 24 horas."
         return sendEmail("Redefinição de senha", text, email)
     }
 }

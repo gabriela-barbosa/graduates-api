@@ -27,6 +27,11 @@ class Utils {
         .joinToString("")
     }
 
+    fun checkIfPasswordIsValid(password: String): Boolean {
+      val regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+\$).{8,}\$".toRegex()
+      return regex.matches(password)
+    }
+
     fun parseUTCToLocalDateTime(utc: String) : LocalDateTime = LocalDateTime.ofInstant(Instant.parse(utc), ZoneOffset.UTC)
 
     fun getHistoryStatus(

@@ -1,18 +1,20 @@
 package br.uff.graduatesapi.service
 
+import br.uff.graduatesapi.Utils
 import br.uff.graduatesapi.Utils.Companion.getRandomString
-import br.uff.graduatesapi.dto.GetUsersDTO
-import br.uff.graduatesapi.dto.RegisterDTO
+import br.uff.graduatesapi.dto.*
 import br.uff.graduatesapi.entity.UserFilters
 import br.uff.graduatesapi.enum.RoleEnum
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
+import br.uff.graduatesapi.error.passError
 import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.repository.UserRepository
 import br.uff.graduatesapi.security.JWTUtil
 import br.uff.graduatesapi.security.UserDetailsImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
@@ -22,6 +24,7 @@ class UserService(
 	private val userRepository: UserRepository,
 	private val passwordEncoder: BCryptPasswordEncoder,
 	private val jwtUtil: JWTUtil,
+	private val resetPasswordCodeService: ResetPasswordCodeService,
 ) {
 	fun findByEmail(email: String): ResponseResult<PlatformUser> {
 		val user = this.userRepository.findByEmail(email) ?: return ResponseResult.Error(Errors.USER_NOT_FOUND)
@@ -146,4 +149,49 @@ class UserService(
 		} catch (e: Exception) {
 			ResponseResult.Error(Errors.USER_NOT_FOUND)
 		}
+
+	fun changePassword(changePasswordDTO: ChangePasswordDTO): ResponseResult<GetUserDTO> {
+		val (code, newPassword) = changePasswordDTO
+
+		val resetPasswordCode = when (val result = resetPasswordCodeService.getResetPasswordCodeById(code)) {
+			is ResponseResult.Success -> result.data!!
+			is ResponseResult.Error -> {
+				val httpCode =
+					if (result.errorReason == Errors.RESET_PASSWORD_CODE_NOT_FOUND)
+						HttpStatus.UNPROCESSABLE_ENTITY
+					else
+						HttpStatus.INTERNAL_SERVER_ERROR
+				return result.passError(httpCode)
+			}
+		}
+
+		if (resetPasswordCode.isExpired()) {
+			return ResponseResult.Error(
+				errorReason = Errors.RESET_PASSWORD_CODE_NOT_FOUND,
+				errorCode = HttpStatus.UNPROCESSABLE_ENTITY
+			)
+		}
+
+		val isPasswordValid = Utils.checkIfPasswordIsValid(newPassword)
+
+		if (!isPasswordValid) {
+			return ResponseResult.Error(
+				errorReason = Errors.RESET_PASSWORD_CODE_IS_EXPIRED,
+			)
+		}
+
+		val user = resetPasswordCode.user
+
+		return try {
+			user.password = passwordEncoder.encode(newPassword)
+			val updatedUser = userRepository.save(user)
+			resetPasswordCodeService.deleteResetPasswordCode(resetPasswordCode.id)
+
+			ResponseResult.Success(updatedUser.toGetUserDTO())
+		} catch (e: Exception) {
+			ResponseResult.Error(
+				errorReason = Errors.CANT_UPDATE_USER_PASSWORD,
+			)
+		}
+	}
 }

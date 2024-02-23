@@ -102,7 +102,7 @@ class EmailController(
             is ResponseResult.Error -> result.toResponseEntity()
         }
 
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("email/send-reset-password")
     fun sendResetPassword(
         @RequestBody request: SendResetPasswordEmailDTO

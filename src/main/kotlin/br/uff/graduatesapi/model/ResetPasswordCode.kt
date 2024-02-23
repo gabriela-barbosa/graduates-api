@@ -1,8 +1,6 @@
 package br.uff.graduatesapi.model
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.CreationTimestamp
-import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -10,17 +8,20 @@ import javax.persistence.*
 @Entity
 @Table
 class ResetPasswordCode(
-    @OneToOne(optional = false, cascade = [CascadeType.PERSIST])
-    var user: PlatformUser,
-
-    @Column(name = "code", nullable = false, updatable = false, unique = false)
-    var code: String,
+	@OneToOne(optional = false, cascade = [CascadeType.PERSIST])
+	var user: PlatformUser,
 ) {
-    @Id
-    @Column(name = "id", nullable = false, unique = true)
-    var id: UUID = UUID.randomUUID()
+	@Id
+	@Column(name = "id", nullable = false, unique = true)
+	var id: UUID = UUID.randomUUID()
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    lateinit var createdAt: LocalDateTime
+	@CreationTimestamp
+	@Column(name = "created_at", nullable = false, updatable = false)
+	lateinit var createdAt: LocalDateTime
+
+	fun isExpired(): Boolean {
+		val now = LocalDateTime.now()
+		val expirationTime = createdAt.plusHours(24)
+		return now.isAfter(expirationTime)
+	}
 }
