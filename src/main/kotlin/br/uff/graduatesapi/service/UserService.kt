@@ -86,14 +86,6 @@ class UserService(
 			this.createUser(userDTO)
 		}
 
-	fun updateEmail(userId: UUID, newEmail: String): ResponseResult<PlatformUser> {
-		if (findByEmail(newEmail) is ResponseResult.Error)
-			return ResponseResult.Error(Errors.EMAIL_IN_USE)
-		val userUpdated = this.userRepository.updateEmail(userId, newEmail)
-			?: return ResponseResult.Error(Errors.CANT_UPDATE_EMAIL)
-		return ResponseResult.Success(userUpdated)
-	}
-
 	fun updateCurrentRole(user: UserDetailsImpl, currentRoleEnum: RoleEnum): ResponseResult<Any> {
 		val platformUser = userRepository.findByIdOrNull(UUID.fromString(user.username))
 		if (platformUser != null && platformUser.roles.contains(currentRoleEnum)) {

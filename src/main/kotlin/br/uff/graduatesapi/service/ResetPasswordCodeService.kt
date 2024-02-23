@@ -80,7 +80,7 @@ class ResetPasswordCodeService(
 	fun createPasswordCode(email: String): ResponseResult<ResetPasswordCode> {
 		val result = createPasswordCodeByEmail(email)
 		if (result is ResponseResult.Error) {
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()
 		}
 		return result
 	}

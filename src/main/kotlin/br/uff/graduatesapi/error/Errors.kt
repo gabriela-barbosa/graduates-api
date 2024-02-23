@@ -264,9 +264,4 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
 	),
 	CANT_RETRIEVE_ADVISOR("Cant retrieve advisor", "Erro ao retornar orientador.", HttpStatus.INTERNAL_SERVER_ERROR);
 
-
-	companion object {
-		private val map = Errors.values().associateBy(Errors::responseMessage)
-		fun getErrorByResponseMessage(message: String) = map[message]
-	}
 }
