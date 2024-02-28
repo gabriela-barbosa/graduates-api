@@ -6,6 +6,7 @@ import br.uff.graduatesapi.error.passError
 import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.model.ResetPasswordCode
 import br.uff.graduatesapi.repository.ResetPasswordCodeRepository
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -15,6 +16,7 @@ import java.util.*
 @Service
 class ResetPasswordCodeService(
 	private val resetPasswordCodeRepository: ResetPasswordCodeRepository,
+	@Lazy
 	private val userService: UserService,
 ) {
 

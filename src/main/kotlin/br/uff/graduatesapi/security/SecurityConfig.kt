@@ -29,7 +29,7 @@ class SecurityConfig(
         http.csrf().disable().authorizeRequests()
             .antMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
             .antMatchers(HttpMethod.POST, "/api/v1/register").permitAll()
-            .antMatchers(HttpMethod.POST, "/api/v1/email/send-reset-password").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/v1/send-email-reset-password").permitAll()
             .anyRequest().authenticated()
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.addFilterBefore(

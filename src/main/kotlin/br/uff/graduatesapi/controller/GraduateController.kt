@@ -86,7 +86,7 @@ class GraduateController(private val graduateService: GraduateService) {
         }
     }
 
-    @PostMapping("/graduates/csv")
+    @PostMapping("graduates/csv")
     fun createGraduatesByCSV(
         @RequestParam("file") file: MultipartFile, @RequestParam("isDoctorateGraduates") isDoctorateGraduates: Boolean
     ): ResponseEntity<Any>? {

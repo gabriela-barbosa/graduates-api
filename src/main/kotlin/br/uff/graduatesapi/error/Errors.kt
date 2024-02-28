@@ -36,13 +36,13 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
 
 	RESET_PASSWORD_CODE_IS_EXPIRED(
 		"Reset password code is expired",
-		"Código de recuperação de senha expirado. Clique em 'Esqueci minha senha' novamente.",
+		"Código de recuperação de senha expirado. Gere um novo código.",
 		HttpStatus.UNPROCESSABLE_ENTITY
 	),
 
 	CANT_CREATE_PASSWORD_CODE(
 		"Error creating password code",
-		"Erro ao criar código de recuperação de senha.",
+		"Erro ao criar código de recuperação de senha. Tente novamente.",
 		HttpStatus.INTERNAL_SERVER_ERROR
 	),
 
@@ -258,6 +258,7 @@ enum class Errors(val message: String, val responseMessage: String, val errorCod
 	CSV_FIELD_NOT_FOUND("CSV field not found", "Campo CSV não encontrado.", HttpStatus.NOT_FOUND),
 	CANT_CREATE_COURSE("Error creating course", "Erro ao criar curso.", HttpStatus.UNPROCESSABLE_ENTITY),
 	CANT_CREATE_POST_DOCTORATE_INSTITUTION(
+
 		"Error creating post doctorate institution",
 		"Erro ao criar instituição de pós-doutorado.",
 		HttpStatus.INTERNAL_SERVER_ERROR

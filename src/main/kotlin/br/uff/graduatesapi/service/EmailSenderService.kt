@@ -2,8 +2,6 @@ package br.uff.graduatesapi.service
 
 import br.uff.graduatesapi.error.Errors
 import br.uff.graduatesapi.error.ResponseResult
-import br.uff.graduatesapi.error.passError
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
@@ -21,10 +19,8 @@ class EmailSenderService(
 	private val userService: UserService,
 	private val template: SimpleMailMessage,
 	private val templateEngine: SpringTemplateEngine,
-	private val resetPasswordCodeService: ResetPasswordCodeService,
-	@Value("\${frontend.url:default}")
-	private val frontendUrl: String = ""
-) {
+
+	) {
 	fun sendEmail(subject: String, text: String, targetEmail: String): ResponseResult<Nothing?> {
 		return try {
 			val message = SimpleMailMessage()
@@ -96,16 +92,5 @@ class EmailSenderService(
 		helper.setTo(targetEmail)
 		emailSender.send(message)
 		return ResponseResult.Success(null)
-	}
-
-	fun sendResetPasswordEmail(email: String): ResponseResult<Nothing?> {
-		val passwordCode = when (val result = resetPasswordCodeService.createPasswordCodeByEmail(email)) {
-			is ResponseResult.Success -> result.data!!
-			is ResponseResult.Error -> return result.passError()
-		}
-
-		val text =
-			"Acesse o link para redefinir sua senha: $frontendUrl/reset-password/${passwordCode.id}. Esse link expira em 24 horas."
-		return sendEmail("Redefinição de senha", text, email)
 	}
 }

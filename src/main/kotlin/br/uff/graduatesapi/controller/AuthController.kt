@@ -91,17 +91,6 @@ class AuthController(
 		}
 	}
 
-	@PreAuthorize("isAuthenticated()")
-	@PutMapping("user/change_password")
-	fun changePassword(@RequestBody changePasswordDTO: ChangePasswordDTO): ResponseEntity<Any> {
-		return when (val result = this.userService.changePassword(changePasswordDTO)) {
-			is ResponseResult.Success -> {
-				ResponseEntity.ok().body(result.data!!)
-			}
-
-			is ResponseResult.Error -> result.toResponseEntity()
-		}
-	}
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("users")
@@ -149,5 +138,28 @@ class AuthController(
 		cookie.maxAge = 0
 		response.addCookie(cookie)
 		return ResponseEntity.ok(Message("Deslogado com sucesso!"))
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@PutMapping("user/change-password")
+	fun changePassword(@RequestBody changePasswordDTO: ChangePasswordDTO): ResponseEntity<Any> {
+		return when (val result = this.userService.changePassword(changePasswordDTO)) {
+			is ResponseResult.Success -> {
+				ResponseEntity.ok().body(result.data!!)
+			}
+
+			is ResponseResult.Error -> result.toResponseEntity()
+		}
+	}
+
+	@PostMapping("send-email-reset-password")
+	fun sendResetPassword(
+		@RequestBody request: SendResetPasswordEmailDTO
+	): ResponseEntity<Any> {
+		val (email) = request
+		return when (val result = this.authService.sendResetPasswordEmail(email)) {
+			is ResponseResult.Success -> ResponseEntity.noContent().build()
+			is ResponseResult.Error -> result.toResponseEntity()
+		}
 	}
 }
