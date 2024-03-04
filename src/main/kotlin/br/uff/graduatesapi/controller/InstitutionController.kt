@@ -3,6 +3,7 @@ package br.uff.graduatesapi.controller
 import br.uff.graduatesapi.dto.CreateInstitutionDTO
 import br.uff.graduatesapi.entity.InstitutionFilters
 import br.uff.graduatesapi.error.ResponseResult
+import br.uff.graduatesapi.error.toResponseEntity
 import br.uff.graduatesapi.service.InstitutionService
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
@@ -30,8 +31,7 @@ class InstitutionController(private val institutionService: InstitutionService) 
 
         return when (val result = this.institutionService.findAllByFilters(filters, pageSetting)) {
             is ResponseResult.Success -> ResponseEntity.ok(result.data)
-            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-                .body(result.errorReason.responseMessage)
+            is ResponseResult.Error ->result.toResponseEntity()
         }
     }
 
@@ -42,8 +42,7 @@ class InstitutionController(private val institutionService: InstitutionService) 
         @RequestBody createInstitutionDTO: CreateInstitutionDTO
     ): ResponseEntity<Any> = when (val result = this.institutionService.createInstitution(createInstitutionDTO)) {
         is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body("Instituição criada com sucesso")
-        is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-            .body(result.errorReason.responseMessage)
+        is ResponseResult.Error -> result.toResponseEntity()
     }
 
 
@@ -52,8 +51,7 @@ class InstitutionController(private val institutionService: InstitutionService) 
     fun deleteInstitution(@PathVariable id: UUID): ResponseEntity<Any> =
         when (val result = this.institutionService.deleteInstitution(id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
-            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-                .body(result.errorReason.responseMessage)
+            is ResponseResult.Error -> result.toResponseEntity()
         }
 
 
@@ -65,8 +63,7 @@ class InstitutionController(private val institutionService: InstitutionService) 
     ): ResponseEntity<Any> =
         when (val result = this.institutionService.updateInstitution(createInstitutionDTO, id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
-            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-                .body(result.errorReason.responseMessage)
+            is ResponseResult.Error -> result.toResponseEntity()
         }
 
 }

@@ -30,6 +30,8 @@ class SecurityConfig(
             .antMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
             .antMatchers(HttpMethod.POST, "/api/v1/register").permitAll()
             .antMatchers(HttpMethod.POST, "/api/v1/send-email-reset-password").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/v1/reset-password-code/*").permitAll()
+            .antMatchers(HttpMethod.PUT, "/api/v1/user/change-password").permitAll()
             .anyRequest().authenticated()
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.addFilterBefore(

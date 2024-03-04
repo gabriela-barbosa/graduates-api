@@ -18,8 +18,8 @@ class AuthService(
 	private val jwtUtil: JWTUtil,
 	private val passwordEncoder: BCryptPasswordEncoder,
 	private val resetPasswordCodeService: ResetPasswordCodeService,
-	@Value("\${frontend.url:default}")
-	private val frontendUrl: String = "",
+	@Value("\${reset-password.url:default}")
+	private val resetPasswordURL: String = "",
 	private val emailSenderService: EmailSenderService,
 ) {
 	fun login(loginDTO: LoginDTO): ResponseResult<GetAuthenticatedUser> {
@@ -52,7 +52,7 @@ class AuthService(
 		}
 
 		val text =
-			"Acesse o link para redefinir sua senha: $frontendUrl/reset-password/${passwordCode.id}. Esse link expira em 24 horas."
+			"Acesse o link para redefinir sua senha: $resetPasswordURL/${passwordCode.id}. Esse link expira em 24 horas."
 		return emailSenderService.sendEmail("Redefinição de senha", text, email)
 	}
 }

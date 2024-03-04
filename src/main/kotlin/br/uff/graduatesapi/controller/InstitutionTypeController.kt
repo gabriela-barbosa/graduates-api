@@ -2,6 +2,7 @@ package br.uff.graduatesapi.controller
 
 import br.uff.graduatesapi.dto.CreateInstitutionTypeDTO
 import br.uff.graduatesapi.error.ResponseResult
+import br.uff.graduatesapi.error.toResponseEntity
 import br.uff.graduatesapi.service.InstitutionTypeService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,8 +18,7 @@ class InstitutionTypeController(private val institutionTypeService: InstitutionT
     fun getInstitutionType(): ResponseEntity<Any> =
         when (val result = this.institutionTypeService.findActiveTypes()) {
             is ResponseResult.Success -> ResponseEntity.ok(result.data)
-            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-                .body(result.errorReason.responseMessage)
+            is ResponseResult.Error -> result.toResponseEntity()
         }
 
     @PreAuthorize("isAuthenticated()")
@@ -26,8 +26,7 @@ class InstitutionTypeController(private val institutionTypeService: InstitutionT
     fun deleteInstitutionType(@PathVariable id: UUID): ResponseEntity<Any> =
         when (val result = this.institutionTypeService.deleteType(id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
-            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-                .body(result.errorReason.responseMessage)
+            is ResponseResult.Error -> result.toResponseEntity()
         }
 
     @PreAuthorize("isAuthenticated()")
@@ -36,8 +35,7 @@ class InstitutionTypeController(private val institutionTypeService: InstitutionT
         @RequestBody createInstitutionTypeDTO: CreateInstitutionTypeDTO
     ): ResponseEntity<Any> = when (val result = this.institutionTypeService.createType(createInstitutionTypeDTO)) {
         is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body("Tipo de instituição criada com sucesso")
-        is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-            .body(result.errorReason.responseMessage)
+        is ResponseResult.Error -> result.toResponseEntity()
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -45,7 +43,6 @@ class InstitutionTypeController(private val institutionTypeService: InstitutionT
     fun editInstitutionType(@RequestBody createInstitutionTypeDTO: CreateInstitutionTypeDTO, @PathVariable id: UUID): ResponseEntity<Any> =
         when (val result = this.institutionTypeService.updateType(createInstitutionTypeDTO, id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
-            is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-                .body(result.errorReason.responseMessage)
+            is ResponseResult.Error -> result.toResponseEntity()
         }
 }

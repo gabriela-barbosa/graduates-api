@@ -48,7 +48,7 @@ class AuthController(
 	}
 
 	@PreAuthorize("isAuthenticated()")
-	@PutMapping("user/current_role")
+	@PutMapping("user/current-role")
 	fun updateCurrentRole(
 		@AuthenticationPrincipal user: UserDetailsImpl,
 		@RequestBody body: UpdateCurrentRoleDTO,

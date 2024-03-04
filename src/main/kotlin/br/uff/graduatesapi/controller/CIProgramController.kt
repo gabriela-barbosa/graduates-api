@@ -13,7 +13,7 @@ import java.util.*
 @RequestMapping("api/v1")
 class CIProgramController(private val ciProgramService: CIProgramService) {
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("ciprograms")
+    @GetMapping("ci-programs")
     fun getCIPrograms(): ResponseEntity<Any> =
         when (val result = this.ciProgramService.findPrograms()) {
             is ResponseResult.Success -> ResponseEntity.ok(result.data)
@@ -22,7 +22,7 @@ class CIProgramController(private val ciProgramService: CIProgramService) {
         }
 
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("ciprogram/{id}")
+    @DeleteMapping("ci-program/{id}")
     fun deleteCIPrograms(@PathVariable id: UUID): ResponseEntity<Any> =
         when (val result = this.ciProgramService.deleteProgram(id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()
@@ -31,7 +31,7 @@ class CIProgramController(private val ciProgramService: CIProgramService) {
         }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("ciprogram")
+    @PostMapping("ci-program")
     fun createCIProgram(@RequestBody ciProgramDTO: CIProgramDTO): ResponseEntity<Any> =
         when (val result = this.ciProgramService.createProgram(ciProgramDTO)) {
             is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body("Programa criado com sucesso")
@@ -40,7 +40,7 @@ class CIProgramController(private val ciProgramService: CIProgramService) {
         }
 
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("ciprogram/{id}")
+    @PutMapping("ci-program/{id}")
     fun editCIProgram(@RequestBody ciProgramDTO: CIProgramDTO, @PathVariable id: UUID): ResponseEntity<Any> =
         when (val result = this.ciProgramService.editProgram(ciProgramDTO, id)) {
             is ResponseResult.Success -> ResponseEntity.noContent().build()

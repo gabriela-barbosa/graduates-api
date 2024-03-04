@@ -2,6 +2,7 @@ package br.uff.graduatesapi.controller
 
 import br.uff.graduatesapi.dto.CNPQLevelDTO
 import br.uff.graduatesapi.error.ResponseResult
+import br.uff.graduatesapi.error.toResponseEntity
 import br.uff.graduatesapi.service.CNPQLevelService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,38 +14,34 @@ import java.util.*
 @RequestMapping("api/v1")
 class CNPQController(private val cnpqLevelService: CNPQLevelService) {
   @PreAuthorize("isAuthenticated()")
-  @GetMapping("cnpq_levels")
+  @GetMapping("cnpq-levels")
   fun getCNPQLevels(): ResponseEntity<Any> =
     when (val result = this.cnpqLevelService.findCNPQLevels()) {
       is ResponseResult.Success -> ResponseEntity.ok(result.data)
-      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-        .body(result.errorReason.responseMessage)
+      is ResponseResult.Error -> result.toResponseEntity()
     }
 
   @PreAuthorize("isAuthenticated()")
-  @DeleteMapping("cnpq_level/{id}")
+  @DeleteMapping("cnpq-level/{id}")
   fun deleteCIPrograms(@PathVariable id: UUID): ResponseEntity<Any> =
     when (val result = this.cnpqLevelService.deleteCNPQLevel(id)) {
       is ResponseResult.Success -> ResponseEntity.noContent().build()
-      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-        .body(result.errorReason.responseMessage)
+      is ResponseResult.Error -> result.toResponseEntity()
     }
 
   @PreAuthorize("isAuthenticated()")
-  @PostMapping("cnpq_level")
+  @PostMapping("cnpq-level")
   fun createCIProgram(@RequestBody levelDTO: CNPQLevelDTO): ResponseEntity<Any> =
     when (val result = this.cnpqLevelService.createLevel(levelDTO)) {
       is ResponseResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body("Programa criado com sucesso")
-      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-        .body(result.errorReason.responseMessage)
+      is ResponseResult.Error -> result.toResponseEntity()
     }
 
   @PreAuthorize("isAuthenticated()")
-  @PutMapping("cnpq_level/{id}")
+  @PutMapping("cnpq-level/{id}")
   fun editCIProgram(@RequestBody levelDTO: CNPQLevelDTO, @PathVariable id: UUID): ResponseEntity<Any> =
     when (val result = this.cnpqLevelService.editLevel(levelDTO, id)) {
       is ResponseResult.Success -> ResponseEntity.noContent().build()
-      is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
-        .body(result.errorReason.responseMessage)
+      is ResponseResult.Error -> result.toResponseEntity()
     }
 }

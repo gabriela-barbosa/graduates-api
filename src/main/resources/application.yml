@@ -44,6 +44,6 @@ token:
 cors:
   originPatterns: ${CORS_ORIGINS}
 
-frontend:
-  url: ${FRONTEND_URL}
+reset-password:
+  url: ${RESET_PASSWORD_URL}
 
