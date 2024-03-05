@@ -17,7 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.util.*
-import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 
 @RestController
@@ -128,16 +127,6 @@ class AuthController(
 			is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
 				.body(result.errorReason.responseMessage)
 		}
-	}
-
-
-	@PreAuthorize("isAuthenticated()")
-	@PostMapping("logout")
-	fun logout(response: HttpServletResponse): ResponseEntity<Any> {
-		val cookie = Cookie("user.token", "")
-		cookie.maxAge = 0
-		response.addCookie(cookie)
-		return ResponseEntity.ok(Message("Deslogado com sucesso!"))
 	}
 
 	@PreAuthorize("isAuthenticated()")
