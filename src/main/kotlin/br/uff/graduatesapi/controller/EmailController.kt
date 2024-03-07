@@ -44,16 +44,17 @@ class EmailController(
 	fun sendEmails(
 		@RequestBody request: EmailsSendDTO
 	): ResponseEntity<Any> {
-		val (subject, usersId, emailContentId) = request
-		if (subject == null || usersId.isEmpty()) {
+		val (usersId, emailContentId) = request
+		if (usersId.isEmpty()) {
 			return ResponseEntity.unprocessableEntity().build()
 		}
-		emailSenderService.sendEmailsHtmlTemplate(
-			subject = subject,
+		return when (val result = emailSenderService.sendEmailsHtmlTemplate(
 			userIds = usersId,
 			emailContentId = emailContentId
-		)
-		return ResponseEntity.noContent().build()
+		)) {
+			is ResponseResult.Success -> ResponseEntity.noContent().build()
+			is ResponseResult.Error -> result.toResponseEntity()
+		}
 	}
 
 	@PreAuthorize("isAuthenticated()")
