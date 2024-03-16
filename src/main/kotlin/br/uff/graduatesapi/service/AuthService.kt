@@ -34,7 +34,7 @@ class AuthService(
 			return ResponseResult.Error(Errors.UNAUTHORIZED)
 		}
 
-		val userDTO = user.toGetUserDTO(user.currentRole ?: user.roles.sorted()[0])
+		val userDTO = user.toGetUserDTO()
 
 
 		val issuer = user.id.toString()

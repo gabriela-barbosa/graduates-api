@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("api/v1")
-class AuthController(
+class UserController(
 	private val userService: UserService,
 	private val authService: AuthService,
 ) {
@@ -69,7 +69,7 @@ class AuthController(
 	fun getUserById(@PathVariable id: UUID): ResponseEntity<Any> =
 		when (val result = this.userService.getById(id)) {
 			is ResponseResult.Success -> {
-				ResponseEntity.ok().body(result.data!!)
+				ResponseEntity.ok().body(result.data!!.toGetUserInfoDTO())
 			}
 
 			is ResponseResult.Error -> ResponseEntity.status(result.errorReason!!.errorCode)
