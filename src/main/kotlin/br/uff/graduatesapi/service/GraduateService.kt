@@ -100,6 +100,18 @@ class GraduateService(
 		}
 	}
 
+	fun findGraduateByNameLikeAndPaged(name: String, page: Int, size: Int): ResponseResult<List<GetUserLeanDTO>> {
+		return try {
+			return when (val result =
+				userService.findUserByNameAndRolePageable(name, RoleEnum.GRADUATE, PageRequest.of(page, size))) {
+				is ResponseResult.Success -> ResponseResult.Success(result.data!!)
+				is ResponseResult.Error -> result.passError()
+			}
+		} catch (err: Error) {
+			ResponseResult.Error(Errors.CANT_RETRIEVE_ADVISOR, errorData = name)
+		}
+	}
+
 	private fun addFiltersAndJoinsGetGraduatesCriteria(
 		entity: Root<Graduate>,
 		filters: GraduateFilters,

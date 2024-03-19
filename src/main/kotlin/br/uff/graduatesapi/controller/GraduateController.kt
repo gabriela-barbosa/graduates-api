@@ -21,6 +21,23 @@ import java.util.*
 @RestController
 @RequestMapping("api/v1")
 class GraduateController(private val graduateService: GraduateService) {
+
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("graduates-lean")
+	fun getGraduatesLeanFiltered(
+		@AuthenticationPrincipal user: UserDetailsImpl,
+		@RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
+		@RequestParam(value = "pageSize", required = false, defaultValue = "10") pageSize: Int,
+		@RequestParam(value = "name", required = false) name: String,
+	): ResponseEntity<Any>? {
+		return when (val result =
+			graduateService.findGraduateByNameLikeAndPaged(
+				name, page, pageSize
+			)) {
+			is ResponseResult.Success -> ResponseEntity.ok(result.data)
+			is ResponseResult.Error -> result.toResponseEntity()
+		}
+	}
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("graduates")
 	fun getGraduatesByAdvisor(
