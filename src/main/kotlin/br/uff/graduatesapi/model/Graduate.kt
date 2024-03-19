@@ -46,10 +46,6 @@ class Graduate(
     @OneToMany(mappedBy = "graduate")
     var historyStatus: List<HistoryStatus> = emptyList()
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinFormula("(SELECT c.id FROM CNPQScholarship c WHERE c.graduate_id = id AND c.ended_at is null ORDER BY w.started_at DESC)")
-    val currentCNPQScholarships: List<CNPQScholarship> = emptyList()
-
     @ManyToOne
     @JoinFormula("(SELECT w.id FROM work_history w WHERE w.graduate_id = id ORDER BY w.ended_at DESC, w.started_at DESC, w.created_at DESC limit 1)")
     val lastWorkHistory: WorkHistory? = null
