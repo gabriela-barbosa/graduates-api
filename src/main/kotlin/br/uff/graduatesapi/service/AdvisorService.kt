@@ -8,21 +8,27 @@ import br.uff.graduatesapi.error.passError
 import br.uff.graduatesapi.model.Advisor
 import br.uff.graduatesapi.model.PlatformUser
 import br.uff.graduatesapi.repository.AdvisorRepository
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
 class AdvisorService(
     private val advisorRepository: AdvisorRepository,
+    @Lazy
     private val userService: UserService
 ) {
     fun findAdvisorByUser(user: PlatformUser): Advisor? {
         return advisorRepository.findAdvisorByUser(user)
     }
 
-    fun createAdvisor(advisor: Advisor): Advisor {
-        return advisorRepository.save(advisor)
-    }
+    fun createAdvisor(advisor: Advisor): ResponseResult<Advisor?> =
+        try {
+            ResponseResult.Success(advisorRepository.save(advisor))
+        } catch (err: Error) {
+            ResponseResult.Error(Errors.CANT_CREATE_ADVISOR)
+        }
+
 
     fun findAdvisorByNameLikeAndPaged(name: String, page: Int, size: Int): ResponseResult<List<GetUserLeanDTO>> {
         return try {
