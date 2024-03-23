@@ -11,15 +11,15 @@ import javax.persistence.*
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Advisor(
     @OneToMany(mappedBy = "advisor")
-    var courses: List<Course> = mutableListOf()
+    var courses: List<Course> = mutableListOf(),
+
+    @JsonIgnore
+    @OneToOne(optional = false)
+    var user: PlatformUser
 ) {
     @Id
     @Column(name = "id", nullable = false, unique = true)
     var id: UUID = UUID.randomUUID()
-
-    @JsonIgnore
-    @OneToOne(optional = false)
-    lateinit var user: PlatformUser
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -28,7 +28,7 @@ class Course(
     @Column(nullable = false, unique = true)
     var defenseMinute: String,
 
-    @Column(nullable = false, columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP")
+    @Column(nullable = false)
     var titleDate: LocalDate,
 ) {
     @Id
